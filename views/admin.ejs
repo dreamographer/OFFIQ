@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <title>Admin</title>
+</head>
+<body>
+  <div class="container-fluid m-0 p-0 " style="overflow-x: hidden;">
+
+    <header class="row shadow  p-0 mb-5 me-0 ms-0 bg-body-tertiary rounded" style="width: 100%;height: 5rem;">
+      <div class="d-flex justify-content-between">
+        <div style="display: flex; align-items: center;" class="m-2">
+          <a href="/admin"> <img src="images/software-engineer.png" alt="df" style="width: 60px"></a>
+          <p class="display-6 mt-2 ms-2">ADMIN</p>
+        </div>
+        <div class="dropdown">
+          <img src="images/user.png" alt="user image" style="width:70px;border: 0;" class="btn dropdown-toggle"
+            data-bs-toggle="dropdown" aria-expanded="false">
+          <ul class="dropdown-menu" style="position: absolute;z-index: 5;">
+            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </header>
+    <div class="row justify-content-end p-4 ">
+      <form action="/search" method="get" class="d-flex col-md-5" role="search">
+        <input class="form-control " type="text" name="key" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+    <div class="row p-0 justify-content-start">
+
+      <div class="col-md-9 " style="width: 100%;">
+        <h2>User List</h2>
+        <div class="table-responsive">
+          <table class="table table-sm ">
+            <thead class="text-center">
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="user-table-body"></tbody>
+            <% users.forEach(user=> { %>
+              <tr class="text-center">
+                <td>
+                  <%=user._id %>
+                </td>
+                <td>
+                  <%=user.fullname %>
+                </td>
+                <td>
+                  <%=user.email %>
+                </td>
+                <td>
+                  <i data-userid="<%= user._id %>"
+                    class="btn btn-outline-light  fa-solid fa-trash fa-xl me-md-5 mb-md-0 mb-2" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal" style="color: red;border: none; background: none;"></i>
+                  <i data-fullname="<%= user.fullname %>" data-userid="<%= user._id %>"
+                    data-fullname="<%= user.fullname %>" data-email="<%= user.email %>"
+                    class="btn btn-outline-light fa-regular fa-pen-to-square fa-xl "
+                    style="color: #2cdb29;border: none; background: none;" data-bs-toggle="modal"
+                    data-bs-target="#editModal"></i>
+                </td>
+              </tr>
+              <% }); %>
+
+                </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center ">
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary  " style="width: 200px;" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+        Create new User
+      </button>
+    </div>
+    <!-- Modal FOR creating new User -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Create New User</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="/signup" method="post" id="signupForm">
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="newfullname" placeholder="name"
+                    name="fullname">
+                  <label for="newfullname">fullname</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com"
+                    name="email">
+                  <label for="floatingInput">Email address</label>
+                </div>
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="newPassword" placeholder="Password"
+                    name="password">
+                  <label for="newPassword">Password</label>
+                </div>
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="Cpassword"
+                    placeholder="confirmPassword" name="Cpassword">
+                  <label for="Cpassword">Confirm Password</label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal FOR updating USER -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLablel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered ">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editModalLablel">UPDATE USER</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="editForm">
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="fullname" placeholder="name" name="fullname" value=""
+                    required>
+                  <label for="floatingInput">fullname</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="email" placeholder="name@example.com" name="email"
+                    value="">
+                  <label for="floatingInput">Email address</label>
+                </div>
+                <input type="hidden" name="Uid" id="Uid" value="">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" id="submit" data-userId="" data-bs-target="#editForm">Save
+                changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal for deleting the user -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="deleteModalLabel">Delete USER</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Do you really want to delete this user ?
+            this action cant be undone
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-danger delete-button" id="dUId" value="">DELETE THE USER</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // <!-- Giving preset data inside the form -->
+    let editModal = document.getElementById('editModal')
+    editModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      let button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      let fullname = button.getAttribute('data-fullname')
+      let email = button.getAttribute('data-email')
+      let userId = button.getAttribute('data-userid')
+      // Update the input's value
+      let inputUserId = editModal.querySelector('#fullname')
+      let inputEmail = editModal.querySelector('#email')
+      let Uid = editModal.querySelector('#Uid')
+      inputUserId.value = fullname
+      inputEmail.value = email
+      Uid.value = userId
+    })
+
+
+
+
+    // <!-- opening warning Modal -->
+
+    let deleteModel = document.getElementById('deleteModal');
+    deleteModel.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      let button = event.relatedTarget
+      let userId = button.getAttribute('data-userid')
+      let Uid = deleteModal.querySelector('#dUId')
+      Uid.value = userId
+
+    })
+    //  <!-- Deleting the data -->
+
+    const deleteButton = document.querySelector('.delete-button');
+    deleteButton.addEventListener('click', async (event) => {
+      const userId = document.getElementById('dUId')
+      const response = await fetch(`/delete/${userId.value}`, { method: 'DELETE' });
+      if (response.ok) {
+        // Refresh the page or update the user list
+        window.location.reload();
+      } else {
+        console.error('Error deleting user');
+      }
+    });
+    //form validation for creating new user
+    const signupForm = document.getElementById('signupForm');
+    const newfullname = document.getElementById('newfullname');
+    const newConfirmPassword = document.getElementById('Cpassword');
+    const newPassword = document.getElementById('newPassword');
+
+    signupForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent default form submission
+
+      const fullname = newfullname.value
+      const password = newPassword.value
+      const confirmPassword = newConfirmPassword.value
+
+
+
+      const errors = [];
+
+      if (fullname.length < 5) {
+        errors.push('fullname must have at least 5 characters');
+      }
+
+      if (password !== confirmPassword) {
+        errors.push('Passwords do not match');
+      }
+      // Password validation: at least 8 characters with a combination of letters and numbers
+      const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+      if (!passwordPattern.test(password)) {
+        errors.push('Password must be at least 8 characters and contain both letters and numbers');
+      }
+
+      if (errors.length > 0) {
+        // Display error messages to the user
+        const errorMessage = errors.join('\n');
+        alert(errorMessage);
+      } else {
+        // Submit the form if there are no errors
+        signupForm.submit();
+      }
+    });
+
+
+
+    // form validation for update
+    const editForm = document.getElementById('editForm');
+    const editfullname = document.getElementById('fullname');
+    const editEmail = document.getElementById('email');
+    const userId = document.getElementById('Uid')
+
+    editForm.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent default form submission
+      const fullname = editfullname.value;
+      const email = editEmail;
+      const errors = [];
+
+      if (fullname.length < 5) {
+        errors.push('fullname must have at least 5 characters');
+      }
+      if (errors.length > 0) {
+        // Display error messages to the user
+        const errorMessage = errors.join('\n');
+        alert(errorMessage);
+      } else {
+
+        // <!-- Editting the data -->
+        editForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const updatedData = {
+            fullname: editfullname.value,
+            email: editEmail.value,
+          };
+          console.log(updatedData);
+          const response = await fetch(`/edit/${userId.value}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+          });
+          console.log(response)
+          if (response.ok) {
+            // Refresh the page or update the user list
+            window.location.reload();
+          } else {
+            console.error('Error updating user');
+          }
+        });
+
+      }
+    });
+
+  </script>
+
+  <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>

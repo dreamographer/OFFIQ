@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="home.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <title>Bistro Café</title>
+</head>
+
+<body>
+  <nav class="navbar  navbar-expand-lg fixed-top " data-bs-theme="dark">
+
+    <div class="container-fluid ">
+      
+      <a class="navbar-brand" href="#">
+        Bistro Café</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse  justify-content-center" id="navbarNavAltMarkup">
+        <div class="navbar-nav ">
+          <a class="nav-link active" aria-current="page" href="#c-1">Home</a>
+          <a class="nav-link" href="#c-2">About Us</a>
+          <a class="nav-link" href="#c-3">Signature</a>
+          <a class="nav-link" href="/logout">Logout</a>
+
+        </div>
+      </div>
+    </div>
+
+  </nav>
+  <div class="container-fluid p-0" data-bs-spy="scroll" data-bs-target="#navbar-example2"
+    data-bs-root-margin="0px 0px -40%" data-bs-smooth-scroll="true"
+    class="scrollspy-example bg-body-tertiary p-3 rounded-2" tabindex="0">
+    <div class="container-1" id="c-1">
+      <p class="col-12 text-center " style=" padding: 90px;color: #ffffff;font-weight: bolder;font-size: 100px; text-shadow: 2px 2px #020202;">
+        Bistro Café
+      </p>
+      <p class="col-12 text-center " style=" color: #ffffff;font-size: 30px; text-shadow: 2px 2px #020202;">
+        
+"Awaken Your Senses at Bistro Café: Where Coffee Dreams Come True"
+      </p>
+
+    </div>
+    <div class="container-2 ps-4 pe-4" id="c-2">
+      <section class="about-us  text-center ">
+        <h2 class="display-1 p-5" style="font-family: poppins medium; ">About Us</h2>
+        <p style="font-family: poppins medium;">Welcome to Bistro Café, where the aroma of freshly brewed coffee fills the air and the joy of sharing moments is savored in every cup. Our journey began with a passion for crafting exceptional coffee experiences that bring people together.</p>
+        <p>At Bistro Café, we take pride in our commitment to quality, from sourcing the finest coffee beans to creating exquisite blends that cater to diverse tastes. Our cozy ambiance, friendly staff, and handcrafted beverages ensure a memorable visit each time you step in.</p>
+        <p>Whether you're seeking a peaceful corner to read or a vibrant hub for social gatherings, Bistro Café welcomes you to indulge in the art of coffee and the delight of community. Join us and let's share a cup of happiness together!</p>
+      </section>
+    </div>
+    <div class="container-3 row p-0 m-0" id="c-3">
+      <p class="col-12 text-center p-0 m-0" style=" margin-left: 20px;color: #ffffff;font-weight: bolder;font-size: 100px; text-shadow: 2px 2px #020202;">Signature Brews</p>
+      <main class="page-content ">
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Velvet Sunrise</h2>
+            <p class="copy"> A smooth and rich blend to kickstart your day</p>
+            <button class="btn">SHOW 'EM</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Golden Elixir</h2>
+            <p class="copy">Luxurious warmth in every sip.</p>
+            <button class="btn">LET's SEE</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Harmony Blends</h2>
+            <p class="copy"> Captivating flavors for a magical start</p>
+            <button class="btn">CLICKKK</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <h2 class="title">Mystic Mornings</h2>
+            <p class="copy">Perfectly balanced taste in every cup</p>
+            <button class="btn">LETS CHECK</button>
+          </div>
+        </div>
+        
+      </main>
+    </div>
+    <div class="container-4 d-flex row p-0 m-0 position-relative">
+      <section class="position-absolute z-3 text-light" style="top:40% ">
+        <h2 style=" color: #ffffff;font-size: 40px; text-shadow: 2px 2px #0051ff;">Thank You for Being a Part of Our Café</h2>
+        <p style=" color: #ffffff; text-shadow: 2px 2px #1800f3;">Your support fills our cups with gratitude! We're thrilled to have you as part of our coffee-loving community. <br>
+           We can't wait to serve you again and create more memorable moments together.</p>
+      </section>
+      <div class="img-container col-4 p-0">
+        
+        <img src="/images/coff.jpg" class="img-fluid">
+      </div>
+      <div class="img-container col-4 p-0">
+        <img src="/images/cof2.jpg" alt="coffee" class="img-fluid" srcset="">
+      </div>
+      <div class="img-container col-4 p-0 ">
+        <img src="/images/cof3.jpg" alt="coffee" class="img-fluid" srcset="">
+
+      </div>
+
+    </div>
+  </div>
+  <script>
+    // JavaScript
+    window.addEventListener('scroll', function () {
+      const navbar = document.querySelector('.navbar');
+      const scrolled = window.pageYOffset > 0;
+      navbar.classList.toggle('navbar-scrolled', scrolled);
+    });
+  </script>
+  <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
