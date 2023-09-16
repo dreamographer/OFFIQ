@@ -21,6 +21,9 @@ const adminController = {
       return res.status(500).send('Error fetching user data');
     }
   },
+
+
+  //admin dashboard
   adminDashboard: async (req, res) => {
     try {
       const users = await User.find({}, { _id: 1, fullname: 1, email: 1 }); // Fetch user data
@@ -30,6 +33,9 @@ const adminController = {
       res.status(500).send('Error fetching user data');
     }
   },
+
+
+  //logout for the admin
   logout: (req, res) => {
     if (req.session.admin) {
       console.log(`${req.session.admin.fullname} logged out`);
@@ -37,6 +43,8 @@ const adminController = {
     req.session.destroy(); // Destroy session on logout
     res.redirect('/');
   },
+
+  //login page with error message
   loginErr:(req,res)=>{
     if (req.session.admin) {
         res.redirect('/admin'); 

@@ -43,6 +43,8 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
+
+
   //user signUp
   userSignup: async (req, res) => {
     const data = req.body;//data given by the user
@@ -58,6 +60,8 @@ const userController = {
       return res.status(500).send('Error creating USER');
     }
   },
+
+
   //error in login
   loginErr: (req, res) => {
     if (req.session.user) {
@@ -70,9 +74,13 @@ const userController = {
       res.render('login', { errorMessage: '' });
     }
   },
+
+  //rendering the home page
   home:(req, res) => {
-    res.render('home');//rendering the home page
+    res.render('home');
   },
+
+  //logout the user
   logout: (req, res) => {
     if (req.session.admin) {
       console.log(`${req.session.admin.fullname} logged out`);
@@ -80,5 +88,7 @@ const userController = {
     req.session.destroy(); // Destroy session on logout
     res.redirect('/');
   }
+
+
 }
 module.exports = userController;

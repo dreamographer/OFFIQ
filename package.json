@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "concurrently \"npx tailwindcss -i ./public/css/input.css -o ./public/dist/output.css --watch\" \"nodemon app.js\""
   },
   "keywords": [],
   "author": "",
@@ -21,6 +21,7 @@
     "nocache": "^4.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "tailwindcss": "^3.3.3"
   }
 }
