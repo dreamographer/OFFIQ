@@ -15,8 +15,6 @@ router.get('/auth/google/callback',
     });
 
 router.get('/success', (req, res) => {
-
-    let count=1
     res.send("hey there")
 })
 

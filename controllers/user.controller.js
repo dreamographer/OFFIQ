@@ -1,5 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const nodemailer = require('nodemailer')
 const User = require('../models/user.models'); //user schema
 const crypto = require('crypto');  //encription module
 router.use(express.json());
@@ -7,6 +9,40 @@ router.use(express.json());
 const algorithm = 'aes-256-cbc';
 const key = process.env.KEY;
 const iv = process.env.IV;
+
+
+//generate OTP
+function generateOTP() {
+  // Generate a 6 digit number as OTP
+  return crypto.randomBytes(3).toString('hex');
+}
+
+//sending OTP through mail
+const sendOTP = async (name,email, otp) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      port: 587,
+      secure: false,
+      requireTLS: true,
+      host: 'smtp.gmail.com',
+      auth: {
+        user: 'eatables.bitdrag@gmail.com',
+        pass: process.env.SMTP_KEY
+      }
+    });
+    let info = await transporter.sendMail({
+      from: 'eatables.bitdrag@gmail.com',
+      to: `${email}`,
+      subject: 'OTP for verification',
+      html: `<h1>Hy ${name}</h1><br><p>Your OTP for the verification is <h2>${otp}</h2></p>`,
+    });
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //encription function
 function encrypt(text, key) {
   const cipher = crypto.createCipheriv(algorithm, key, iv);
@@ -50,11 +86,18 @@ const userController = {
     const data = req.body;//data given by the user
     data.password = encrypt(data.password, key);//encripting the password
     try {
-      await User.create(data) //inserting the data
+
+      const user = await User.create(data) //inserting the data
+
+      let otp=generateOTP();
+      sendOTP(user.fullname, user.email,otp)
+
+
+
       console.log('user created');
-        req.session.user = data; //setting value to the session
-        console.log(data.fullname + ' logged in');
-        return res.redirect('/');
+      req.session.user = data; //setting value to the session
+      console.log(data.fullname + ' logged in');
+      return res.redirect('/');
     } catch (err) {
       console.log(err);
       return res.status(500).send('Error creating USER');
@@ -76,7 +119,7 @@ const userController = {
   },
 
   //rendering the home page
-  home:(req, res) => {
+  home: (req, res) => {
     res.render('home');
   },
 
@@ -84,7 +127,7 @@ const userController = {
   logout: (req, res) => {
     if (req.session.admin) {
       console.log(`${req.session.admin.fullname} logged out`);
-    } 
+    }
     req.session.destroy(); // Destroy session on logout
     res.redirect('/');
   }
