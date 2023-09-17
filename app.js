@@ -1,4 +1,6 @@
 require('dotenv').config();
+require('./auth')
+const passport=require('passport')
 const express = require('express');
 const connectDB=require('./dbConnect')  
 const session = require('express-session');
@@ -11,8 +13,9 @@ app.use(express.urlencoded({ extended: true }));
 //setting the static pages path
 app.use(express.static(path.join(__dirname,'/public')));
 //routes  
-const userRoutes=require('./Routes/userRoutes') 
-const adminRoutes=require('./Routes/adminRoutes')
+const userRouter=require('./Routes/userRoutes') 
+const adminRouter=require('./Routes/adminRoutes')
+const authRouter = require('./Routes/authRoutes');
 //keys 
 // Initialize session
 const skey=process.env.session; 
@@ -34,9 +37,16 @@ connectDB().then(()=>{
 
 //Disable caching 
 app.use(nocache()); 
+
+//initializing passport
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 //setting up the  Routes
-app.use('/',userRoutes)  
-app.use('/admin',adminRoutes)
+app.use('/',userRouter)  
+app.use('/',authRouter)  
+app.use('/admin',adminRouter)
 
 // 404 error page
 app.use((req, res) => {
