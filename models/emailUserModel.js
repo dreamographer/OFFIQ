@@ -52,11 +52,10 @@ const userSchema = new mongoose.Schema({
     },
     verified: {
         type: Boolean,
-        default: false
     },
     googleAuth: {
         type: Boolean,
-        default: false
+        default: true
     },
     email: {
         type: String,
@@ -67,12 +66,7 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: Number,
-        required: true,
         match: /^\d{10}$/,
-    },
-    password: {
-        type: String,
-        required: true
     },
     profileUrl: {
         type: String,
@@ -81,4 +75,4 @@ const userSchema = new mongoose.Schema({
     cart:[cartItemSchema],
     wishlist:[wishlistSchema],
 },{ timestamps: true });
-module.exports = mongoose.model('User', userSchema, 'user') 
+module.exports = mongoose.model('emailUser', userSchema, 'user') 

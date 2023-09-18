@@ -1,22 +1,48 @@
 require('dotenv').config();
-const passport=require('passport')
+const passport = require('passport')
+const user = require('./models/emailUserModel')
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    // User.findOrCreate({ googleId: profile.id }, function (err, user) {
-    //   return cb(err, user);
-    // });
-    cb(null,profile);
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/google/callback"
+},
+  async function (accessToken, refreshToken, profile, done) {
+    // Retrieve user data from the profile object
+    const email = profile._json.email
+    const User = await user.findOne({ email }); //data from the DB
+    if (User) {
+      return done(null, User);
+    } else { 
+      const fullName = profile._json.name;
+      const profileUrl = profile._json.picture;
+      try {
+        const newUser = new user({
+          email: email,
+          fullname: fullName,
+          profileUrl: profileUrl,
+          verified: true
+        });
+        newUser.save()
+          .then(() => {
+            console.log("User data stored in MongoDB");
+            return done(null, newUser);
+          })
+          .catch((error) => {
+            console.error("Error storing user data:", error);
+            return done(error, null);
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
   }
-)); 
-passport.serializeUser((user,done)=>{
-    done(null,user)
+));
+passport.serializeUser((user, done) => {
+  done(null, user)
 });
 
-passport.deserializeUser((user,done)=>{
-    done(null,user)
+passport.deserializeUser((user, done) => {
+  done(null, user)
 });

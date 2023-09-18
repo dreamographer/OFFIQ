@@ -10,12 +10,11 @@ router.get('/auth/google/callback',
         failureRedirect: '/login'
     }),
     function (req, res) {
+        const user=req.user
+        req.session.user = user
+        console.log(user.fullname + ' logged in');
         // Successful authentication, redirect home.
-        res.redirect('/success');
+        res.redirect('/');
     });
 
-router.get('/success', (req, res) => {
-    res.send("hey there")
-})
-
-module.exports = router;
+module.exports = router;    
