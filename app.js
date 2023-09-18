@@ -35,7 +35,7 @@ connectDB().then(()=>{
     console.log(`Error in connection :${err}`);
 })
 
-//Disable caching 
+//Disable caching  
 app.use(nocache()); 
 
 //initializing passport

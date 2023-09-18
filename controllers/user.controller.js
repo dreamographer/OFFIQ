@@ -13,9 +13,13 @@ const iv = process.env.IV;
 
 //generate OTP
 function generateOTP() {
+  const expirationTime = new Date();
+  expirationTime.setMinutes(expirationTime.getMinutes() + 10);
   // Generate a 6 digit number as OTP
-  return crypto.randomBytes(3).toString('hex');
+  const otp = crypto.randomBytes(3).toString('hex')
+  return { otp, expirationTime }
 }
+
 
 //sending OTP through mail
 const sendOTP = async (name,email, otp) => {
@@ -42,6 +46,20 @@ const sendOTP = async (name,email, otp) => {
     console.log(error);
   }
 }
+
+//verification of otp
+async function verifyOTP(email, otp) {
+  const user = await User.findOne({ email: email });
+  if (user && otp === user.otp && Date.now() <= user.otpExpires) {
+      user.verified = true;
+      user.otp = undefined;
+      user.otpExpires = undefined;
+      await user.save();
+      return {status:true,user};
+  }
+  return false;
+}
+
 
 //encription function
 function encrypt(text, key) {
@@ -79,32 +97,45 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
-
-
+  //render signup page
+  signUp: (req, res) => {
+    res.render('signup');
+  },
   //user signUp
   userSignup: async (req, res) => {
     const data = req.body;//data given by the user
     data.password = encrypt(data.password, key);//encripting the password
     try {
-
+      let {otp,expirationTime}=generateOTP();
+      data.otp=otp
+      data.otpExpires=expirationTime
       const user = await User.create(data) //inserting the data
 
-      let otp=generateOTP();
       sendOTP(user.fullname, user.email,otp)
+          // have to bulid the logic of work flow
 
-
-
-      console.log('user created');
-      req.session.user = data; //setting value to the session
-      console.log(data.fullname + ' logged in');
-      return res.redirect('/');
+          return res.render('otpVerify',{email:user.email})
+     
     } catch (err) {
       console.log(err);
       return res.status(500).send('Error creating USER');
     }
   },
 
-
+  //email verification
+  emailVerify:async (req, res) => {
+    const {otp,email}=req.body
+    const {status,user}=await verifyOTP(email, otp)
+    if (status) {//setting value to the session
+      req.session.user = user; 
+      console.log(user.fullname + ' logged in');
+      return res.redirect('/');
+    }
+    else{
+      console.log("something went wrong while verification");
+    }
+    
+  },
   //error in login
   loginErr: (req, res) => {
     if (req.session.user) {
@@ -112,7 +143,7 @@ const userController = {
     } else if (req.session.err) {
       req.session.err = false;
       // Pass an error message to the login view
-      res.render('login', { errorMessage: 'Incorrect fullname or password' });
+      res.render('login', { errorMessage: 'Incorrect email or password' });
     } else {
       res.render('login', { errorMessage: '' });
     }
