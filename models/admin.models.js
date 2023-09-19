@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-module.exports = mongoose.model('Admin', {
+const adminSchema = new mongoose.Schema( {
     fullname: {
         type: String,
         required: true
@@ -15,7 +15,15 @@ module.exports = mongoose.model('Admin', {
         type: String,
         required: true
     },
+    otp: {
+        type: String,
+    },
+    otpExpires: {
+        type: Date,
+    },
     profileUrl: {
         type: String,
     },
-}, 'admin') 
+}, { timestamps: true });
+
+module.exports = mongoose.model('Admin',adminSchema,'admin') 

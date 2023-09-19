@@ -39,27 +39,25 @@
                 </button>
             </div>
         </div>
-
-
         <div class="flex-1 flex">
      
-            <div class="p-2 bg-white w-60 flex-col hidden md:flex" id="sideNav">
+            <div class="p-2 bg-white w-60 flex flex-col hidden md:flex" id="sideNav">
                 <nav>
-                    <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
-                        href="#">
+                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                        href="../admin">
                         <i class="fas fa-home mr-2"></i>Dashboard
                     </a>
                     
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/userMangement">
+                    <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
+                        href="#">
                         <i class="fas fa-users mr-2"></i>User Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
+                        href="../admin/categoryManagement">
                         <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
+                        href="../admin/productManagement">
                         <i class="fas fa-store mr-2"></i>Product Management
                     </a>
                     
@@ -75,14 +73,62 @@
 
       
                 <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="/logout">
+                    href="#">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </a>
 
             </div>
+            <div class="flex flex-col">
+                <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
+                  <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="w-screen sm:w-full h-auto overflow-auto">
+                      <table class="min-w-full  table-fixed">
+                        <thead class="bg-gray-200 border-b">
+                          <tr>
+                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                              User ID
+                            </th>
+                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                              Full name
+                            </th>
+                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                              Email
+                            </th>
+                            <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                              Contact
+                            </th>
+                              <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                Action
+                              </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              Mark
+                            </td>
+                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              Otto
+                            </td>
+                            <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                              @mdo
+                            </td>
+                            <td class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
+                                <i class="fas fa-light fa-ban fa-xl " style="color: #ff0000;"></i>
+                              
+                          </tr>
+                         
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 
         </div>
+        
     </div>
     <script>
         const menuBtn = document.getElementById('menuBtn');

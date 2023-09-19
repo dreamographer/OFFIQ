@@ -20,7 +20,6 @@ function encrypt(text, key) {
   } catch (error) {
     console.log(error);
   }
-  
 }
 //decrypting function
 function decrypt(encryptedText, key) {
@@ -134,7 +133,6 @@ const userController = {
         sendOTP(user.fullname, user.email, otp)
         setInterval(deleteUnverifiedDocs, 600000);
         // have to bulid the logic of work flow
-
         return res.render('otpVerify', { email: user.email })
 
       } catch (err) {

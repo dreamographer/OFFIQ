@@ -1,18 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const adminController=require('../controllers/admin.controller')
-const adminAuth=require('../middlewares/adminAuth')
+const adminController = require('../controllers/admin.controller')
+const adminAuth = require('../middlewares/adminAuth')
+const adminSession=require('../middlewares/adminSession')
+try {
+    //admin login
+    router.post('/login', adminController.adminLogin);
 
-//admin login
-router.post('/login', adminController.adminLogin);
+    //login  fot the admin
+    router.get('/', adminAuth, adminController.adminDashboard);
 
-//dashboard of the admin
-router.get('/', adminAuth,adminController.adminDashboard );
+    //dashboard of the admin
+    router.get('/dashboard',adminSession, adminController.adminDashboard);
 
-//logout
-router.get('/logout', adminController.logout);
+    //usermangement
+    router.get('/userMangement',adminSession,adminController.userManagement);
 
-//error in login
-router.get('/login',adminController.loginErr);
+    //catagory managemetn 
+    router.get('/categoryManagement',adminSession,adminController.categoryManagement)
 
-module.exports=router;
+    // product management
+    router.get('/productManagement',adminSession,adminController.productManagement)
+
+
+    //logout
+    router.get('/logout', adminController.logout);
+
+    module.exports = router;
+} catch (error) {
+    console.log(error);
+}
