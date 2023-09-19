@@ -51,8 +51,31 @@ const adminController = {
   },
 
   //user management
-  userManagement:(req,res)=>{
-    res.render('userManagement')
+  userManagement:async (req, res) => {
+    try {
+      const users = await User.find({}, { _id: 1, fullname: 1, email: 1,phone:1,blocked:1 }); // Fetch fdata
+        // Render the admin EJS template with users data
+         res.render('userManagement',{userData:users})
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Error fetching user data');
+    }
+  },
+
+  updateBlock: async (req, res) => {
+    const userId = req.params.userId;
+    let { blocked } = req.body;
+    blocked=JSON.parse(blocked);
+  try {
+   await User.updateOne({ _id: userId }, { blocked: !blocked });//updating the data
+    res.json({ success: true,isBlocked:!blocked });
+    
+  } catch (error) {
+    res.json({ success: false }); 
+    
+  }
+   
+    
   },
 
   //categoryManagement

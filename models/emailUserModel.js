@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     verified: {
         type: Boolean,
     },
+    blocked: {
+        type: Boolean,
+        default: false
+    },
     googleAuth: {
         type: Boolean,
         default: true
