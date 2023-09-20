@@ -12,8 +12,13 @@ passport.use(new GoogleStrategy({
     const email = profile._json.email
     const User = await user.findOne({ email }); //data from the DB
     if (User) {
-      return done(null, User);
-    } else { 
+      if (User.blocked) {
+        const user = "blocked"
+        return done(null, user);
+      } else {
+        return done(null, User);
+      }
+    } else {
       const fullName = profile._json.name;
       const profileUrl = profile._json.picture;
       try {

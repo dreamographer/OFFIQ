@@ -97,11 +97,14 @@ const userController = {
     const { email, password } = req.body;//data given by the user
     try {
       const user = await User.findOne({ email }); //data from the DB
-      if (!(user.googleAuth) && user && decrypt(user.password, key) === password) {
+      if (!(user.googleAuth) && user && decrypt(user.password, key) === password && !(user.blocked)) {
         req.session.user = user;
         console.log(user.fullname + ' logged in');
         return res.redirect('/');
-      } else {
+      } else if (user.blocked) {
+        req.session.block = true;
+        return res.redirect('/login');
+      }else{
         req.session.err = true;
         return res.redirect('/login');
       }
@@ -160,7 +163,10 @@ const userController = {
   loginErr: (req, res) => {
     if (req.session.user) {
       res.redirect('/');
-    } else if (req.session.err) {
+    }else if (req.session.block) {
+      res.render('login', { errorMessage: 'User account has been blocked by the admin' });
+    } 
+    else if (req.session.err) {
       req.session.err = false;
       // Pass an error message to the login view
       res.render('login', { errorMessage: 'Incorrect email or password' });

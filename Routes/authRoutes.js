@@ -11,10 +11,15 @@ router.get('/auth/google/callback',
     }),
     function (req, res) {
         const user=req.user
+        if (user==="blocked") {
+            req.session.block = true;
+            res.redirect('/');
+        }else{
         req.session.user = user
         console.log(user.fullname + ' logged in');
         // Successful authentication, redirect home.
         res.redirect('/');
+        }
     });
 
 module.exports = router;    
