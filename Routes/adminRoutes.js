@@ -22,6 +22,7 @@ try {
     // product management
     router.get('/productManagement',adminSession,adminController.productManagement)
 
+
     //update blocked
     router.put('/update-block-status/:userId',adminSession,adminController.updateBlock)
 
