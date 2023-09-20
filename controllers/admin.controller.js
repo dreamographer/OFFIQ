@@ -81,8 +81,8 @@ const adminController = {
   //categoryManagement
   categoryManagement:  async (req, res) => {
     try {
-      const users = await User.find({}, { _id: 1, fullname: 1, email: 1, phone: 1, blocked: 1 }); // Fetch fdata
-      res.render('categoryManagement',{ userData: users })
+      const Catagory = await catagory.find({}); // Fetch fdata
+      res.render('categoryManagement',{ Catagory: Catagory })
     }
     catch{
       
