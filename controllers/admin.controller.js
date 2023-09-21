@@ -70,7 +70,6 @@ const adminController = {
     try {
       await User.updateOne({ _id: userId }, { blocked: !blocked });//updating the data
       res.json({ success: true, isBlocked: !blocked });
-
     } catch (error) {
       res.json({ success: false });
 

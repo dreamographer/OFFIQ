@@ -2,9 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer')
-const User = require('../models/user.models'); //user schema
 const crypto = require('crypto');  //encription module
 router.use(express.json());
+
+//modals
+const User = require('../models/user.models'); //user schema
+const Products = require('../models/productModel'); //products schema
+const Category = require('../models/categoryModel') //category schema
+
+
 //keys
 const algorithm = 'aes-256-cbc';
 const key = process.env.KEY;
@@ -14,9 +20,9 @@ const iv = process.env.IV;
 function encrypt(text, key) {
   try {
     const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return encrypted;
+    let encrypted = cipher.update(text, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
   } catch (error) {
     console.log(error);
   }
@@ -69,7 +75,7 @@ const sendOTP = async (name, email, otp) => {
 //verification of otp
 async function verifyOTP(email, otp) {
   const user = await User.findOne({ email: email });
-  if (user && otp === decrypt(user.otp,key) && Date.now() <= user.otpExpires) {
+  if (user && otp === decrypt(user.otp, key) && Date.now() <= user.otpExpires) {
     user.verified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
@@ -104,7 +110,7 @@ const userController = {
       } else if (user.blocked) {
         req.session.block = true;
         return res.redirect('/login');
-      }else{
+      } else {
         req.session.err = true;
         return res.redirect('/login');
       }
@@ -114,70 +120,113 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
+
+
   //render signup page
   signUp: (req, res) => {
     res.render('signup');
   },
+
+
   //user signUp
   userSignup: async (req, res) => {
-    const data = req.body;//data given by the user
-    const email = data.email
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.json("Email already exist") //update this section
-    } else {
-      data.password = encrypt(data.password, key);//encripting the password
-      try {
-        let { otp, expirationTime } = generateOTP();
-        data.otp = encrypt(otp,key)
-        data.otpExpires = expirationTime
-        const user = await User.create(data) //inserting the data
+    try {
+      const data = req.body;//data given by the user
+      const email = data.email
+      const user = await User.findOne({ email });
+      if (user) {
+        return res.json("Email already exist") //update this section
+      } else {
+        data.password = encrypt(data.password, key);//encripting the password
+        try {
+          let { otp, expirationTime } = generateOTP();
+          data.otp = encrypt(otp, key)
+          data.otpExpires = expirationTime
+          const user = await User.create(data) //inserting the data
 
-        sendOTP(user.fullname, user.email, otp)
-        setInterval(deleteUnverifiedDocs, 600000);
-        // have to bulid the logic of work flow
-        return res.render('otpVerify', { email: user.email })
+          sendOTP(user.fullname, user.email, otp)
+          setInterval(deleteUnverifiedDocs, 600000);
+          // have to bulid the logic of work flow
+          return res.render('otpVerify', { email: user.email })
 
-      } catch (err) {
-        console.log(err);
-        return res.status(500).send('Error creating USER');
+        } catch (err) {
+          console.log(err);
+          return res.status(500).send('Error creating USER');
+        }
       }
+
+    } catch (error) {
+      console.log(error);
     }
+
   },
 
   //email verification
   emailVerify: async (req, res) => {
-    const { otp, email } = req.body
-    const { status, user } = await verifyOTP(email, otp)
-    if (status) {//setting value to the session
-      req.session.user = user;
-      console.log(user.fullname + ' logged in');
-      return res.redirect('/');
+    try {
+      const { otp, email } = req.body
+      const { status, user } = await verifyOTP(email, otp)
+      if (status) { //setting value to the session
+        req.session.user = user;
+        console.log(user.fullname + ' logged in');
+        return res.redirect('/');
+      }
+      else {
+        console.log("something went wrong while verification");
+      }
+    } catch (error) {
+      console.log(error);
     }
-    else {
-      console.log("something went wrong while verification");
-    }
-
   },
+
   //error in login
   loginErr: (req, res) => {
-    if (req.session.user) {
-      res.redirect('/');
-    }else if (req.session.block) {
-      res.render('login', { errorMessage: 'User account has been blocked by the admin' });
-    } 
-    else if (req.session.err) {
-      req.session.err = false;
-      // Pass an error message to the login view
-      res.render('login', { errorMessage: 'Incorrect email or password' });
-    } else {
-      res.render('login', { errorMessage: '' });
+    try {
+      if (req.session.user) {
+        res.redirect('/');
+      } else if (req.session.block) {
+        res.render('login', { errorMessage: 'User account has been blocked by the admin' });
+      }
+      else if (req.session.err) {
+        req.session.err = false;
+        // Pass an error message to the login view
+        res.render('login', { errorMessage: 'Incorrect email or password' });
+      } else {
+        res.render('login', { errorMessage: '' });
+      }
+
+    } catch (error) {
+      console.log(error);
     }
   },
 
   //rendering the home page
   home: (req, res) => {
     res.render('home');
+  },
+
+  //render products view page
+  products: async (req, res) => {
+    try {
+      const products = await Products.find({});
+      let category = await Category.find({});
+      res.render('products', { products: products, category: category });
+    } catch (error) {
+      console.log(error);
+    }
+
+  },
+
+  productPage: async (req, res) => {
+    try {
+      const ID = req.params.id;
+      console.log({'_id':ID});
+      const product = await Products.findOne({'id':ID});
+      console.log(product);
+    } catch (error) {
+      console.log(error);
+    }
+   
   },
 
   //logout the user
