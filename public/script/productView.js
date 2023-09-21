@@ -42,18 +42,20 @@ document.addEventListener("click", function (e) {
 	// Dynamic Hero
 	if (e.target.id.includes("thumb")) {
 		const index = e.target.id.substring(e.target.id.length - 1);
+		const limit =e.target.dataset.total;;
+		console.log(limit);
 
 		lightBox(thumbsLight, heroLightbox, index);
 
 		if (!lightbox) {
 			thumbnails.forEach((e, i) => {
-				if (i >= 4) {
+				if (i >= limit) {
 					e.children[0].classList.remove("active");
 					e.classList.remove("ring-active");
 				}
 			});
 
-			thumbnailsArray = Array.from(thumbnails).slice(4);
+			 let thumbnailsArray = Array.from(thumbnails).slice(limit);
 			found = thumbnailsArray.find((e) => e.id == index);
 
 			found.classList.add("ring-active");
@@ -84,32 +86,4 @@ document.addEventListener("click", function (e) {
 	}
 
 
-	// Next and Previous 2
-	if (e.target.id == "previous-mobile" || e.target.id == "next-mobile") {
-		let index = parseInt(
-			hero.src.substring(hero.src.length - 5, hero.src.length - 4)
-		);
-		const firstIndex = index;
-
-		if (e.target.id == "next-mobile") {
-			index += 1;
-		} else {
-			index -= 1;
-		}
-
-		if (index > 4) {
-			index = 1;
-		} else if (index < 1) {
-			index = 4;
-		}
-
-		hero.src = hero.src
-			.slice(0, hero.src.length - 5)
-			.concat(`${index}.jpg`);
-
-		hero.classList.add("animate-change");
-		setTimeout(() => {
-			hero.classList.remove("animate-change");
-		}, 400);
-	}
 });

@@ -206,13 +206,13 @@ const userController = {
   },
 
   //render products view page
-  products: async (req, res) => {
+  products: async (req, res) => { 
     try {
       const products = await Products.find({});
       let category = await Category.find({});
       res.render('products', { products: products, category: category });
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
 
   },
@@ -220,12 +220,11 @@ const userController = {
   productPage: async (req, res) => {
     try {
       const ID = req.params.id;
-      console.log({'_id':ID});
-      const product = await Products.findOne({'id':ID});
-      console.log(product);
+      const product = await Products.findOne({'_id': ID});
+      res.render('productView', { product: product});
     } catch (error) {
       console.log(error);
-    }
+    }  
    
   },
 
