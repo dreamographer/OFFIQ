@@ -11,10 +11,19 @@ router.get('/signup', sessionMangement,userController.signUp);
 router.post('/signup',sessionMangement, userController.userSignup);
 //verify email
 router.post('/verify',sessionMangement,userController.emailVerify);
+//resend mail
+router.get('/resend',sessionMangement,userController.resend);
+//resend mail
+router.get('/forgot',sessionMangement,userController.forgotPassword);
+
+
+
 //user login error
 router.get('/login',sessionMangement,userController.loginErr) 
 //render home page
 router.get('/',userAuth,userController.home);
+
+
 
 //all Product page
 router.get('/products',userController.products)

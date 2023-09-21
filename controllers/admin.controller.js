@@ -4,9 +4,12 @@ const algorithm = 'aes-256-cbc';
 const key = process.env.KEY;
 const iv = process.env.IV;
 const crypto = require('crypto');  //encription module
+
+//modals
 const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
-const catagory = require('../models/categoryModel')
+const catagory = require('../models/categoryModel') //category schema
+const Products = require('../models/productModel'); //products schema
 const { render } = require('ejs');
 
 
@@ -112,8 +115,8 @@ const adminController = {
   // productManagement
   productManagement: async (req, res) => {
     try {
-      const users = await User.find({}, { _id: 1, fullname: 1, email: 1, phone: 1, blocked: 1 }); // Fetch fdata
-      res.render('productManagement',{ userData: users })
+      const products = await Products.find({}); // Fetch fdata
+      res.render('productManagement',{ products: products })
     }
     catch{
       

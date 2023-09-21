@@ -121,6 +121,9 @@ const userController = {
     }
   },
 
+  forgotPassword:async(req,res)=>{
+    
+  },
 
   //render signup page
   signUp: (req, res) => {
@@ -179,6 +182,16 @@ const userController = {
     }
   },
 
+resend:async (req,res)=>{
+  const tenMinutesAgo = new Date(Date.now() - 0); // 600000 milliseconds is 10 minutes
+  try {
+    const deleted = await User.deleteMany({ verified: false, createdAt: { $lt: tenMinutesAgo } })
+    console.log(`Deleted ${deleted.deletedCount} documents.`);
+    return res.redirect('/signup')
+  } catch (error) {
+    console.error(err);
+  }
+},
   //error in login
   loginErr: (req, res) => {
     try {
@@ -214,7 +227,6 @@ const userController = {
     } catch (error) {
       console.log(error); 
     }
-
   },
 
   productPage: async (req, res) => {

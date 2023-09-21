@@ -17,7 +17,7 @@
 
 <body>
     <!-- Main div -->
-    <div class="flex flex-col h-screen overflow-y-hidden bg-gray-100">
+    <div class="flex flex-col h-screen  bg-gray-100">
         <!-- header -->
         <div class="bg-white h-20 text-white shadow w-full flex px-6 items-center justify-between">
             <div class="flex items-center">
@@ -76,18 +76,18 @@
                         href="#">
                         <i class="fas fa-file-alt mr-2"></i>Report
                     </a>
+                    <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
+                        href="#">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
                 </nav>
 
 
-                <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="#">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </a>
 
             </div>
 
             <!-- content div -->
-            <div class="flex justify-center w-full">
+            <div class="flex justify-center w-[80%] overflow-hidden">
                 <div class="flex flex-col pt-10 ">
                     <!-- search -->
                     <div class="mx-auto max-w-md">
@@ -106,14 +106,14 @@
 
                     </div>
 
-                    <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
-                        <!-- initialization of aphine values -->
+                    <div class="overflow-x-hidden sm:mx-0.5 lg:mx-0.5">
+                        <!-- initialization of alphine values -->
                         <div x-data="{ editModal : false ,addModel:false,userid:'',block:'',status:''}"
                             class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                            <div class="w-screen sm:w-full h-auto overflow-auto">
-                                <div>
+                            <div class="h-auto overflow-auto flex justify-center">
+                                <div class="w-[70%] overflow-auto">
                                     <!-- category Table -->
-                                    <table class="min-w-full  table-fixed ">
+                                    <table class="min-w-full  table-fixed  ">
                                         <thead class="bg-gray-200 border-b">
                                             <tr>
                                                 <th scope="col"
@@ -128,15 +128,15 @@
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Description
                                                 </th>
-                                                <th scope="col"
+                                                <!-- <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Category
+                                                </th> -->
+                                                <th scope="col"
+                                                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                                                    Price
                                                 </th>
                                                 <th scope="col"
-                                                class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                Price
-                                            </th>
-                                            <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Rating
                                                 </th>
@@ -146,29 +146,37 @@
                                                 </th>
                                                 <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                   
-                                                </th>
-                                                <th scope="col"
-                                                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Action
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <% userData.forEach(user=> { %>
+                                            <% products.forEach(product=> { %>
                                                 <tr
                                                     class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
                                                     <td
                                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        <%= user._id %>
+                                                        <%= product._id %>
                                                     </td>
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                        <%= user.fullname %>
+                                                        <%= product.name %>
                                                     </td>
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                        <%= user.email %>
+                                                        <%= product.description %>
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        <%= product.price %>
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        <%= product.rating %>
+                                                    </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        <%= product.quantity %>
                                                     </td>
                                                     <td
                                                         class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
@@ -444,7 +452,7 @@
                                 <button @click="addModel = !addModel"
                                     class="middle none w-52 center mr-4 rounded-lg bg-[#076AE1] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                     data-ripple-light="true">
-                                    Add new Category
+                                    Add new Product
                                 </button>
                             </div>
                         </div>
@@ -457,40 +465,7 @@
         </div>
     </div>
 
-    <script>
-        // Add an event listener to the button(s)
-        document.querySelectorAll('.toggle-block-button').forEach(function (button) {
-            button.addEventListener('click', function () {
-                const userId = button.getAttribute('data-user-id');
-                const isBlocked = button.getAttribute('data-user-block')
-                console.log(userId);
-                // Toggle the current status
 
-                // Send an AJAX request to update the "blocked" status
-                fetch(`../admin/update-block-status/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ blocked: isBlocked }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // if (data.isBlocked) {
-                            //     button.innerHTML = '<i class="fas fa-regular fa-lock fa-xl"></i>';
-                            // } else {
-                            //     button.innerHTML = '<i class="fa-solid fa-unlock fa-xl"></i>';
-                            // }
-                            location.reload();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            });
-        });
-    </script>
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const sideNav = document.getElementById('sideNav');

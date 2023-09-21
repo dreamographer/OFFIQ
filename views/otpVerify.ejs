@@ -46,7 +46,7 @@
                             px-4 py-3 mt-3">Verify</button>
                     </form>
                     <div class="text-right mt-2">
-                        <a href="/signup"
+                        <a href="/resend"
                             class="text-sm font-semibold text-gray-700 hover:text-blue-700 focus:text-blue-700">Resend OTP</a>
                     </div>
                    
@@ -62,7 +62,11 @@
    
 
     </div> 
-   
+    <script>
+        if ( window.history.replaceState ) {
+      window.history.replaceState( null, null, window.location.href );
+    }
+      </script>
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 </body>
 
