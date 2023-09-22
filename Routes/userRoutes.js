@@ -13,17 +13,16 @@ router.post('/signup',sessionMangement, userController.userSignup);
 router.post('/verify',sessionMangement,userController.emailVerify);
 //resend mail
 router.get('/resend',sessionMangement,userController.resend);
-//resend mail
-router.get('/forgot',sessionMangement,userController.forgotPassword);
-
-
-
+//forgot password form
+router.get('/forgot',sessionMangement,userController.forgotPage);
+// send mail 
+router.post('/forgotPassword',sessionMangement,userController.forgotPassword)
+// update the password
+router.post('/updatePassword',sessionMangement,userController.updatePassword);
 //user login error
 router.get('/login',sessionMangement,userController.loginErr) 
 //render home page
 router.get('/',userAuth,userController.home);
-
-
 
 //all Product page
 router.get('/products',userController.products)

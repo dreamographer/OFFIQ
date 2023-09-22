@@ -120,9 +120,46 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
+  forgotPage:(req,res)=>{
+   return res.render('forgotPassword')
+  },
 
   forgotPassword:async(req,res)=>{
+     try {
+          let { otp, expirationTime } = generateOTP();
+          let email=req.body.email
+
+          
+          const user = await User.findOne({email})//inserting the data
+     
+        if (user) {
+          let data={}
+          data.otp = encrypt(otp, key)
+          data.otpExpires = expirationTime
+          const update=await User.updateOne({email},{$set:{otp:data.otp,otpExpires:data.otpExpires}}) //updating the data
+        
+          const need="forgotPassword"
+      
+          sendOTP(user.fullname, email, otp)
+          return res.render('otpVerify', { email: email ,need:need})
+        }
+          
+        } catch (err) {
+          console.log(err);
+          return res.status(500).send('Error creating USER');
+        }
     
+  },
+  updatePassword:async(req,res)=>{
+    try {
+      const {email,password}=req.body
+      const hashPassword=encrypt(password, key)
+      const update=await User.updateOne({email:email},{$set:{password:hashPassword}}) //updateing the data
+      console.log("password updated");
+      return res.redirect('/')
+    } catch (error) {
+      console.log(error);
+    }
   },
 
   //render signup page
@@ -149,8 +186,9 @@ const userController = {
 
           sendOTP(user.fullname, user.email, otp)
           setInterval(deleteUnverifiedDocs, 600000);
-          // have to bulid the logic of work flow
-          return res.render('otpVerify', { email: user.email })
+          const need="userSignIN"
+    
+          return res.render('otpVerify', { email: user.email ,need:need})
 
         } catch (err) {
           console.log(err);
@@ -167,12 +205,17 @@ const userController = {
   //email verification
   emailVerify: async (req, res) => {
     try {
-      const { otp, email } = req.body
+      const { otp, email ,need} = req.body
       const { status, user } = await verifyOTP(email, otp)
       if (status) { //setting value to the session
-        req.session.user = user;
-        console.log(user.fullname + ' logged in');
-        return res.redirect('/');
+        if (need=="userSignIN") {
+          req.session.user = user;
+          console.log(user.fullname + ' logged in');
+          return res.redirect('/');
+        }
+        else{
+          return res.render('newPassword',{email});
+        }
       }
       else {
         console.log("something went wrong while verification");
@@ -215,7 +258,7 @@ resend:async (req,res)=>{
 
   //rendering the home page
   home: (req, res) => {
-    res.render('home');
+  return res.redirect('/products');
   },
 
   //render products view page
