@@ -923,6 +923,10 @@ video {
   height: 24rem;
 }
 
+.h-\[80\%\] {
+  height: 80%;
+}
+
 .h-auto {
   height: auto;
 }
@@ -1008,20 +1012,16 @@ video {
   width: 20rem;
 }
 
+.w-\[30\%\] {
+  width: 30%;
+}
+
 .w-\[30rem\] {
   width: 30rem;
 }
 
 .w-\[35\%\] {
   width: 35%;
-}
-
-.w-\[70\%\] {
-  width: 70%;
-}
-
-.w-\[80\%\] {
-  width: 80%;
 }
 
 .w-auto {
@@ -2054,6 +2054,10 @@ video {
 
   .sm\:w-80 {
     width: 20rem;
+  }
+
+  .sm\:w-\[80\%\] {
+    width: 80%;
   }
 
   .sm\:w-full {

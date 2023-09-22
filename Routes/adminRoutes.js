@@ -22,6 +22,9 @@ try {
     // product management
     router.get('/productManagement',adminSession,adminController.productManagement)
 
+    // Add product
+    router.post('/addProduct',adminSession,adminController.addProduct)
+
     //update blocked
     router.put('/update-block-status/:userId',adminSession,adminController.updateBlock)
 

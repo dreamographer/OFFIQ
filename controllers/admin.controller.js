@@ -8,7 +8,7 @@ const crypto = require('crypto');  //encription module
 //modals
 const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
-const catagory = require('../models/categoryModel') //category schema
+const Catagory = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
 const { render } = require('ejs');
 
@@ -83,7 +83,7 @@ const adminController = {
   //categoryManagement
   categoryManagement:  async (req, res) => {
     try {
-      const Catagory = await catagory.find({}); // Fetch fdata
+      const Catagory = await Catagory.find({}); // Fetch fdata
       res.render('categoryManagement',{ Catagory: Catagory })
     }
     catch{
@@ -115,11 +115,28 @@ const adminController = {
   // productManagement
   productManagement: async (req, res) => {
     try {
-      const products = await Products.find({}); // Fetch fdata
-      res.render('productManagement',{ products: products })
+      const products = await Products.find({}); // Fetch product data
+      const category = await Catagory.find({});
+    
+      res.render('productManagement',{ products: products ,category:category})
     }
     catch{
       
+    }
+  },
+  addProduct:async(req,res)=>{
+    try {
+      const data=req.body
+      console.log(data);
+      const product = await Products.create(data) 
+      console.log(product);
+      if (product) {
+        console.log("product added");
+        return res.redirect('/productManagement')
+      }
+
+    } catch (error) {
+      console.log(error);
     }
   },
 

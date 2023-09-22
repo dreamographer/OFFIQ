@@ -183,7 +183,6 @@ const userController = {
           data.otp = encrypt(otp, key)
           data.otpExpires = expirationTime
           const user = await User.create(data) //inserting the data
-
           sendOTP(user.fullname, user.email, otp)
           setInterval(deleteUnverifiedDocs, 600000);
           const need="userSignIN"
