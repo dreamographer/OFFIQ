@@ -19,7 +19,7 @@ const adminRouter=require('./Routes/adminRoutes')
 const authRouter = require('./Routes/authRoutes');
 //keys 
 // Initialize session
-const skey=process.env.session; 
+const skey=process.env.SESSION_KEY; 
 app.use(session({ 
     secret:skey, // Generate a random secret 
     resave: false,

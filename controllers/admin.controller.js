@@ -1,8 +1,8 @@
 require('dotenv').config();
 //keys
 const algorithm = 'aes-256-cbc';
-const key = process.env.KEY;
-const iv = process.env.IV;
+const key = process.env.ENCRIPTION_KEY;
+const iv = 'initialisation-#';
 const crypto = require('crypto');  //encription module
 
 //modals
@@ -10,7 +10,7 @@ const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
 const Catagory = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
-const { render } = require('ejs');
+// const { render } = require('ejs');
 
 
 function decrypt(encryptedText, key) {
@@ -41,7 +41,7 @@ const adminController = {
       return res.status(500).send('Error fetching user data');
     }
   },
-
+  
 
   //admin dashboard
   adminDashboard: async (req, res) => {
@@ -83,8 +83,8 @@ const adminController = {
   //categoryManagement
   categoryManagement:  async (req, res) => {
     try {
-      const Catagory = await Catagory.find({}); // Fetch fdata
-      res.render('categoryManagement',{ Catagory: Catagory })
+      const catagory = await Catagory.find({}); // Fetch fdata
+      res.render('categoryManagement',{ Catagory: catagory })
     }
     catch{
       

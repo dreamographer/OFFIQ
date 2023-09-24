@@ -13,8 +13,8 @@ const Category = require('../models/categoryModel') //category schema
 
 //keys
 const algorithm = 'aes-256-cbc';
-const key = process.env.KEY;
-const iv = process.env.IV;
+const key = process.env.ENCRIPTION_KEY;
+const iv = 'initialisation-#';
 
 //encription function
 function encrypt(text, key) {
@@ -41,7 +41,7 @@ function generateOTP() {
   const expirationTime = new Date();
   expirationTime.setMinutes(expirationTime.getMinutes() + 10);//set 10 minutes as expiry
   // Generate a 6 digit number as OTP
-  const otp = crypto.randomBytes(3).toString('hex')
+  let otp = crypto.randomBytes(3).toString('hex')
   return { otp, expirationTime }
 }
 
@@ -82,7 +82,7 @@ async function verifyOTP(email, otp) {
     await user.save();
     return { status: true, user };
   }
-  return false;
+  return { status: false }
 }
 
 //deletion of data when email is unverified
@@ -102,14 +102,19 @@ const userController = {
   userLogin: async (req, res) => {
     const { email, password } = req.body;//data given by the user
     try {
-      const user = await User.findOne({ email }); //data from the DB
-      if (!(user.googleAuth) && user && decrypt(user.password, key) === password && !(user.blocked)) {
-        req.session.user = user;
-        console.log(user.fullname + ' logged in');
-        return res.redirect('/');
-      } else if (user.blocked) {
-        req.session.block = true;
-        return res.redirect('/login');
+      const user = await User.findOne({ email });
+      if (user != null) {//data from the DB
+        if (!(user.googleAuth) && decrypt(user.password, key) === password && !(user.blocked)) {
+          req.session.user = user;
+          console.log(user.fullname + ' logged in');
+          return res.redirect('/');
+        } else if (user.blocked) {
+          req.session.block = true;
+          return res.redirect('/login');
+        } else {
+          req.session.err = true;
+          return res.redirect('/login');
+        }
       } else {
         req.session.err = true;
         return res.redirect('/login');
@@ -120,41 +125,41 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
-  forgotPage:(req,res)=>{
-   return res.render('forgotPassword')
+  forgotPage: (req, res) => {
+    return res.render('forgotPassword')
   },
 
-  forgotPassword:async(req,res)=>{
-     try {
-          let { otp, expirationTime } = generateOTP();
-          let email=req.body.email
-
-          
-          const user = await User.findOne({email})//inserting the data
-     
-        if (user) {
-          let data={}
-          data.otp = encrypt(otp, key)
-          data.otpExpires = expirationTime
-          const update=await User.updateOne({email},{$set:{otp:data.otp,otpExpires:data.otpExpires}}) //updating the data
-        
-          const need="forgotPassword"
-      
-          sendOTP(user.fullname, email, otp)
-          return res.render('otpVerify', { email: email ,need:need})
-        }
-          
-        } catch (err) {
-          console.log(err);
-          return res.status(500).send('Error creating USER');
-        }
-    
-  },
-  updatePassword:async(req,res)=>{
+  forgotPassword: async (req, res) => {
     try {
-      const {email,password}=req.body
-      const hashPassword=encrypt(password, key)
-      const update=await User.updateOne({email:email},{$set:{password:hashPassword}}) //updateing the data
+      let { otp, expirationTime } = generateOTP();
+      let email = req.body.email
+
+
+      const user = await User.findOne({ email })//inserting the data
+
+      if (user) {
+        let data = {}
+        data.otp = encrypt(otp, key)
+        data.otpExpires = expirationTime
+        const update = await User.updateOne({ email }, { $set: { otp: data.otp, otpExpires: data.otpExpires } }) //updating the data
+
+        const need = "forgotPassword"
+
+        sendOTP(user.fullname, email, otp)
+        return res.render('otpVerify', { email: email, need: need, error: '' })
+      }
+
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send('Error creating USER');
+    }
+
+  },
+  updatePassword: async (req, res) => {
+    try {
+      const { email, password } = req.body
+      const hashPassword = encrypt(password, key)
+      const update = await User.updateOne({ email: email }, { $set: { password: hashPassword } }) //updateing the data
       console.log("password updated");
       return res.redirect('/')
     } catch (error) {
@@ -185,9 +190,9 @@ const userController = {
           const user = await User.create(data) //inserting the data
           sendOTP(user.fullname, user.email, otp)
           setInterval(deleteUnverifiedDocs, 600000);
-          const need="userSignIN"
-    
-          return res.render('otpVerify', { email: user.email ,need:need})
+          const need = "userSignIN"
+
+          return res.render('otpVerify', { email: user.email, need: need, error: '' })
 
         } catch (err) {
           console.log(err);
@@ -204,36 +209,46 @@ const userController = {
   //email verification
   emailVerify: async (req, res) => {
     try {
-      const { otp, email ,need} = req.body
+      const { otp, email, need } = req.body
       const { status, user } = await verifyOTP(email, otp)
       if (status) { //setting value to the session
-        if (need=="userSignIN") {
+        if (need == "userSignIN") {
           req.session.user = user;
           console.log(user.fullname + ' logged in');
           return res.redirect('/');
         }
-        else{
-          return res.render('newPassword',{email});
+        else {
+          return res.render('newPassword', { email });
         }
       }
       else {
-        console.log("something went wrong while verification");
+        if (need == "userSignIN") {
+        return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP' })
+        }else{
+        return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' })
+
+        }
+
       }
     } catch (error) {
       console.log(error);
     }
   },
 
-resend:async (req,res)=>{
-  const tenMinutesAgo = new Date(Date.now() - 0); // 600000 milliseconds is 10 minutes
-  try {
-    const deleted = await User.deleteMany({ verified: false, createdAt: { $lt: tenMinutesAgo } })
-    console.log(`Deleted ${deleted.deletedCount} documents.`);
-    return res.redirect('/signup')
-  } catch (error) {
-    console.error(err);
-  }
-},
+  resend: async (req, res) => {
+    // const tenMinutesAgo = new Date(Date.now() - 0); // 600000 milliseconds is 10 minutes
+    try {
+      let { otp, expirationTime } = generateOTP();
+      const email = req.query.email
+      sendOTP("Resend", email, otp)
+      otp = encrypt(otp, key)
+      const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
+      const need = "forgotPassword"
+      return res.render('otpVerify', { email:email, need: need, error: 'New OTP send' })
+    } catch (error) {
+      console.error(error);
+    }
+  },
   //error in login
   loginErr: (req, res) => {
     try {
@@ -257,35 +272,35 @@ resend:async (req,res)=>{
 
   //rendering the home page
   home: (req, res) => {
-  return res.redirect('/products');
+    return res.redirect('/products');
   },
 
   //render products view page
-  products: async (req, res) => { 
+  products: async (req, res) => {
     try {
       const products = await Products.find({});
       let category = await Category.find({});
       res.render('products', { products: products, category: category });
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   },
 
   productPage: async (req, res) => {
     try {
       const ID = req.params.id;
-      const product = await Products.findOne({'_id': ID});
-      res.render('productView', { product: product});
+      const product = await Products.findOne({ '_id': ID });
+      res.render('productView', { product: product });
     } catch (error) {
       console.log(error);
-    }  
-   
+    }
+
   },
 
   //logout the user
   logout: (req, res) => {
-    if (req.session.admin) {
-      console.log(`${req.session.admin.fullname} logged out`);
+    if (req.session.user) {
+      console.log(`${req.session.user.fullname} logged out`);
     }
     req.session.destroy(); // Destroy session on logout
     res.redirect('/');
