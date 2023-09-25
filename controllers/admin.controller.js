@@ -42,7 +42,7 @@ const adminController = {
       return res.status(500).send('Error fetching user data');
     }
   },
-  
+
 
   //admin dashboard
   adminDashboard: async (req, res) => {
@@ -67,6 +67,7 @@ const adminController = {
     }
   },
 
+  // update the blocj status
   updateBlock: async (req, res) => {
     const userId = req.params.userId;
     let { blocked } = req.body;
@@ -82,43 +83,114 @@ const adminController = {
   },
 
   //categoryManagement
-  categoryManagement:  async (req, res) => {
+  categoryManagement: async (req, res) => {
     try {
       const catagory = await Catagory.find({}); // Fetch fdata
-      res.render('categoryManagement',{ Catagory: catagory })
+      res.render('categoryManagement', { Catagory: catagory })
     }
-    catch{
-      
+    catch {
+
     }
   },
 
+
+  //add new catergory
   addCategory: async (req, res) => {
     try {
       let data = req.body;
 
-      const subName=data.subName
-      const subDescription=data.subDescription
-      const subcategory= subName.map((value,i)=>{
-        return {name : value , description : subDescription[i]}
-      })
-      console.log(subcategory);
-      data.subcategory=subcategory
+      const subName = data.subName
+      const subDescription = data.subDescription
+      let subcategory={}
+      if (Array.isArray(subName)) {
+        subcategory = subName.map((value, i) => {
+          return { subName: value, subDescription: subDescription[i] }
+        })
+      }else{
+        subcategory = { subName: subName, subDescription: subDescription }
+      }
+      data.subcategory = subcategory
       const imagePaths = req.file.path.substring(6);
       data.image = imagePaths;
       delete data.subDescription;
       delete data.subName;
-      console.log(data);
-       
-      // const product = await Products.create(data);
-      // console.log(product);
-
-      // if (product) {
-      //   console.log('product added');
-      //   return res.redirect('../admin/productManagement');
-      // }
+      const category = await Catagory.create(data);
+      if (category) {
+        console.log('category added');
+        return res.redirect('../admin/categoryManagement');
+      }
     } catch (error) {
       console.log(error);
     }
+  },
+
+  // update the category
+  updateCategory: async (req, res) => {
+    try {
+      const id = req.body.id
+      const updatedData = { ...req.body }
+      const subName = updatedData.subName
+      const subDescription = updatedData.subDescription
+      let subcategory = {}
+      delete updatedData.subDescription;
+      delete updatedData.subName;
+
+      if (req.file) {    
+        const imagePaths = req.file.path.substring(6);
+        updatedData.image = imagePaths;
+        console.log(imagePaths);
+      }
+      let result
+      if (subName) {
+        if (Array.isArray(subName)) {
+          subcategory = subName.map((value, i) => {
+            return { subName: value, subDescription: subDescription[i] }
+          })
+          result = await Catagory.findOneAndUpdate(
+            { _id: id },
+            {
+              $push: { subcategory: { $each: subcategory } },
+              $set: { ...updatedData },
+            },
+            {
+              new: true, // To return the updated document
+              upsert: true, // Create a new document if it doesn't exist
+            }
+          );
+        } else {
+          subcategory = { subName: subName, subDescription: subDescription }
+          result = await Catagory.findOneAndUpdate(
+            { _id: id },
+            {
+              $push: { subcategory: subcategory },
+              $set: { ...updatedData },
+            },
+            {
+              new: true, // To return the updated document
+              upsert: true, // Create a new document if it doesn't exist
+            }
+          );
+        }
+
+      } else {
+        result = await Catagory.findOneAndUpdate(
+          { _id: id },
+          {
+            $set: { ...updatedData },
+          },
+          {
+            new: true, // To return the updated document
+            upsert: true, // Create a new document if it doesn't exist
+          }
+        );
+      }
+      if (!result) {
+        return res.status(401).send("not found");
+      } else {
+        return res.status(200).redirect('../admin/productManagement')
+      }
+    } catch (err) { console.log(err) }
+
   },
 
   // productManagement
@@ -126,14 +198,14 @@ const adminController = {
     try {
       const products = await Products.find({}); // Fetch product data
       const category = await Catagory.find({});
-    
-      res.render('productManagement',{ products: products ,category:category})
+
+      res.render('productManagement', { products: products, category: category })
     }
-    catch{
-      
+    catch {
+
     }
   },
-  addProduct:async (req, res) => {
+  addProduct: async (req, res) => {
     try {
       const data = req.body;
       console.log(data);

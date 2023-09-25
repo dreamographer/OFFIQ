@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/admin.controller')
+
+//middlewares
 const adminAuth = require('../middlewares/adminAuth')
 const adminSession=require('../middlewares/adminSession')
+
 const path=require('path');
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json())
@@ -38,6 +41,8 @@ try {
     //add category
     router.post('/addCategory',adminSession,upload.single('categoryImage'),adminController.addCategory)
 
+    //update categoru
+    router.post('/updateCategory',adminSession,upload.single('categoryImage'),adminController.updateCategory) 
 
     // product management
     router.get('/productManagement',adminSession,adminController.productManagement)

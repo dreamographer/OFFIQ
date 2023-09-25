@@ -108,7 +108,7 @@
 
                     <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
                         <!-- initialization of aphine values -->
-                        <div x-data="{ editModal : false ,addModel:false,name:'',desc:''}"
+                        <div x-data="{ editModal : false ,addModel:false,name:'',desc:'',id:''}"
                             class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                             <div class="w-screen sm:w-full h-auto overflow-auto">
                                 <div>
@@ -153,7 +153,7 @@
                                                     <td
                                                         class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
                                                         <button>
-                                                            <i @click="editModal = !editModal ,name='<%= catagory.name %>' ,desc='<%= catagory.description %>'"
+                                                            <i @click="editModal = !editModal ,id='<%= catagory._id %>',name='<%= catagory.name %>' ,desc='<%= catagory.description %>'"
                                                                 class="fa fa-edit fa-lg" style="color: green"
                                                                 aria-hidden="true"></i>
                                                         </button>
@@ -190,7 +190,8 @@
                                             </span>
                                             <!-- Body -->
                                             <div>
-                                                <form class="mt-3" action="#" method="POST">
+                                                <form class="mt-3" action="../admin/updateCategory" method="POST" enctype="multipart/form-data" >
+                                                    <input type="hidden" :value="id" name="id">
                                                     <div>
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Category
@@ -215,7 +216,7 @@
                                                             class="block md:text-xs  float-left text-gray-700">Image</label>
                                                         <input
                                                             class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                            id="file_input" type="file">
+                                                            id="file_input" name="categoryImage" type="file" value="">
 
                                                     </div>
 
@@ -241,36 +242,16 @@
 
                                                                 </tr>
                                                             </thead>
-                                                            <tbody>
-                                                                <tr
-                                                                    class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
+                                                            <tbody id="sub1">
+                                                                <!-- Sub catagory form table -->
 
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                        <input type="text" name="categoryName"
-                                                                            id="fullname"
-                                                                            placeholder="Enter Category Name"
-                                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                            autofocus="" autocomplete="" required="">
-                                                                    </td>
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                        <textarea name="description" id="description"
-                                                                            placeholder="Enter Email Address"
-                                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                            autofocus="" autocomplete=""
-                                                                            required=""></textarea>
-                                                                    </td>
-
-                                                                </tr>
                                                             </tbody>
                                                         </table>
                                                     </div>
                                                     <button class="w-auto block bg-[#076AE1] hover:bg-[#0769e1ee] focus:bg-[#0769e1e1] text-white font-semibold rounded-lg
-                                            px-2 py-1 mt-5">Add Sub category</button>
-
-                                                    <button type="submit" class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
-                                                    px-4 py-3 mt-5">SAVE</button>
+                                                    px-2 py-1 mt-5" onclick="addSubcategory()">Add Subcategory</button>
+                                                    <button type="submit"
+                                                        class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-5">SAVE</button>
                                                 </form>
 
                                             </div>
@@ -299,7 +280,8 @@
                                             </span>
                                             <!-- Body -->
                                             <div>
-                                                <form class="mt-3" action="../admin/addCategory" method="POST" enctype="multipart/form-data">
+                                                <form class="mt-3" action="../admin/addCategory" method="POST"
+                                                    enctype="multipart/form-data">
                                                     <div>
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Category
@@ -313,7 +295,7 @@
                                                         <label
                                                             class="block md:text-xs mt-4 float-left text-gray-700">Description</label>
                                                         <textarea name="description" id="description"
-                                                            placeholder="Enter Email Address"
+                                                            placeholder="Enter Description"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required=""></textarea>
                                                     </div>
@@ -349,55 +331,14 @@
 
                                                                 </tr>
                                                             </thead>
-                                                            <tbody id="sub">
-                                                                <tr
-                                                                    class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                        <input type="text" name="subName"
-                                                                            id="fullname"
-                                                                            placeholder="Enter Category Name"
-                                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                            autofocus="" autocomplete="" required="">
-                                                                    </td>
-                                                                    <td
-                                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                        <textarea name="subDescription" id="description"
-                                                                            placeholder="Enter the description"
-                                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                            autofocus="" autocomplete=""
-                                                                            required=""></textarea>
-                                                                    </td>
-                                                                </tr>
-
-
-                                                                <tr
-                                                                class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                    <input type="text" name="subName"
-                                                                        id="subName"
-                                                                        placeholder="Enter Category Name"
-                                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                        autofocus="" autocomplete="" required="">
-                                                                </td>
-                                                                <td
-                                                                    class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                                    <textarea name="subDescription" id="description"
-                                                                        placeholder="Enter the description"
-                                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                        autofocus="" autocomplete=""
-                                                                        required=""></textarea>
-                                                                </td>
-                                                            </tr>
-
+                                                            <tbody id="sub2">
+                                                                <!-- Sub catagory form table -->
 
                                                             </tbody>
                                                         </table>
                                                     </div>
                                                     <button class="w-auto block bg-[#076AE1] hover:bg-[#0769e1ee] focus:bg-[#0769e1e1] text-white font-semibold rounded-lg
-                                                    px-2 py-1 mt-5" >Add Sub
-                                                        category</button>
+                                                    px-2 py-1 mt-5" onclick="addSubcategory()">Add Subcategory</button>
                                                     <button type="submit"
                                                         class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg px-4 py-3 mt-5">SAVE</button>
                                                 </form>
@@ -430,16 +371,21 @@
     <!-- adding sub category -->
     <script>
 
-let subcategoryIndex = 0;
+        let subcategoryIndex = 0;
 
-function addSubcategory() {
-  const table = document.querySelector('table #sub');
-  const row = table.insertRow(-1);
+        function addSubcategory() {
+            const table = document.querySelector('table #sub1');
+            const table2=document.querySelector('table #sub2');
+            const row = table.insertRow(-1);
+            const row2 = table2.insertRow(-1);
 
-  const cellCategory = row.insertCell(0);
-  const cellDescription = row.insertCell(1);
+            const cellCategory = row.insertCell(0);
+            const cellDescription = row.insertCell(1);
 
-  cellCategory.innerHTML = `
+            const cellCategory2 = row2.insertCell(0);
+            const cellDescription2 = row2.insertCell(1);
+
+            cellCategory.innerHTML = `
     <input type="text" name="subName"
         id="subcatagory"
         placeholder="Enter Category Name"
@@ -447,7 +393,22 @@ function addSubcategory() {
         autofocus="" autocomplete="" required="">
   `;
 
-  cellDescription.innerHTML = `
+            cellDescription.innerHTML = `
+    <textarea name="subDescription" id="description"
+        placeholder="Enter the description"
+        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+        autofocus="" autocomplete=""
+        required=""></textarea>
+  `;
+  cellCategory2.innerHTML = `
+    <input type="text" name="subName"
+        id="subcatagory"
+        placeholder="Enter Category Name"
+        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+        autofocus="" autocomplete="" required="">
+  `;
+
+            cellDescription2.innerHTML = `
     <textarea name="subDescription" id="description"
         placeholder="Enter the description"
         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
@@ -455,9 +416,10 @@ function addSubcategory() {
         required=""></textarea>
   `;
 
-  subcategoryIndex++;
-}
+            subcategoryIndex++;
+        }
 
+        
 
     </script>
 
