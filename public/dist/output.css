@@ -1016,16 +1016,16 @@ video {
   width: 20rem;
 }
 
-.w-\[30\%\] {
-  width: 30%;
-}
-
 .w-\[30rem\] {
   width: 30rem;
 }
 
 .w-\[35\%\] {
   width: 35%;
+}
+
+.w-\[50\%\] {
+  width: 50%;
 }
 
 .w-auto {
@@ -2066,12 +2066,16 @@ video {
     width: 20rem;
   }
 
-  .sm\:w-\[80\%\] {
-    width: 80%;
+  .sm\:w-\[90\%\] {
+    width: 90%;
   }
 
   .sm\:w-full {
     width: 100%;
+  }
+
+  .sm\:w-screen {
+    width: 100vw;
   }
 
   .sm\:flex-row {

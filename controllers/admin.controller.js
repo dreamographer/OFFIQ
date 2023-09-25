@@ -98,8 +98,8 @@ const adminController = {
       let data = req.body;
       const subName = data.subName
       const subDescription = data.subDescription
-      const name=data.name
-      const existingCategory = await Catagory.findOne({ name});
+      const name = data.name
+      const existingCategory = await Catagory.findOne({ name });
       if (existingCategory) {
         // Category with the same name already exists
         return res.status(409).send('Category with this name already exists.');
@@ -107,7 +107,7 @@ const adminController = {
       let subcategory = {}
       //checking if there is one subcategory or many 
       if (Array.isArray(subName)) {
-          //joining the name and description of subcaegory
+        //joining the name and description of subcaegory
         subcategory = subName.map((value, i) => {
           return { subName: value, subDescription: subDescription[i] }
         })
@@ -115,7 +115,7 @@ const adminController = {
         subcategory = { subName: subName, subDescription: subDescription }
       }
       data.subcategory = subcategory
-      const imagePaths = req.file.path.substring(6);
+      const imagePaths = req.file.path.substring(6);//removing public/from adderees
       data.image = imagePaths;
       delete data.subDescription;
       delete data.subName;
@@ -141,7 +141,7 @@ const adminController = {
       delete updatedData.subName;
       //cheking if the file exists
       if (req.file) {
-        const imagePaths = req.file.path.substring(6);
+        const imagePaths = req.file.path.substring(6);//removing public/from adderees
         updatedData.image = imagePaths;
         console.log(imagePaths);
       }
@@ -194,6 +194,7 @@ const adminController = {
         );
       }
       if (!result) {
+        console.log('category updated');
         return res.status(401).send("not found");
       } else {
         return res.redirect('../admin/categoryManagement');
@@ -214,6 +215,23 @@ const adminController = {
 
     }
   },
+  //get sub category
+  getSubcategory: async (req, res) => {
+    try {
+      const categoryId = req.params.cId;
+      // Assuming you have a Category model with a subcategories field
+      const category = await Catagory.findOne({ _id: categoryId });
+      if (!category) {
+        return res.status(404).json({ error: 'Category not found' });
+      }
+      // Assuming subcategories is an array of subcategory objects within the Category model
+      const subcategories = category.subcategory;
+      return res.status(200).json({ subcategories });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
   addProduct: async (req, res) => {
     try {
       const data = req.body;
@@ -230,6 +248,40 @@ const adminController = {
     } catch (error) {
       console.log(error);
     }
+  },
+  editProduct: async (req, res) => {
+    try {
+      const data = req.body;
+      const id = data.id
+      delete data.id
+      console.log(id);
+      let product
+
+      if (req.files && req.files.length > 0) {
+        const imagePaths = req.files.map((file) => file.path.substring(6));
+        product = await Products.updateOne(
+          { _id: id },
+          { $push: { images: { $each: imagePaths } }, $set: { ...data } },
+          { new: true } 
+        );
+      } else {
+        product = await Products.updateOne(
+          { _id: id },
+          { $set: { ...data } },
+          { new: true } 
+        );
+      }
+
+      console.log(product);
+
+      if (product) {
+        console.log('product added');
+        return res.redirect('../admin/productManagement');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
   },
 
   //logout for the admin

@@ -15,6 +15,11 @@ const productSchema = new Schema({
     ref: 'Category',
     required: true
   },
+  subCategory: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category.subcategory',
+    required: true
+  },
   price: {
     type: Number,
     required: true

@@ -50,7 +50,14 @@ try {
     // Add product
     router.post('/addProduct',adminSession,upload.array('productImage'),adminController.addProduct)
 
+    // Edit product
+    router.post('/editProduct',adminSession,upload.array('productImage'),adminController.editProduct)
+
+
+    //get subcategories
+    router.get('/getSubcategory/:cId',adminController.getSubcategory)
     //update blocked
+    
     router.put('/update-block-status/:userId',adminSession,adminController.updateBlock)
 
     //logout

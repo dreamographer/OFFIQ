@@ -88,13 +88,14 @@
 
 
         <% category.forEach(category=> {
-            let prod = products.filter(product => product.category.toString() === category._id.toString());
+            category.subcategory.forEach(sub => {
+                let prod = products.filter(product => product.subCategory.toString() === sub._id.toString());
             %>
 
 
             <div class="flex justify-center">
                 <h1 class="text-center uppercase font-medium text-[30px] text-gray-700 ">
-                    <%=category.name%>
+                    <%=sub.subName%>
                 </h1>
 
 
@@ -155,6 +156,7 @@
                     </a>
                     <% }); %>
             </div>
+            <%   });%>
             <% }); %>
 
 

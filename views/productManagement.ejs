@@ -88,7 +88,7 @@
 
             <!-- content div -->
             <div class="flex justify-center  overflow-hidden">
-                <div class="flex flex-col pt-10 ">
+                <div class="flex flex-col pt-10 sm:w-screen">
                     <!-- search -->
                     <div class="mx-auto max-w-md">
                         <form action="" class="relative mx-auto w-max">
@@ -108,14 +108,15 @@
 
                     <div class="overflow-x-hidden  lg:mx-0.5">
                         <!-- initialization of alphine values -->
-                        <div x-data="{ editModel : false ,addModel:false,userid:'',block:'',status:''}"
+                        <div x-data="{ editModel : false ,addModel:false,id:'',name:'',desc:'',rating:'',qty:'',price:''}"
                             class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                             <div class="h-auto overflow-auto flex justify-center">
-                                <div class="w-[30%] sm:w-[80%] overflow-auto">
+                                <div class="w-[50%] sm:w-[90%] overflow-auto">
                                     <!-- category Table -->
                                     <table class="min-w-full  table-fixed  ">
                                         <thead class="bg-gray-200 border-b">
                                             <tr>
+
                                                 <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Name
@@ -124,10 +125,10 @@
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Description
                                                 </th>
-                                                <!-- <th scope="col"
+                                                <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Category
-                                                </th> -->
+                                                </th>
                                                 <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Price
@@ -150,15 +151,29 @@
                                             <% products.forEach(product=> { %>
                                                 <tr
                                                     class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                    
+
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                         <%= product.name %>
                                                     </td>
+
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                         <%= product.description %>
                                                     </td>
+                                                    <td
+                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        <% matchingCategory=category.find(item=>item._id.toHexString()
+                                                            === product.category.toHexString()); %>
+                                                            <% if (matchingCategory) { %>
+
+                                                                <%= matchingCategory.name %>
+                                                                    <% } else { %>
+
+                                                                        Category Not Found
+                                                                        <% } %>
+                                                    </td>
+
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                         <%= product.price %>
@@ -170,12 +185,14 @@
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                         <%= product.quantity %>
+
                                                     </td>
                                                     <td
                                                         class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
                                                         <button>
-                                                            <i @click="editModel = !editModel" class="fa fa-edit fa-lg"
-                                                                style="color: green" aria-hidden="true"></i>
+                                                            <i @click=" editModel = !editModel ,id='<%= product._id%>', name=' <%= product.name %> ', desc=' <%= product.description %>', price='<%= product.price %>', rating='<%= product.rating %>', qty='<%= product.quantity %>'"
+                                                                class="fa fa-edit fa-lg" style="color: green"
+                                                                aria-hidden="true"></i>
                                                         </button>
                                                         <button>
                                                             <i class="fas fa-thin fa-trash-can fa-lg"
@@ -187,97 +204,109 @@
                                         </tbody>
                                     </table>
 
-                                    <!-- Product edit modal-->
+                                    <!--edit Product modal-->
                                     <div x-show="editModel"
-                                    class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0"
-                                    x-transition:enter="transition ease duration-300"
-                                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                                    x-transition:leave="transition ease duration-300"
-                                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                                    <!-- Modal -->
-                                    <div x-show="editModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
-                                        @click.away="addModel = false"
-                                        x-transition:enter="transition ease duration-100 transform"
-                                        x-transition:enter-start="opacity-0 scale-90 translate-y-1"
-                                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                        x-transition:leave="transition ease duration-100 transform"
-                                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                                        x-transition:leave-end="opacity-0 scale-90 translate-y-1">
-                                        <!-- Title -->
-                                        <span x-if="block == true" class="font-bold block text-2xl mb-3">
-                                            ADD Product
-                                        </span>
-                                        <!-- Body -->
-                                        <div>
-                                            <form class="mt-3" action="../admin/addProduct" method="POST">
-                                                <div>
-                                                    <label
-                                                        class="block md:text-xs float-left text-gray-700">Product
-                                                        Name</label>
-                                                    <input type="text" name="name" 
-                                                        placeholder="Enter Product Name"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="">
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        class="block md:text-xs mt-4 float-left text-gray-700">Description</label>
-                                                    <textarea name="description" id="description"
-                                                        placeholder="description of the product"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required=""></textarea>
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        class="block md:text-xs float-left text-gray-700">Price</label>
-                                                    <input type="text" name="price" 
-                                                        placeholder="product price"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="">
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        class="block md:text-xs float-left text-gray-700">Quantity</label>
-                                                    <input type="text" name="quantity" 
-                                                        placeholder="product rating"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="">
-                                                </div>
-                                                <div>
-                                                    <label
-                                                        class="block md:text-xs float-left text-gray-700">Rating</label>
-                                                    <input type="text" name="rating" 
-                                                        placeholder="product rating"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="">
-                                                </div>
-                                        
-
-                                                <div>
-                                                    <label class="block md:text-xs float-left text-gray-700">Category</label>
-                                                    <select name="category" id="catagory" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
-                                                        <% category.forEach(category => { %>
-                                                          <option value="<%=category._id%>"><%=category.name%></option>
-                                                        <% }); %>
-                                                      </select>
-
-                                                </div>
-                                                
-                                                <!-- <div>
-                                                    <label class="block md:text-xs  float-left text-gray-700">Image</label>
-                                                    <input class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        id="file_input" name="image" type="file" multiple>
-                                                </div> -->
-                                                <button type="submit"
-                                                    class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
-                                                                                                                                    px-4 py-3 mt-5">SAVE</button>
-                                            </form>
+                                        class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0"
+                                        x-transition:enter="transition ease duration-300"
+                                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                                        x-transition:leave="transition ease duration-300"
+                                        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+                                        <!-- Modal -->
+                                        <div x-show="editModel"
+                                            class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
+                                            @click.away="editModel = false"
+                                            x-transition:enter="transition ease duration-100 transform"
+                                            x-transition:enter-start="opacity-0 scale-90 translate-y-1"
+                                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                            x-transition:leave="transition ease duration-100 transform"
+                                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                            x-transition:leave-end="opacity-0 scale-90 translate-y-1">
+                                            <!-- Title -->
+                                            <span class="font-bold block text-2xl mb-3">
+                                                Edit Product
+                                            </span>
+                                            <!-- Body -->
+                                            <div>
+                                                <form class="mt-3" action="../admin/editProduct" method="POST"
+                                                    enctype="multipart/form-data">
+                                                    <input type="hidden" name="id" :value="id">
+                                                    <div>
+                                                        <label class="block md:text-xs float-left text-gray-700">Product
+                                                            Name</label>
+                                                        <input type="text" name="name" placeholder="Enter Product Name"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            autofocus="" :value="name" autocomplete="" required="">
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs mt-4 float-left text-gray-700">Description</label>
+                                                        <textarea name="description" id="description"
+                                                            placeholder="description of the product"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            autofocus="" autocomplete="" :value="desc"
+                                                            required=""></textarea>
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Price</label>
+                                                        <input type="text" name="price" placeholder="product price"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            autofocus="" autocomplete="" :value="price" required="">
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Quantity</label>
+                                                        <input type="text" name="quantity" placeholder="product Quantity"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            autofocus="" autocomplete="" :value="qty" required="">
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Rating</label>
+                                                        <input type="text" name="rating" placeholder="product rating"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            autofocus="" autocomplete="" :value="rating" required="">
+                                                    </div>
 
 
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Category</label>
+                                                        <select name="category" id="category1"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
+                                                            <% category.forEach(category=> { %>
+                                                                <option value="<%=category._id%>">
+                                                                    <%=category.name%>
+                                                                </option>
+                                                                <% }); %>
+                                                        </select>
+
+                                                    </div>
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Subcategory</label>
+                                                        <select name="subCategory" id="subcategory1"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
+                                                            <!-- Subcategory options will be populated here dynamically -->
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs  float-left text-gray-700">Image</label>
+                                                        <input
+                                                            class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                            id="file_input" name="productImage" type="file" multiple>
+                                                    </div>
+                                                    <button type="submit"
+                                                        class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
+                                                                                                                                        px-4 py-3 mt-5">SAVE</button>
+                                                </form>
+
+
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
 
                                     <!--Add Product modal-->
                                     <div x-show="addModel"
@@ -287,7 +316,8 @@
                                         x-transition:leave="transition ease duration-300"
                                         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                                         <!-- Modal -->
-                                        <div x-show="addModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
+                                        <div x-show="addModel"
+                                            class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
                                             @click.away="addModel = false"
                                             x-transition:enter="transition ease duration-100 transform"
                                             x-transition:enter-start="opacity-0 scale-90 translate-y-1"
@@ -296,18 +326,17 @@
                                             x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                                             x-transition:leave-end="opacity-0 scale-90 translate-y-1">
                                             <!-- Title -->
-                                            <span x-if="block == true" class="font-bold block text-2xl mb-3">
+                                            <span class="font-bold block text-2xl mb-3">
                                                 ADD Product
                                             </span>
                                             <!-- Body -->
                                             <div>
-                                                <form class="mt-3" action="../admin/addProduct" method="POST" enctype="multipart/form-data">
+                                                <form class="mt-3" action="../admin/addProduct" method="POST"
+                                                    enctype="multipart/form-data">
                                                     <div>
-                                                        <label
-                                                            class="block md:text-xs float-left text-gray-700">Product
+                                                        <label class="block md:text-xs float-left text-gray-700">Product
                                                             Name</label>
-                                                        <input type="text" name="name" 
-                                                            placeholder="Enter Product Name"
+                                                        <input type="text" name="name" placeholder="Enter Product Name"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required="">
                                                     </div>
@@ -322,42 +351,53 @@
                                                     <div>
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Price</label>
-                                                        <input type="text" name="price" 
-                                                            placeholder="product price"
+                                                        <input type="text" name="price" placeholder="product price"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required="">
                                                     </div>
                                                     <div>
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Quantity</label>
-                                                        <input type="text" name="quantity" 
-                                                            placeholder="product rating"
+                                                        <input type="text" name="quantity" placeholder="product Quantity"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required="">
                                                     </div>
                                                     <div>
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Rating</label>
-                                                        <input type="text" name="rating" 
-                                                            placeholder="product rating"
+                                                        <input type="text" name="rating" placeholder="product rating"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required="">
                                                     </div>
-                                            
+
 
                                                     <div>
-                                                        <label class="block md:text-xs float-left text-gray-700">Category</label>
-                                                        <select name="category" id="catagory" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
-                                                            <% category.forEach(category => { %>
-                                                              <option value="<%=category._id%>"><%=category.name%></option>
-                                                            <% }); %>
-                                                          </select>
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Category</label>
+                                                        <select name="category" id="category2"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
+                                                            <% category.forEach(category=> { %>
+                                                                <option value="<%=category._id%>">
+                                                                    <%=category.name%>
+                                                                </option>
+                                                                <% }); %>
+                                                        </select>
 
                                                     </div>
-                                                    
                                                     <div>
-                                                        <label class="block md:text-xs  float-left text-gray-700">Image</label>
-                                                        <input class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                        <label
+                                                            class="block md:text-xs float-left text-gray-700">Subcategory</label>
+                                                        <select name="subCategory" id="subcategory2"
+                                                            class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
+                                                            <!-- Subcategory options will be populated here dynamically -->
+                                                        </select>
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            class="block md:text-xs  float-left text-gray-700">Image</label>
+                                                        <input
+                                                            class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             id="file_input" name="productImage" type="file" multiple>
                                                     </div>
                                                     <button type="submit"
@@ -387,8 +427,54 @@
 
             </div>
         </div>
+
     </div>
 
+
+    <script>
+        // for fetching data based on the category
+        const categorySelect = document.getElementById('category1');
+        const subcategorySelect = document.getElementById('subcategory1');
+
+        const categorySelect2 = document.getElementById('category2');
+        const subcategorySelect2 = document.getElementById('subcategory2');
+
+        setupCategorySelection(categorySelect, subcategorySelect);
+        setupCategorySelection(categorySelect2, subcategorySelect2);
+
+        function setupCategorySelection(categorySelect, subcategorySelect) {
+            categorySelect.addEventListener('change', async () => {
+                const selectedCategoryId = categorySelect.value;
+                const subcategories = await fetchSubcategories(selectedCategoryId);
+                populateSubcategories(subcategories, subcategorySelect);
+            });
+        }
+
+        function populateSubcategories(subcategories, subcategorySelect) {
+            subcategorySelect.innerHTML = '';
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select Subcategory';
+            subcategorySelect.appendChild(defaultOption);
+
+            subcategories.forEach(subcategory => {
+                const option = document.createElement('option');
+                option.value = subcategory._id;
+                option.textContent = subcategory.subName;
+                subcategorySelect.appendChild(option);
+            });
+        }
+        
+        // Function to fetch subcategories based on the selected category
+        async function fetchSubcategories(categoryId) {
+            const response = await fetch(`../admin/getSubcategory/${categoryId}`);
+            const data = await response.json();
+            return data.subcategories;
+        }
+
+
+    </script>
 
     <script>
         const menuBtn = document.getElementById('menuBtn');

@@ -422,41 +422,7 @@
         
 
     </script>
-
-    <script>
-        // Add an event listener to the button(s)
-        document.querySelectorAll('.toggle-block-button').forEach(function (button) {
-            button.addEventListener('click', function () {
-                const userId = button.getAttribute('data-user-id');
-                const isBlocked = button.getAttribute('data-user-block')
-                console.log(userId);
-                // Toggle the current status
-
-                // Send an AJAX request to update the "blocked" status
-                fetch(`../admin/update-block-status/${userId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ blocked: isBlocked }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // if (data.isBlocked) {
-                            //     button.innerHTML = '<i class="fas fa-regular fa-lock fa-xl"></i>';
-                            // } else {
-                            //     button.innerHTML = '<i class="fa-solid fa-unlock fa-xl"></i>';
-                            // }
-                            location.reload();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-            });
-        });
-    </script>
+    <!-- responsive nav bar -->
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const sideNav = document.getElementById('sideNav');
