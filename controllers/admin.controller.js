@@ -10,7 +10,8 @@ const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
 const Catagory = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
-// const { render } = require('ejs');
+
+
 
 
 function decrypt(encryptedText, key) {
@@ -124,17 +125,19 @@ const adminController = {
       
     }
   },
-  addProduct:async(req,res)=>{
+  addProduct:async (req, res) => {
     try {
-      const data=req.body
+      const data = req.body;
       console.log(data);
-      const product = await Products.create(data) 
+      const imagePaths = req.files.map((file) => file.path.substring(6));
+    data.images = imagePaths;
+      const product = await Products.create(data);
       console.log(product);
-      if (product) {
-        console.log("product added");
-        return res.redirect('/productManagement')
-      }
 
+      if (product) {
+        console.log('product added');
+        return res.redirect('../admin/productManagement');
+      }
     } catch (error) {
       console.log(error);
     }

@@ -3,6 +3,20 @@ const router = express.Router();
 const adminController = require('../controllers/admin.controller')
 const adminAuth = require('../middlewares/adminAuth')
 const adminSession=require('../middlewares/adminSession')
+const path=require('path');
+//multer
+const multer  = require('multer')
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
 try {
     //admin login
     router.post('/login', adminController.adminLogin);
@@ -19,11 +33,14 @@ try {
     //catagory managemetn 
     router.get('/categoryManagement',adminSession,adminController.categoryManagement)
 
+    //add category
+
+
     // product management
     router.get('/productManagement',adminSession,adminController.productManagement)
 
     // Add product
-    router.post('/addProduct',adminSession,adminController.addProduct)
+    router.post('/addProduct',adminSession,upload.array('productImage'),adminController.addProduct)
 
     //update blocked
     router.put('/update-block-status/:userId',adminSession,adminController.updateBlock)

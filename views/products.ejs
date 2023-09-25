@@ -16,48 +16,48 @@
 <body>
     <!-- header -->
     <header class="w-full  h-20 md:h-28  shadow-sm">
-		<!-- nav bar -->
-		<nav class="justify-between items-center bg-white w-full hidden md:flex  ">
+        <!-- nav bar -->
+        <nav class="justify-between items-center bg-white w-full hidden md:flex  ">
 
-			<!-- logo -->
-			<div class="flex  items-center">
-				<img src="/images/offiq blacklogo.png" alt="Logo" class=" md:translate-x-0  w-28 h-18 ">
-			</div>
-			<div class="h-20 flex items-end">
-				<ol class="flex space-x-4 ">
-					<li class="flex">All category <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M12 15.5C11.7374 15.5005 11.4772 15.449 11.2346 15.3486C10.9919 15.2482 10.7715 15.1009 10.586 14.915L5.29297 9.621L6.70697 8.207L12 13.5L17.293 8.207L18.707 9.621L13.414 14.914C13.2285 15.1 13.0081 15.2476 12.7655 15.3482C12.5228 15.4487 12.2626 15.5003 12 15.5Z"
-								fill="#374957" />
-						</svg>
-					</li>
-					<li>Home</li>
-					<li>Contact US</li>
-					<li>Contact US</li>
-				</ol>
+            <!-- logo -->
+            <div class="flex  items-center">
+                <img src="/images/offiq blacklogo.png" alt="Logo" class=" md:translate-x-0  w-28 h-18 ">
+            </div>
+            <div class="h-20 flex items-end">
+                <ol class="flex space-x-4 ">
+                    <li class="flex">All category <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 15.5C11.7374 15.5005 11.4772 15.449 11.2346 15.3486C10.9919 15.2482 10.7715 15.1009 10.586 14.915L5.29297 9.621L6.70697 8.207L12 13.5L17.293 8.207L18.707 9.621L13.414 14.914C13.2285 15.1 13.0081 15.2476 12.7655 15.3482C12.5228 15.4487 12.2626 15.5003 12 15.5Z"
+                                fill="#374957" />
+                        </svg>
+                    </li>
+                    <li>Home</li>
+                    <li>Contact US</li>
+                    <li>Contact US</li>
+                </ol>
 
-			</div>
-			<div class="flex  text-center mx-6">
-				<i class="fa fa-user" aria-hidden="true"></i>
-			</div>
-		</nav>
-		<div class="md:hidden">
-			<button id="toggle-menu" class="flex items-center px-4 pt-5">
-				<i class="fa fa-bars text-2xl"></i>
-			</button>
-			<img src="/images/offiq blacklogo.png" alt="Logo" class="md:w-20 mx-auto -translate-y-10 w-20 h-18 ">
+            </div>
+            <div class="flex  text-center mx-6">
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+        </nav>
+        <div class="md:hidden">
+            <button id="toggle-menu" class="flex items-center px-4 pt-5">
+                <i class="fa fa-bars text-2xl"></i>
+            </button>
+            <img src="/images/offiq blacklogo.png" alt="Logo" class="md:w-20 mx-auto -translate-y-10 w-20 h-18 ">
 
-			<div id="mobile-menu" class="hidden ">
-				<!-- Your mobile menu items here -->
-				<ul class="text-gray-600 pl-3 -translate-y-10 z-50 bg-white relative">
-					<li class="py-2">Home</li>
-					<li class="py-2">Contact Us</li>
-					<li class="py-2">Contact Us</li>
-				</ul>
-			</div>
-		</div>
-	</header>
+            <div id="mobile-menu" class="hidden ">
+                <!-- Your mobile menu items here -->
+                <ul class="text-gray-600 pl-3 -translate-y-10 z-50 bg-white relative">
+                    <li class="py-2">Home</li>
+                    <li class="py-2">Contact Us</li>
+                    <li class="py-2">Contact Us</li>
+                </ul>
+            </div>
+        </div>
+    </header>
     <main class="pt-10 min-h-screen bg-gray-100">
         <div class="flex  justify-center ">
             <!-- search -->
@@ -93,7 +93,9 @@
 
 
             <div class="flex justify-center">
-                <h1 class="text-center uppercase font-medium text-[30px] text-gray-700 "><%=category.name%></h1>
+                <h1 class="text-center uppercase font-medium text-[30px] text-gray-700 ">
+                    <%=category.name%>
+                </h1>
 
 
             </div>
@@ -102,53 +104,55 @@
 
 
             <!-- items -->
-            <div class="relative m-3 space-x-5 flex flex-wrap mx-auto justify-center">
+            <div class="relative m-3 space-x-3 flex flex-wrap mx-auto justify-center">
                 <% prod.forEach(product=> { %>
                     <!-- item Card -->
-                   <a href="/productpage/<%=product._id %>"> <div
-                        class="relative h-96 overflow-auto max-w-sm min-w-[340px] bg-white shadow-md rounded-3xl p-2 mx-1 my-3 cursor-pointer group hover:scale-105 transition-transform duration-200">
-                        <div class="overflow-x-hidden rounded-2xl relative ">
-                            <img class="h-40 rounded-2xl w-full object-cover group-hover:hidden transition duration-200"
-                                src="<%=product.images[0]%>" alt="PRODUCT IMAGE">
+                    <a href="/productpage/<%=product._id %>">
+                        <div
+                            class="relative  h-96 overflow-auto max-w-sm min-w-[240px] w-64 bg-white shadow-md rounded-3xl p-2 mx-1 my-3 cursor-pointer group hover:scale-105 transition-transform duration-200">
+                            <div class="overflow-x-hidden rounded-2xl relative ">
+                                <img class="h-40 rounded-2xl w-full object-cover group-hover:hidden transition duration-200"
+                                    src="<%=product.images[0]%>" alt="PRODUCT IMAGE">
 
-                            <img class="h-40 rounded-2xl w-full object-cover hidden group-hover:block transition duration-200"
-                                src="<%=product.images[1]%>" alt="PRODUCT IMAGE">
-                            <button class="absolute right-2 top-2 bg-white rounded-full p-2 group">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-6 w-6 group-hover:opacity-50 opacity-70" fill="none" viewBox="0 0 24 24"
-                                    stroke="black">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
-                            </button>
+                                <img class="h-40 rounded-2xl w-full object-cover hidden group-hover:block transition duration-200"
+                                    src="<%=product.images[1]%>" alt="PRODUCT IMAGE">
+                                <button class=" absolute right-2 top-2 bg-white rounded-full p-2 group">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-6 w-6 group-hover:opacity-50 opacity-70" fill="none"
+                                        viewBox="0 0 24 24" stroke="black">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </button>
+
+                            </div>
+                            <div class="mt-4 pl-2 mb-2 flex justify-between ">
+                                <div>
+                                    <ol class="flex">
+                                        <% for (let index=0; index < product.rating; index++) { %>
+
+                                            <i class="fi fi-ss-star " style="color: yellow;"></i>
+                                            <% } %>
+
+                                    </ol>
+                                    <p class="text-lg font-semibold text-gray-900 mb-0">
+                                        <%=product.name%>
+                                    </p>
+                                    <p class="text-md absolute bottom-5 left-5  text-gray-800 mt-0">₹<%=product.price%>
+                                    </p>
+                                </div>
+                                <div
+                                    class="flex flex-col-reverse mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5 ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70"
+                                        fill="none" viewBox="0 0 24 24" stroke="gray">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </div>
+                            </div>
 
                         </div>
-                        <div class="mt-4 pl-2 mb-2 flex justify-between ">
-                            <div>
-                                <ol class="flex">
-                                    <% for (let index=0; index < product.rating; index++) { %>
-
-                                        <i class="fi fi-ss-star " style="color: yellow;"></i>
-                                        <% } %>
-
-                                </ol>
-                                <p class="text-lg font-semibold text-gray-900 mb-0">
-                                    <%=product.name%>
-                                </p>
-                                <p class="text-md absolute bottom-5 left-5  text-gray-800 mt-0">₹<%=product.price%>
-                                </p>
-                            </div>
-                            <div
-                                class="flex flex-col-reverse mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5 ">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70"
-                                    fill="none" viewBox="0 0 24 24" stroke="gray">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
-                            </div>
-                        </div>
-
-                    </div></a>
+                    </a>
                     <% }); %>
             </div>
             <% }); %>
@@ -159,13 +163,13 @@
 
     </main>
     <script>
-		const toggleButton = document.getElementById('toggle-menu');
-		const mobileMenu = document.getElementById('mobile-menu');
+        const toggleButton = document.getElementById('toggle-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-		toggleButton.addEventListener('click', () => {
-			mobileMenu.classList.toggle('hidden');
-		});
-	</script>
+        toggleButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 </body>
 
