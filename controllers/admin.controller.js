@@ -11,9 +11,7 @@ const Admin = require('../models/admin.models'); //admin schema
 const Catagory = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
 
-
-
-
+//decrypt
 function decrypt(encryptedText, key) {
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
   let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
@@ -98,15 +96,22 @@ const adminController = {
   addCategory: async (req, res) => {
     try {
       let data = req.body;
-
       const subName = data.subName
       const subDescription = data.subDescription
-      let subcategory={}
+      const name=data.name
+      const existingCategory = await Catagory.findOne({ name});
+      if (existingCategory) {
+        // Category with the same name already exists
+        return res.status(409).send('Category with this name already exists.');
+      }
+      let subcategory = {}
+      //checking if there is one subcategory or many 
       if (Array.isArray(subName)) {
+          //joining the name and description of subcaegory
         subcategory = subName.map((value, i) => {
           return { subName: value, subDescription: subDescription[i] }
         })
-      }else{
+      } else {
         subcategory = { subName: subName, subDescription: subDescription }
       }
       data.subcategory = subcategory
@@ -114,7 +119,7 @@ const adminController = {
       data.image = imagePaths;
       delete data.subDescription;
       delete data.subName;
-      const category = await Catagory.create(data);
+      const category = await Catagory.create(data);//adding the data
       if (category) {
         console.log('category added');
         return res.redirect('../admin/categoryManagement');
@@ -134,22 +139,25 @@ const adminController = {
       let subcategory = {}
       delete updatedData.subDescription;
       delete updatedData.subName;
-
-      if (req.file) {    
+      //cheking if the file exists
+      if (req.file) {
         const imagePaths = req.file.path.substring(6);
         updatedData.image = imagePaths;
         console.log(imagePaths);
       }
       let result
+      //check if subcategory exists
       if (subName) {
+        // checking if only one sub category awailable or many
         if (Array.isArray(subName)) {
+          //joining the name and description of subcaegory
           subcategory = subName.map((value, i) => {
             return { subName: value, subDescription: subDescription[i] }
           })
           result = await Catagory.findOneAndUpdate(
             { _id: id },
             {
-              $push: { subcategory: { $each: subcategory } },
+              $push: { subcategory: { $each: subcategory } },//pushing to the existing array
               $set: { ...updatedData },
             },
             {
@@ -158,7 +166,7 @@ const adminController = {
             }
           );
         } else {
-          subcategory = { subName: subName, subDescription: subDescription }
+          subcategory = { subName: subName, subDescription: subDescription }//add oly one data
           result = await Catagory.findOneAndUpdate(
             { _id: id },
             {
@@ -173,6 +181,7 @@ const adminController = {
         }
 
       } else {
+        //if no sub awailaale
         result = await Catagory.findOneAndUpdate(
           { _id: id },
           {
@@ -187,7 +196,7 @@ const adminController = {
       if (!result) {
         return res.status(401).send("not found");
       } else {
-        return res.status(200).redirect('../admin/productManagement')
+        return res.redirect('../admin/categoryManagement');
       }
     } catch (err) { console.log(err) }
 
