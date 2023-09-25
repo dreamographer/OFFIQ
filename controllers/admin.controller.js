@@ -94,23 +94,31 @@ const adminController = {
 
   addCategory: async (req, res) => {
     try {
-      const { name, description, subcategory } = req.body;
+      let data = req.body;
 
-      // Create a new category document
-      const newCategory = new category({
-        name,
-        description,
-        subcategory,
-      });
+      const subName=data.subName
+      const subDescription=data.subDescription
+      const subcategory= subName.map((value,i)=>{
+        return {name : value , description : subDescription[i]}
+      })
+      console.log(subcategory);
+      data.subcategory=subcategory
+      const imagePaths = req.file.path.substring(6);
+      data.image = imagePaths;
+      delete data.subDescription;
+      delete data.subName;
+      console.log(data);
+       
+      // const product = await Products.create(data);
+      // console.log(product);
 
-      // Save the category to the database
-      const savedCategory = await newCategory.save();
-     
-      res.status(201).json(savedCategory); // Respond with the saved category data
+      // if (product) {
+      //   console.log('product added');
+      //   return res.redirect('../admin/productManagement');
+      // }
     } catch (error) {
-      res.status(500).json({ error: 'Error adding category' });
+      console.log(error);
     }
-
   },
 
   // productManagement
@@ -130,7 +138,7 @@ const adminController = {
       const data = req.body;
       console.log(data);
       const imagePaths = req.files.map((file) => file.path.substring(6));
-    data.images = imagePaths;
+      data.images = imagePaths;
       const product = await Products.create(data);
       console.log(product);
 

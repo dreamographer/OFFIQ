@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const subcategorySchema = new mongoose.Schema({
-  name: {
+  subName: {
     type: String,
     required: true,
   },
-  description: {
+  subDescription: {
     type: String,
     required: true,
   },
@@ -23,6 +23,10 @@ const categorySchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
+  },
+  image: {
+    type: String,
+    required: true
   },
   subcategory: [subcategorySchema], // Array of subcategory objects
 });
