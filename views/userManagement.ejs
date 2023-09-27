@@ -12,10 +12,11 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <!-- alphine js CDN -->
-    <title>Dashboard</title>
+    <title>User Management</title>
 </head>
 
-<body>
+<body class="font-[Montserrat]">
+    <!-- header -->
     <div class="flex flex-col h-screen overflow-y-hidden bg-gray-100">
         <div class="bg-white h-20 text-white shadow w-full flex px-6 items-center justify-between">
             <div class="flex items-center">
@@ -42,6 +43,7 @@
                 </button>
             </div>
         </div>
+        <!-- side nav -->
         <div class="flex-1 flex ">
 
             <div class="p-2 bg-white absolute z-20 h-screen transition-all ease-linear duration-300 md:relative w-60 flex-col hidden md:flex"
@@ -73,13 +75,13 @@
                         href="#">
                         <i class="fas fa-file-alt mr-2"></i>Report
                     </a>
+                    <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
+                        href="/admin/logout">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
                 </nav>
 
 
-                <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="#">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </a>
 
             </div>
 

@@ -23,14 +23,15 @@ router.post('/updatePassword',sessionMangement,userController.updatePassword);
 router.get('/login',sessionMangement,userController.loginErr) 
 //render home page
 router.get('/',userAuth,userController.home);
-
 //all Product page
 router.get('/products',userController.products)
-
 //product view page
 router.get('/productpage/:id',userController.productPage)
+// cart
+router.get('/cart',userAuth,userController.cart) //ADD USER auth
 
-
+// add to cart
+router.post('/addToCart',userController.addToCart)
 //logout
 router.get('/logout', userController.logout);
 

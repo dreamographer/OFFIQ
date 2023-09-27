@@ -143,7 +143,6 @@ const adminController = {
       if (req.file) {
         const imagePaths = req.file.path.substring(6);//removing public/from adderees
         updatedData.image = imagePaths;
-        console.log(imagePaths);
       }
       let result
       //check if subcategory exists
@@ -202,6 +201,23 @@ const adminController = {
     } catch (err) { console.log(err) }
 
   },
+  
+
+  //delete category
+  deleteCategory: async (req, res) => {
+    try {
+      console.log(req.params.id);
+      const categoryId = req.params.id;
+      const category = await Catagory.deleteOne({ _id: categoryId });
+      if (!category) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      return res.redirect('../../admin/categoryManagement');
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 
   // productManagement
   productManagement: async (req, res) => {
@@ -219,7 +235,7 @@ const adminController = {
   getSubcategory: async (req, res) => {
     try {
       const categoryId = req.params.cId;
-      // Assuming you have a Category model with a subcategories field
+
       const category = await Catagory.findOne({ _id: categoryId });
       if (!category) {
         return res.status(404).json({ error: 'Category not found' });
@@ -283,6 +299,21 @@ const adminController = {
     }
 
   },
+  deleteProduct: async (req, res) => {
+    try {
+      console.log(req.params.id);
+      const productId = req.params.id;
+   
+      const result = await Products.deleteOne({ _id: productId });
+      if (!result) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      return res.redirect('../../admin/productManagement');
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  },
 
   //logout for the admin
   logout: (req, res) => {
@@ -290,7 +321,7 @@ const adminController = {
       console.log(`${req.session.admin.fullname} logged out`);
     }
     req.session.destroy(); // Destroy session on logout
-    res.redirect('/');
+    res.redirect('/admin');
   },
 
 }

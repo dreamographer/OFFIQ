@@ -8,7 +8,8 @@ router.use(express.json());
 //modals
 const User = require('../models/user.models'); //user schema
 const Products = require('../models/productModel'); //products schema
-const Category = require('../models/categoryModel') //category schema
+const Category = require('../models/categoryModel'); //category schema
+const { json } = require('express');
 
 
 //keys
@@ -169,7 +170,7 @@ const userController = {
 
   //render signup page
   signUp: (req, res) => {
-    res.render('signup');
+    return res.render('signup');
   },
 
 
@@ -223,9 +224,9 @@ const userController = {
       }
       else {
         if (need == "userSignIN") {
-        return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP' })
-        }else{
-        return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' })
+          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP' })
+        } else {
+          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' })
 
         }
 
@@ -244,7 +245,7 @@ const userController = {
       otp = encrypt(otp, key)
       const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
       const need = "forgotPassword"
-      return res.render('otpVerify', { email:email, need: need, error: 'New OTP send' })
+      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send' })
     } catch (error) {
       console.error(error);
     }
@@ -253,16 +254,16 @@ const userController = {
   loginErr: (req, res) => {
     try {
       if (req.session.user) {
-        res.redirect('/');
+        return res.redirect('/');
       } else if (req.session.block) {
-        res.render('login', { errorMessage: 'User account has been blocked by the admin' });
+        return res.render('login', { errorMessage: 'User account has been blocked by the admin' });
       }
       else if (req.session.err) {
         req.session.err = false;
         // Pass an error message to the login view
-        res.render('login', { errorMessage: 'Incorrect email or password' });
+        return res.render('login', { errorMessage: 'Incorrect email or password' });
       } else {
-        res.render('login', { errorMessage: '' });
+        return res.render('login', { errorMessage: '' });
       }
 
     } catch (error) {
@@ -280,7 +281,7 @@ const userController = {
     try {
       const products = await Products.find({});
       let category = await Category.find({});
-      res.render('products', { products: products, category: category });
+      return res.render('products', { products: products, category: category });
     } catch (error) {
       console.log(error);
     }
@@ -289,13 +290,74 @@ const userController = {
   productPage: async (req, res) => {
     try {
       const ID = req.params.id;
+      const user = req.session.user
       const product = await Products.findOne({ '_id': ID });
-      res.render('productView', { product: product });
+      return res.render('productView', { product: product, user: user });
     } catch (error) {
       console.log(error);
     }
 
   },
+
+  // user cart
+  cart: async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      if (!userId) {
+        return res.redirect('/')
+      }
+      let user = await User.findOne({ _id: userId }, { cart: 1 })
+      let cart = user.cart
+      return res.render('cart', { cart: cart });
+    } catch (error) {
+      console.log(error);
+    }
+
+
+  },
+
+  // add to cart
+  addToCart: async (req, res) => {
+    try {
+      const { productId, quantity } = req.body;
+      const userId = req.session.user._id; // Assuming you have access to the user's ID
+
+      // Check if the user is logged in (you may want to add this check)
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+
+      // Find the product and check if there's enough quantity
+      const updatedProduct = await Products.findOneAndUpdate(
+        { _id: productId, quantity: { $gte: quantity } },
+        { $inc: { quantity: -quantity } },
+        { new: true }
+      );
+
+      if (!updatedProduct) {
+        return res.status(204).json({ message: 'Product out of stock' });
+      }
+      const user = await User.findById(userId);
+      // Find the user and update the cart
+      const existingCartItemIndex = user.cart.findIndex(item => item.productId.equals(productId));
+      if (existingCartItemIndex !== -1) {
+          // Cart item with the same productId exists, update its quantity
+          user.cart[existingCartItemIndex].quantity += Number(quantity);
+      } else {
+          // Cart item with the same productId doesn't exist, add a new item
+          user.cart.push({ productId, quantity });
+      }
+      // Save the updated user document
+      await user.save();
+      return res.status(200).json({ message: 'Item added to cart' });
+
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  },
+
+
 
   //logout the user
   logout: (req, res) => {
@@ -303,7 +365,7 @@ const userController = {
       console.log(`${req.session.user.fullname} logged out`);
     }
     req.session.destroy(); // Destroy session on logout
-    res.redirect('/');
+    return res.redirect('/');
   }
 
 

@@ -12,7 +12,7 @@
     <title>Sign In</title>
 </head>
 
-<body>
+<body class="font-[Montserrat]">
     <div class="pt-3 mx-4 mb-96 ">
         <div class="h-96 w-full  bg-[#076AE1] text-center rounded-2xl ">
             <div
@@ -70,6 +70,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- toast -->
         <div id="toast" class="fixed bottom-0 right-0 m-5 p-5 bg-black text-white rounded-lg shadow-lg hidden">
             <div id="progressBar" class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3overflow-hidden  transition-all duration-15000 ease-linear"> 
                 <div class="h-full bg-green-600" style="width: 0%;"></div>
@@ -114,11 +116,6 @@
 
         // Simulate an error message from the server
         
-       
-
-
-
-
         const signupForm = document.getElementById('signupForm');
         const submitButton = document.getElementById('submitButton');
 

@@ -44,6 +44,9 @@ try {
     //update categoru
     router.post('/updateCategory',adminSession,upload.single('categoryImage'),adminController.updateCategory) 
 
+    //Delete Category
+    router.get('/deleteCategory/:id',adminSession,adminController.deleteCategory) 
+
     // product management
     router.get('/productManagement',adminSession,adminController.productManagement)
 
@@ -53,6 +56,8 @@ try {
     // Edit product
     router.post('/editProduct',adminSession,upload.array('productImage'),adminController.editProduct)
 
+    //delete Product
+    router.get('/deleteProduct/:id',adminSession,adminController.deleteProduct)
 
     //get subcategories
     router.get('/getSubcategory/:cId',adminController.getSubcategory)

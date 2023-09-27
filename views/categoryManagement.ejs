@@ -15,7 +15,7 @@
     <title>Dashboard</title>
 </head>
 
-<body>
+<body class="font-[Montserrat]">
     <!-- Main div -->
     <div class="flex flex-col h-screen overflow-y-hidden bg-gray-100">
         <!-- header -->
@@ -76,13 +76,13 @@
                         href="#">
                         <i class="fas fa-file-alt mr-2"></i>Report
                     </a>
+                    <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
+                        href="../admin/logout">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
                 </nav>
 
 
-                <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="#">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </a>
 
             </div>
 
@@ -157,10 +157,12 @@
                                                                 class="fa fa-edit fa-lg" style="color: green"
                                                                 aria-hidden="true"></i>
                                                         </button>
+                                                        <a href="../admin/deleteCategory/<%= catagory._id %>">
                                                         <button>
                                                             <i class="fas fa-thin fa-trash-can fa-lg"
                                                                 style="color: #ff0000;"></i>
                                                         </button>
+                                                    </a>
                                                     </td>
                                                 </tr>
                                                 <% }); %>
@@ -196,7 +198,7 @@
                                                         <label
                                                             class="block md:text-xs float-left text-gray-700">Category
                                                             Name</label>
-                                                        <input type="text" name="categoryName" id="fullname"
+                                                        <input type="text" name="name" id="fullname"
                                                             placeholder="Enter Category Name"
                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                             autofocus="" autocomplete="" required="" :value="name">
