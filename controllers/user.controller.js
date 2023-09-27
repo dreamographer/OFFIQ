@@ -306,9 +306,25 @@ const userController = {
       if (!userId) {
         return res.redirect('/')
       }
-      let user = await User.findOne({ _id: userId }, { cart: 1 })
-      let cart = user.cart
-      return res.render('cart', { cart: cart });
+      const user = await User.findOne({ _id: userId }, { cart: 1 });
+      const cart = user.cart;
+      const products = [];
+    
+      for (const prod of cart) {
+        try {
+          const item = await Products.findById(prod.productId);
+          if (item) {
+            products.push(item);
+          } else {
+            // Handle the case where a product with the given ID is not found
+            console.log(`Product not found for ID: ${prod.productId}`);
+          }
+        } catch (error) {
+          // Handle any errors that occur during product fetching
+          console.error(`Error fetching product: ${error}`);
+        }
+      }
+      return res.render('cart', { cart: cart ,products:products});
     } catch (error) {
       console.log(error);
     }
