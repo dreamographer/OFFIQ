@@ -209,8 +209,9 @@ const adminController = {
       console.log(req.params.id);
       const categoryId = req.params.id;
       const category = await Catagory.deleteOne({ _id: categoryId });
-      if (!category) {
-        return res.status(404).json({ error: 'Product not found' });
+      const products= await Products.deleteMany({category:categoryId})
+      if (!category||!products) {
+        return res.status(404).json({ error: 'category not found' });
       }
       return res.redirect('../../admin/categoryManagement');
     } catch (error) {
