@@ -93,7 +93,7 @@
                     <div class="mx-auto max-w-md">
                         <form action="" class="relative mx-auto w-max">
                             <input type="search"
-                                class="peer cursor-pointer relative z-10 h-12 w-full rounded-full border bg-transparent pl-12 outline-none  focus:cursor-text focus:border-gray-700  "
+                                class="appearance-none peer cursor-pointer relative z-10 h-12 w-full rounded-full border bg-transparent pl-12 outline-none  focus:cursor-text focus:border-gray-700  "
                                 placeholder="Search the user" />
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:gray-200 "
@@ -110,13 +110,10 @@
                         <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                             <div class="w-screen sm:w-full h-auto overflow-auto">
                                 <div x-data="{ showModal : false ,userid:'',block:'',status:''}">
-                                    <table class="min-w-full  table-fixed">
+                                    <table class="min-w-full  table-fixed" id="myTable">
                                         <thead class="bg-gray-200 border-b">
                                             <tr>
-                                                <th scope="col"
-                                                    class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                                                    User ID
-                                                </th>
+                                                
                                                 <th scope="col"
                                                     class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                                                     Full name
@@ -140,10 +137,7 @@
 
                                                 <tr
                                                     class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-                                                    <td
-                                                        class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                        <%= user._id %>
-                                                    </td>
+                                                    
                                                     <td
                                                         class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                                                         <%= user.fullname %>
@@ -244,6 +238,27 @@
                 });
             });
         </script>
+         <!-- search -->
+    <script>
+        const searchInput = document.querySelector('input[type="search"]');
+        const table = document.getElementById('myTable');
+        searchInput.addEventListener('input', filterTable);
+        function filterTable() {
+            const filter = this.value.toUpperCase();
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) { // Start from 1 to skip the header row
+                let row = rows[i];
+                let cells = row.getElementsByTagName('td');
+
+                if (cells[0].textContent.toUpperCase().indexOf(filter) > -1) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+    </script>
         <script>
             const menuBtn = document.getElementById('menuBtn');
             const sideNav = document.getElementById('sideNav');

@@ -309,7 +309,7 @@ const userController = {
       const user = await User.findOne({ _id: userId }, { cart: 1 });
       const cart = user.cart;
       const products = [];
-    
+
       for (const prod of cart) {
         try {
           const item = await Products.findById(prod.productId);
@@ -324,7 +324,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      return res.render('cart', { cart: cart ,products:products});
+      return res.render('cart', { cart: cart, products: products });
     } catch (error) {
       console.log(error);
     }
@@ -357,11 +357,11 @@ const userController = {
       // Find the user and update the cart
       const existingCartItemIndex = user.cart.findIndex(item => item.productId.equals(productId));
       if (existingCartItemIndex !== -1) {
-          // Cart item with the same productId exists, update its quantity
-          user.cart[existingCartItemIndex].quantity += Number(quantity);
+        // Cart item with the same productId exists, update its quantity
+        user.cart[existingCartItemIndex].quantity += Number(quantity);
       } else {
-          // Cart item with the same productId doesn't exist, add a new item
-          user.cart.push({ productId, quantity });
+        // Cart item with the same productId doesn't exist, add a new item
+        user.cart.push({ productId, quantity });
       }
       // Save the updated user document
       await user.save();
@@ -373,6 +373,24 @@ const userController = {
     }
   },
 
+  removeProduct: async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      const pId = req.params.id
+      const status = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { cart: { productId: pId } } }
+      );
+
+      console.log(status);
+      if (status) {
+        return res.status(200).redirect('/cart')
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  },
 
 
   //logout the user

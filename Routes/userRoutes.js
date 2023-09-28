@@ -28,10 +28,11 @@ router.get('/products',userController.products)
 //product view page
 router.get('/productpage/:id',userController.productPage)
 // cart
-router.get('/cart',userAuth,userController.cart) //ADD USER auth
-
+router.get('/cart',userAuth,userController.cart) 
 // add to cart
 router.post('/addToCart',userController.addToCart)
+//remove from the cart
+router.get('/removeProduct/:id',userController.removeProduct)
 //logout
 router.get('/logout', userController.logout);
 
