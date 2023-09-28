@@ -182,7 +182,7 @@
 				</div>
 			</section>
 			<!-- toast -->
-
+			<a href="/cart">
 			<div id="toast"
 				class="hidden fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
 				role="alert">
@@ -224,17 +224,11 @@
 					</svg>
 
 
-					<div id="toastMessage" class="pl-4 text-sm font-normal">Message sent successfully.</div>
+					<div id="toastMessage" class="pl-4 text-sm font-normal"></div>
 				</div>
-			</div>
+			</div></a>
 
-			<div id="toast" class="right-0 m-5 p-5 bg-black text-white rounded-lg shadow-lg hidden">
-				<div id="progressBar"
-					class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3overflow-hidden  transition-all duration-15000 ease-linear">
-					<div class="h-full bg-green-600" style="width: 0%;"></div>
-				</div>
-				<p id="toastMessage" class="mt-2">Error message</p>
-			</div>
+			
 
 		</main>
 
@@ -307,7 +301,7 @@
 			const added = document.getElementById('added')
 			if (errorMessage == "Product out of stock") {
 				err.classList.toggle('hidden')
-			}else{
+			} else {
 				added.classList.toggle('hidden')
 
 

@@ -33,6 +33,9 @@ router.get('/cart',userAuth,userController.cart)
 router.post('/addToCart',userController.addToCart)
 //remove from the cart
 router.get('/removeProduct/:id',userController.removeProduct)
+//update Cart
+router.post('/updateCart',userController.updateCart)
+
 //logout
 router.get('/logout', userController.logout);
 

@@ -346,7 +346,7 @@ const userController = {
       // Find the product and check if there's enough quantity
       const updatedProduct = await Products.findOneAndUpdate(
         { _id: productId, quantity: { $gte: quantity } },
-        { $inc: { quantity: -quantity } },
+        // { $inc: { quantity: -quantity } }, update the quantity
         { new: true }
       );
 
@@ -382,7 +382,7 @@ const userController = {
         { $pull: { cart: { productId: pId } } }
       );
 
-      console.log(status);
+      
       if (status) {
         return res.status(200).redirect('/cart')
       }
@@ -390,6 +390,38 @@ const userController = {
       console.log(error);
     }
 
+  },
+  updateCart: async (req, res) => {
+    try {
+      const pId = req.body.itemId
+      const userId = req.session.user._id
+      const quantity = req.body.amount;
+      const result = await User.updateOne(
+          {
+            _id: userId,
+            'cart.productId': pId, // Match the product id in the user's cart
+          },
+          {
+            $set: {
+              'cart.$.quantity': quantity, // Update the quantity for the matched product
+            },
+          }
+
+        );
+      if (result.nModified === 0) {
+
+        return res.status(200).json({ message: 'No documents were updated' });
+
+      } else {
+        return res.status(200).json({ message: 'Document updated successfully' });
+
+      }
+
+
+
+    } catch (error) {
+      console.log(error);
+    }
   },
 
 

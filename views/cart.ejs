@@ -16,62 +16,71 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% products.forEach((product,i) => { %>
-                            
-                      
-                        <tr class="hover:bg-gray-100 items-center text-center">
-                            <td class="py-6 px-6 border-b flex justify-center">
-                                <div class="flex w-32 ">
-                                    <div class="md:w-32 w-[300px] ">
-                                        <img class=""
-                                            src="<%=product.images[0]%>"
-                                            alt="prod image">
+                        <% products.forEach((product,i)=> { %>
+
+
+                            <tr class="hover:bg-gray-100 items-center text-center">
+                                <td class="py-6 px-6 border-b flex justify-center">
+                                    <div class="flex w-32 ">
+                                        <div class="md:w-32 w-[300px] ">
+                                            <img class="" src="<%=product.images[0]%>" alt="prod image">
+                                        </div>
+                                        <div class="flex flex-col justify-between  flex-grow">
+                                            <span class="font-bold text-sm">
+                                                <%=product.name %>
+                                            </span>
+                                            <% if (product.quantity==0) {%>
+                                                <span class="text-red-500 text-xs">OUT OF STOCK</span>
+                                                <%}else{ %>
+                                                    <span class="text-green-700 text-xs">IN STOCK</span>
+                                                    <%} %>
+                                                        <a href="/removeProduct/<%=product._id%>"
+                                                            class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
+                                        </div>
                                     </div>
-                                    <div class="flex flex-col justify-between  flex-grow">
-                                        <span class="font-bold text-sm"><%=product.name %></span>
-                                        <span class="text-red-500 text-xs">HP</span>
-                                        <a href="/removeProduct/<%=product._id%>"
-                                            class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
+                                </td>
+                                <td class="py-6 flex-col  border-b">
+                                    <div
+                                        class="w-full h-10 text-sm bg-light py-2 flex items-center justify-center space-x-7 rounded-lg font-bold relatives ">
+                                        <div class="minus plus-minus" data-item-id="<%=product._id%>">
+                                            <svg width="12" height="4" xmlns="http://www.w3.org/2000/svg"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink">
+                                                <defs>
+                                                    <path
+                                                        d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
+                                                        id="a" />
+                                                </defs>
+                                                <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#a" />
+                                            </svg>
+                                        </div>
+                                        <span id="amount" data-item-id="<%=product._id%>" class="amount select-none">
+                                            <%= cart[i].quantity %>
+                                        </span>
+                                        <div class="plus plus-minus" data-item-id="<%=product._id%>">
+                                            <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg"
+                                                xmlns:xlink="http://www.w3.org/1999/xlink" id="plus">
+                                                <defs>
+                                                    <path
+                                                        d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
+                                                        id="b" />
+                                                </defs>
+                                                <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#b" id="plus" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="py-6 flex-col  border-b">
-                                <div
-                                    class="w-full h-10 text-sm bg-light py-2 flex items-center justify-center space-x-7 rounded-lg font-bold relatives ">
-                                    <div class="minus plus-minus">
-                                        <svg width="12" height="4" xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <defs>
-                                                <path
-                                                    d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
-                                                    id="a" />
-                                            </defs>
-                                            <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#a" />
-                                        </svg>
-                                    </div>
-                                    <span id="amount" class="amount select-none"><%= cart[i].quantity %></span>
-                                    <div class="plus plus-minus">
-                                        <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg"
-                                            xmlns:xlink="http://www.w3.org/1999/xlink" id="plus">
-                                            <defs>
-                                                <path
-                                                    d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
-                                                    id="b" />
-                                            </defs>
-                                            <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#b" id="plus" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹<%= product.price %></td>
-                            <td class="py-6 px-6 text-center border-b font-semibold text-sm"><%=product.price*cart[i].quantity %></td>
-                        </tr>
-                        <% }); %>
+                                </td>
+                                <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹<%= product.price %>
+                                </td>
+                                <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹
+                                    <%=product.price*cart[i].quantity %>
+                                </td>
+                            </tr>
+                            <% }); %>
                     </tbody>
                 </table>
 
                 <div class="md:block hidden">
-                    <a href="#" class="flex font-semibold text-indigo-600 text-sm mt-10">
+                    <a href="/products" class="flex font-semibold text-indigo-600 text-sm mt-10">
 
                         <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
                             <path
@@ -82,7 +91,7 @@
                 </div>
             </div>
             <div class="md:hidden block pl-5">
-                <a href="#" class="flex font-semibold text-indigo-600 text-sm mt-10">
+                <a href="/products" class="flex font-semibold text-indigo-600 text-sm mt-10">
 
                     <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
                         <path
@@ -95,18 +104,22 @@
             <div id="summary" class="md:w-1/4 px-8 py-10">
                 <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
                 <div class="flex justify-between mt-10 mb-5">
-                    <span class="font-semibold text-sm uppercase"><%=cart.length %> Items</span>
-                    <span class="font-semibold text-sm">₹ 
-                        <%let sum = cart.reduce((accumulator, item) => {
-                        let product = products.find(product =>{return product._id.equals(item.productId) } );
-                        return accumulator + product.price * item.quantity;
-                      }, 0);
-                      %><%=sum%></span>
+                    <span class="font-semibold text-sm uppercase">
+                        <%=cart.length %> Items
+                    </span>
+                    <span class="font-semibold text-sm">₹
+                        <%let sum=cart.reduce((accumulator, item)=> {
+                            let product = products.find(product =>{return product._id.equals(item.productId) } );
+                            return accumulator + product.price * item.quantity;
+                            }, 0);
+                            %><%=sum%>
+                    </span>
                 </div>
 
                 <div class="py-10">
                     <label for="promo" class="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
-                    <input type="text"  id="promo" placeholder="Enter your code" class="p-2 rounded-md border  text-sm w-full">
+                    <input type="text" id="promo" placeholder="Enter your code"
+                        class="p-2 rounded-md border  text-sm w-full">
 
                 </div>
                 <a class="group relative inline-block focus:outline-none focus:ring" href="/download">
@@ -143,18 +156,79 @@
         var pluses = document.getElementsByClassName("plus");
         var minuses = document.getElementsByClassName("minus");
         var amounts = document.getElementsByClassName("amount");
+
         for (let i = 0; i < pluses.length; i++) {
             pluses[i].addEventListener("click", function () {
                 amounts[i].innerHTML = parseInt(amounts[i].innerHTML) + 1;
+
+                var itemId = this.dataset.itemId;
+                var newAmount = parseInt(amounts[i].innerHTML);
+
+                // Send the updated amount to the server
+                fetch('/updateCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ itemId: itemId, amount: newAmount }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                window.location.reload()
+
+
             });
 
             minuses[i].addEventListener("click", function () {
-                if (parseInt(amounts[i].innerHTML) > 0) {
+
+                if (parseInt(amounts[i].innerHTML) >= 0) {
                     amounts[i].innerHTML = parseInt(amounts[i].innerHTML) - 1;
+
+                    var itemId = this.dataset.itemId;
+                    var newAmount = parseInt(amounts[i].innerHTML);
+                    // chek if its less than 0
+                    if (newAmount <= 0) {
+                        window.location.href = `/removeProduct/${itemId}`
+                    }else{
+                    // Send the updated amount to the server
+                    fetch('/updateCart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ itemId: itemId, amount: newAmount }),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                        window.location.reload()
+                    }
                 }
             });
         }
+
     </script>
+    <script>
+        <!--LOADING  -->
+        var scrollPosition = [
+            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+            self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        ];
+
+        window.onload = function () {
+            window.scrollTo(scrollPosition[0], scrollPosition[1]);
+        };
+    </script>
+
     <script>
         const toggleButton = document.getElementById('toggle-menu');
         const mobileMenu = document.getElementById('mobile-menu');
