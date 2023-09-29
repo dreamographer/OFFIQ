@@ -10,6 +10,7 @@ const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
 const Catagory = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
+const Order = require('../models/order.model'); //order schema
 
 //decrypt
 function decrypt(encryptedText, key) {
@@ -201,7 +202,7 @@ const adminController = {
     } catch (err) { console.log(err) }
 
   },
-  
+
 
   //delete category
   deleteCategory: async (req, res) => {
@@ -209,8 +210,8 @@ const adminController = {
       console.log(req.params.id);
       const categoryId = req.params.id;
       const category = await Catagory.deleteOne({ _id: categoryId });
-      const products= await Products.deleteMany({category:categoryId})
-      if (!category||!products) {
+      const products = await Products.deleteMany({ category: categoryId })
+      if (!category || !products) {
         return res.status(404).json({ error: 'category not found' });
       }
       return res.redirect('../../admin/categoryManagement');
@@ -232,6 +233,7 @@ const adminController = {
 
     }
   },
+
   //get sub category
   getSubcategory: async (req, res) => {
     try {
@@ -241,7 +243,7 @@ const adminController = {
       if (!category) {
         return res.status(404).json({ error: 'Category not found' });
       }
-      
+
       const subcategories = category.subcategory;
       return res.status(200).json({ subcategories });
     } catch (error) {
@@ -249,6 +251,8 @@ const adminController = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  // add new product
   addProduct: async (req, res) => {
     try {
       const data = req.body;
@@ -266,6 +270,8 @@ const adminController = {
       console.log(error);
     }
   },
+
+  // edit the product
   editProduct: async (req, res) => {
     try {
       const data = req.body;
@@ -279,13 +285,13 @@ const adminController = {
         product = await Products.updateOne(
           { _id: id },
           { $push: { images: { $each: imagePaths } }, $set: { ...data } },
-          { new: true } 
+          { new: true }
         );
       } else {
         product = await Products.updateOne(
           { _id: id },
           { $set: { ...data } },
-          { new: true } 
+          { new: true }
         );
       }
 
@@ -300,11 +306,13 @@ const adminController = {
     }
 
   },
+
+  // delete the products
   deleteProduct: async (req, res) => {
     try {
       console.log(req.params.id);
       const productId = req.params.id;
-   
+
       const result = await Products.deleteOne({ _id: productId });
       if (!result) {
         return res.status(404).json({ error: 'Product not found' });
@@ -315,6 +323,55 @@ const adminController = {
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   },
+
+  // order management
+  orderManagement: async (req, res) => {
+    try {
+      const order = await Order.find({});
+
+      let products = []
+      for (const ord of order) {
+        for (const prod of ord.items) {
+          try {
+            const item = await Products.findById(prod.productId);
+
+            if (item) {
+              // Check if product already exists in the array
+              const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+              // If product does not exist in the array, push it
+              if (!productExists) {
+                products.push(item);
+              }
+            } else {
+              console.log(`Product not found for ID: ${prod.productId}`);
+            }
+          } catch (error) {
+            console.error(`Error fetching product: ${error}`);
+          }
+        }
+      }
+      console.log(products);
+      return res.render('orderManagement', { order: order, products: products })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+
+  //updata status
+  updateStatus:async(req,res)=>{
+    try {
+      const oId=req.body.oId
+      const status=req.body.status
+      const update=await Order.findByIdAndUpdate(oId,{$set:{status:status}})
+      return
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
 
   //logout for the admin
   logout: (req, res) => {

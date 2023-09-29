@@ -12,6 +12,20 @@ const cartItemSchema = new mongoose.Schema({
         min: 1, // Ensure quantity is at least 1
     },
 });
+const addressSchema = new mongoose.Schema({
+    addressLine1: {
+        type: String,
+        required: true
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    pin: {
+        type: Number,
+        match: /^\d{6}$/,
+    },
+});
 const orderSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -35,10 +49,7 @@ const orderSchema = new Schema({
         type: String,
         // required: true
     },
-    shippingAddress: {
-        type: String, //chechk the data type
-        required: false
-    },
+    shippingAddress: addressSchema,
     paymentMode: {
         type: String,
         required: true

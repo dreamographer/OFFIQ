@@ -1,47 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/dist/output.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;900&display=swap"
-        rel="stylesheet">
+<%-include('header')%>
     <!-- alphine js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <title>Product Management</title>
-</head>
-
-<body class="font-[Montserrat]">
-    <!-- Main div -->
-    <div class="flex flex-col h-screen  bg-gray-100">
-        <!-- header -->
-        <div class="bg-white h-20 text-white shadow w-full flex px-6 items-center justify-between">
-            <div class="flex items-center">
-                <div class="md:hidden flex items-center">
-                    <button id="menuBtn">
-                        <i class="fas fa-bars text-gray-500 text-lg"></i>
-                    </button>
-                </div>
-                <div class="flex  items-center">
-                    <img src="/images/offiq blacklogo.png" alt="Logo"
-                        class="md:w-28 md:translate-x-0 translate-x-[100%] w-24 h-18 mr-2 ">
-                </div>
-
-            </div>
-            <div class="space-x-5">
-                <button>
-                    <i class="fas fa-bell text-gray-500 text-lg"></i>
-                </button>
-
-                <button>
-                    <i class="fas fa-user text-gray-500 text-lg"></i>
-                </button>
-            </div>
-        </div>
-
         <!-- body div -->
         <div class="flex-1 flex ">
 
@@ -68,7 +27,7 @@
                     </a>
 
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
+                        href="../admin/orderManagement">
                         <i class="fas fa-exchange-alt mr-2"></i>Order Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"

@@ -4,13 +4,13 @@ const adminController = require('../controllers/admin.controller')
 
 //middlewares
 const adminAuth = require('../middlewares/adminAuth')
-const adminSession=require('../middlewares/adminSession')
+const adminSession = require('../middlewares/adminSession')
 
-const path=require('path');
+const path = require('path');
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json())
 //multer
-const multer  = require('multer')
+const multer = require('multer')
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'public/uploads/');
@@ -23,52 +23,59 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 try {
-    //admin login
-    router.post('/login', adminController.adminLogin);
+  //admin login
+  router.post('/login', adminController.adminLogin);
 
-    //login  fot the admin
-    router.get('/', adminAuth, adminController.adminDashboard);
+  //login  fot the admin
+  router.get('/', adminAuth, adminController.adminDashboard);
 
-    //dashboard of the admin
-    router.get('/dashboard',adminSession, adminController.adminDashboard);
+  //dashboard of the admin
+  router.get('/dashboard', adminSession, adminController.adminDashboard);
 
-    //usermangement
-    router.get('/userMangement',adminSession,adminController.userManagement);
+  //usermangement
+  router.get('/userMangement', adminSession, adminController.userManagement);
 
-    //catagory managemetn 
-    router.get('/categoryManagement',adminSession,adminController.categoryManagement)
+  //update blocked
+  router.put('/update-block-status/:userId', adminSession, adminController.updateBlock)
 
-    //add category
-    router.post('/addCategory',adminSession,upload.single('categoryImage'),adminController.addCategory)
+  //catagory managemetn 
+  router.get('/categoryManagement', adminSession, adminController.categoryManagement)
 
-    //update categoru
-    router.post('/updateCategory',adminSession,upload.single('categoryImage'),adminController.updateCategory) 
+  //add category
+  router.post('/addCategory', adminSession, upload.single('categoryImage'), adminController.addCategory)
 
-    //Delete Category
-    router.get('/deleteCategory/:id',adminSession,adminController.deleteCategory) 
+  //update categoru
+  router.post('/updateCategory', adminSession, upload.single('categoryImage'), adminController.updateCategory)
 
-    // product management
-    router.get('/productManagement',adminSession,adminController.productManagement)
+  //Delete Category
+  router.get('/deleteCategory/:id', adminSession, adminController.deleteCategory)
 
-    // Add product
-    router.post('/addProduct',adminSession,upload.array('productImage'),adminController.addProduct)
+  // product management
+  router.get('/productManagement', adminSession, adminController.productManagement)
 
-    // Edit product
-    router.post('/editProduct',adminSession,upload.array('productImage'),adminController.editProduct)
+  // Add product
+  router.post('/addProduct', adminSession, upload.array('productImage'), adminController.addProduct)
+ 
+  // Edit product
+  router.post('/editProduct', adminSession, upload.array('productImage'), adminController.editProduct)
 
-    //delete Product
-    router.get('/deleteProduct/:id',adminSession,adminController.deleteProduct)
+  //delete Product
+  router.get('/deleteProduct/:id', adminSession, adminController.deleteProduct)
 
-    //get subcategories
-    router.get('/getSubcategory/:cId',adminController.getSubcategory)
-    //update blocked
-    
-    router.put('/update-block-status/:userId',adminSession,adminController.updateBlock)
+  //get subcategories
+  router.get('/getSubcategory/:cId', adminController.getSubcategory)
 
-    //logout
-    router.get('/logout', adminController.logout);
+  // order management
+  router.get('/orderManagement',adminSession,adminController.orderManagement)
 
-    module.exports = router;
+  // update status
+  router.post('/updateStatus', adminController.updateStatus)
+
+
+  //logout
+  router.get('/logout', adminController.logout);
+
+  module.exports = router;
 } catch (error) {
-    console.log(error);
+  console.log(error);
 }

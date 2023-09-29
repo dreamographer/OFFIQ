@@ -224,9 +224,9 @@ const userController = {
       }
       else {
         if (need == "userSignIN") {
-          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP' })
+          return res.render('otpVerify', { email: email, need: "userSignIN", error: '' })
         } else {
-          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' })
+          return res.render('otpVerify', { email: email, need: "forgotPassword", error: '' })
 
         }
 
