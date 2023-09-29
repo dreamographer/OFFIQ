@@ -41,6 +41,10 @@ router.get('/checkout',userAuth,userController.checkOut)
 router.post('/addAddress',userAuth ,userController.addAddress )   //address Add
 // order
 router.post('/order',userAuth,userController.order)
+// user profile
+router.get('/myAccout',userAuth,userController.userProfile)
+// cancel order
+router.post('/cancelOrder',userAuth,userController.cancelOrder)
 //logout
 router.get('/logout', userController.logout);
 

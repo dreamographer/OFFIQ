@@ -1,0 +1,131 @@
+<%-include('header') %>
+    <div class="p-3 mt-28 w-screen overflow-auto ">
+
+        <h4 class="border-b-2 text-lg font-bold">MY ORDERS</h4>
+        <table class="  table-fixed " id="myTable">
+            <thead class="bg-gray-200 border-b">
+                <tr>
+
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Order Id
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Payment Id
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Items
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Total amount
+                    </th>
+
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Payment Mode
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Shipping address
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Status
+                    </th>
+                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                        Action
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <% order.forEach((order,i)=> { %>
+                    <tr class="bg-white border-b  transition duration-300 ease-in-out hover:bg-gray-100">
+
+                        <td
+                            class=" text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                            <%= order._id %>
+                        </td>
+
+                        <td
+                            class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                            <%= order.paymentId %>
+                        </td>
+
+                        <td
+                            class="text-sm text-gray-900 font-light max-w-sm overflow-hidden px-6 py-4 whitespace-nowrap">
+                            <% order.items.forEach(item=> {%>
+                                <% let product=products.find(prod=> prod._id.equals(item.productId))%>
+                                    <%=product.name%> x <%=item.quantity %> <br>
+                                            <% }); %>
+                        </td>
+                        <td
+                            class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                            <%= order.total %>
+                        </td>
+
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <%= order.paymentMode %>
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <%= order.shippingAddress.addressLine1 %> <br>
+                                <%= order.shippingAddress.city %> <br>
+                                    <%= order.shippingAddress.pin %> <br>
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+
+                            <% if (order.status=='delivered' ) { %>
+                                <span
+                                    class="text-sm text-green-600 font-light px-6 py-4 whitespace-nowrap">DELIVERED</span>
+                                <% }else if (order.status=='cancelled' ) { %>
+                                    <span
+                                        class="text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCELLED</span>
+
+                                    <% }else if (order.status=='pending' ){ %>
+                                        <span
+                                            class="text-sm text-yellow-600 font-light px-6 py-4 whitespace-nowrap">PENDING</span>
+
+                                        <% } else if (order.status=='confirmed' ){ %>
+                                            <span
+                                                class="text-sm text-orange-600 font-light px-6 py-4 whitespace-nowrap">CONFIRMED</span>
+
+                                            <% } %>
+                        </td>
+                        <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                            <% if (order.status!='cancelled' ) { %>
+                            <button data-oid="<%= order._id %>"
+                                class="btn text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCEL ORDER
+                            </button>
+                            <% } else{%>
+                                <button data-oid="<%= order._id %>"
+                                    class="btn text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">
+                                </button>
+                                <% } %>
+                        </td>
+
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <!-- updation of status -->
+    <script>
+        const btn = document.querySelectorAll('.btn')
+        btn.forEach(item => {
+            item.addEventListener('click', () => {
+                const status = "cancelled"
+                const oid = item.dataset.oid;
+                fetch('/cancelOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: status, oId: oid }),
+                })
+                    .then(response => response.json())
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                window.location.reload()
+
+            })
+
+        });
+
+    </script>
+    </body>

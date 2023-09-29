@@ -495,10 +495,6 @@ const userController = {
     } catch (error) {
       console.log(error);
     }
-
-
-
-
   },
   // order
   order: async (req, res) => {
@@ -511,7 +507,6 @@ const userController = {
 
       const { total, address, paymentMode } = req.body
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
-      console.log(shippingAddress);
       const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
       const result = await Order.create(data)
       items.forEach(async (prod) => {
@@ -533,7 +528,85 @@ const userController = {
     }
   },
 
+  orderManagement: async (req, res) => {
+    try {
+      const order = await Order.find({});
 
+      let products = []
+      for (const ord of order) {
+        for (const prod of ord.items) {
+          try {
+            const item = await Products.findById(prod.productId);
+
+            if (item) {
+              // Check if product already exists in the array
+              const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+              // If product does not exist in the array, push it
+              if (!productExists) {
+                products.push(item);
+              }
+            } else {
+              console.log(`Product not found for ID: ${prod.productId}`);
+            }
+          } catch (error) {
+            console.error(`Error fetching product: ${error}`);
+          }
+        }
+      }
+      console.log(products);
+      return res.render('orderManagement', { order: order, products: products })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  userProfile:async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+
+      const order = await Order.find({userId});
+
+      let products = []
+      for (const ord of order) {
+        for (const prod of ord.items) {
+          try {
+            const item = await Products.findById(prod.productId);
+
+            if (item) {
+              // Check if product already exists in the array
+              const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+              // If product does not exist in the array, push it
+              if (!productExists) {
+                products.push(item);
+              }
+            } else {
+              console.log(`Product not found for ID: ${prod.productId}`);
+            }
+          } catch (error) {
+            console.error(`Error fetching product: ${error}`);
+          }
+        }
+      }
+      return res.render('user', { order: order, products: products })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  cancelOrder:async(req,res)=>{
+    try {
+      const oId=req.body.oId
+      const status=req.body.status
+      console.log(status,oId);
+      const update=await Order.findByIdAndUpdate(oId,{$set:{status:status}})
+      return
+    } catch (error) {
+      console.log(error);
+    }
+  },
   //logout the user
   logout: (req, res) => {
     if (req.session.user) {
