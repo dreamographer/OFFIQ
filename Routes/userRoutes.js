@@ -30,12 +30,17 @@ router.get('/productpage/:id',userController.productPage)
 // cart
 router.get('/cart',userAuth,userController.cart) 
 // add to cart
-router.post('/addToCart',userController.addToCart)
+router.post('/addToCart',userAuth,userController.addToCart)
 //remove from the cart
-router.get('/removeProduct/:id',userController.removeProduct)
+router.get('/removeProduct/:id',userAuth,userController.removeProduct)
 //update Cart
-router.post('/updateCart',userController.updateCart)
-
+router.post('/updateCart',userAuth,userController.updateCart)
+//checkout
+router.get('/checkout',userAuth,userController.checkOut) 
+//add address
+router.post('/addAddress',userAuth ,userController.addAddress )   //address Add
+// order
+router.post('/order',userAuth,userController.order)
 //logout
 router.get('/logout', userController.logout);
 

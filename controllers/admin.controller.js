@@ -241,7 +241,7 @@ const adminController = {
       if (!category) {
         return res.status(404).json({ error: 'Category not found' });
       }
-      // Assuming subcategories is an array of subcategory objects within the Category model
+      
       const subcategories = category.subcategory;
       return res.status(200).json({ subcategories });
     } catch (error) {

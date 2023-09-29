@@ -122,22 +122,20 @@
                         class="p-2 rounded-md border  text-sm w-full">
 
                 </div>
-                <a class="group relative inline-block focus:outline-none focus:ring" href="/download">
+                <a class="group relative inline-block focus:outline-none focus:ring" >
+                
                     <span
-                        class="absolute inset-0 translate-x-0 translate-y-0 bg-red-600 transition-transform group-hover:translate-y-1.5 group-hover:translate-x-1.5"></span>
-
-                    <span
-                        class="relative inline-block  border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
+                        class="relative inline-block rounded-md  border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
                         APPLY
                     </span>
                 </a>
                 <div class="border-t mt-8">
                     <div class="flex font-semibold justify-between py-6 text-sm uppercase">
                         <span>Total cost</span>
-                        <span>$600</span>
+                        <span>₹<%=sum%></span>
                     </div>
                     <a class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring"
-                        href="/download">
+                        href="/checkout">
                         <span
                             class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
 
@@ -148,9 +146,55 @@
                     </a>
                 </div>
             </div>
+            <div id="toastContainer">
+            <% if (msg) {  %>
+                <div id="toast"
+				class=" fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+				role="alert">
+				<div class="flex">
+					<svg width="24" id="added" height="24" viewBox="0 0 24 24" fill="none"
+						xmlns="http://www.w3.org/2000/svg">
+						<g clip-path="url(#clip0_259_1647)">
+							<path
+								d="M20.164 13H5.419L4.478 5H12V3H4.242L4.2 2.648C4.11382 1.9186 3.76306 1.24615 3.21419 0.758104C2.66532 0.270054 1.95647 0.000312836 1.222 0L0 0V2H1.222C1.46693 2.00003 1.70334 2.08996 1.88637 2.25272C2.06941 2.41547 2.18634 2.63975 2.215 2.883L3.8 16.351C3.88595 17.0806 4.23662 17.7533 4.78551 18.2415C5.3344 18.7298 6.04337 18.9997 6.778 19H20V17H6.778C6.53291 16.9999 6.29638 16.9099 6.11333 16.7469C5.93027 16.5839 5.81343 16.3594 5.785 16.116L5.654 15H21.836L22.736 10H20.705L20.164 13Z"
+								fill="#374957" />
+							<path
+								d="M7 24.0006C8.10456 24.0006 8.99999 23.1052 8.99999 22.0006C8.99999 20.896 8.10456 20.0006 7 20.0006C5.89543 20.0006 5 20.896 5 22.0006C5 23.1052 5.89543 24.0006 7 24.0006Z"
+								fill="#374957" />
+							<path
+								d="M17 24.0006C18.1046 24.0006 19 23.1052 19 22.0006C19 20.896 18.1046 20.0006 17 20.0006C15.8954 20.0006 15 20.896 15 22.0006C15 23.1052 15.8954 24.0006 17 24.0006Z"
+								fill="#374957" />
+							<path
+								d="M17.0778 8.5427H17.1108C17.3588 8.54352 17.6046 8.49505 17.8337 8.40012C18.0629 8.30519 18.2709 8.16568 18.4458 7.9897L23.7067 2.7287L22.2927 1.3147L17.1118 6.5007L14.8678 4.1607L13.4268 5.5467L15.7328 7.9467C15.9051 8.13172 16.1131 8.27992 16.3443 8.38236C16.5754 8.48479 16.8249 8.53933 17.0778 8.5427Z"
+								fill="#374957" />
+						</g>
+						<defs>
+							<clipPath id="clip0_259_1647">
+								<rect width="24" height="24" fill="white" />
+							</clipPath>
+						</defs>
+					</svg>
+				
 
+
+					<div id="toastMessage" class="pl-4 text-sm font-normal"><%=msg %></div>
+				</div>
+			</div>
+            <%}%>
+        </div>
         </div>
     </div>
+
+
+    <!-- remove the toast -->
+    <script>
+        setTimeout(function() {
+            var toast = document.getElementById('toast');
+            if(toast) {
+                toast.remove();
+            }
+        }, 5000);
+    </script>
     <!-- item amount toggle  -->
     <script>
         var pluses = document.getElementsByClassName("plus");

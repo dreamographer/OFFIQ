@@ -9,8 +9,8 @@ router.use(express.json());
 const User = require('../models/user.models'); //user schema
 const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
-const { json } = require('express');
-
+const Order = require('../models/order.model'); //order schema
+const googelUser = require('../models/emailUserModel');//schema for google auth users
 
 //keys
 const algorithm = 'aes-256-cbc';
@@ -287,6 +287,7 @@ const userController = {
     }
   },
 
+  //render product page
   productPage: async (req, res) => {
     try {
       const ID = req.params.id;
@@ -324,7 +325,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      return res.render('cart', { cart: cart, products: products });
+      return res.render('cart', { cart: cart, products: products, msg: '' });
     } catch (error) {
       console.log(error);
     }
@@ -336,15 +337,13 @@ const userController = {
   addToCart: async (req, res) => {
     try {
       const { productId, quantity } = req.body;
-      const userId = req.session.user._id; // Assuming you have access to the user's ID
+      const userId = req.session.user._id;
 
-      // Check if the user is logged in (you may want to add this check)
+
       if (!userId) {
         return res.status(401).json({ message: 'User not authenticated' });
       }
-
-      // Find the product and check if there's enough quantity
-      const updatedProduct = await Products.findOneAndUpdate(
+      const updatedProduct = await Products.findOne(
         { _id: productId, quantity: { $gte: quantity } },
         // { $inc: { quantity: -quantity } }, update the quantity
         { new: true }
@@ -354,17 +353,34 @@ const userController = {
         return res.status(204).json({ message: 'Product out of stock' });
       }
       const user = await User.findById(userId);
-      // Find the user and update the cart
-      const existingCartItemIndex = user.cart.findIndex(item => item.productId.equals(productId));
-      if (existingCartItemIndex !== -1) {
-        // Cart item with the same productId exists, update its quantity
-        user.cart[existingCartItemIndex].quantity += Number(quantity);
+      if (user.googleAuth) {//for googlE aUTH USERS
+        const gUser = await googelUser.findById(userId);
+        // Find the user and update the cart
+        const existingCartItemIndex = gUser.cart.findIndex(item => item.productId.equals(productId));
+        if (existingCartItemIndex !== -1) {
+          // Cart item with the same productId exists, update its quantity
+          gUser.cart[existingCartItemIndex].quantity += Number(quantity);
+        } else {
+          // Cart item with the same productId doesn't exist, add a new item
+          gUser.cart.push({ productId, quantity });
+        }
+
+        // Save the updated user document
+        await gUser.save();
       } else {
-        // Cart item with the same productId doesn't exist, add a new item
-        user.cart.push({ productId, quantity });
+        // Find the user and update the cart
+
+        const existingCartItemIndex = user.cart.findIndex(item => item.productId.equals(productId));
+        if (existingCartItemIndex !== -1) {
+          // Cart item with the same productId exists, update its quantity
+          user.cart[existingCartItemIndex].quantity += Number(quantity);
+        } else {
+          // Cart item with the same productId doesn't exist, add a new item
+          user.cart.push({ productId, quantity });
+        }
+        // Save the updated user document
+        await user.save();
       }
-      // Save the updated user document
-      await user.save();
       return res.status(200).json({ message: 'Item added to cart' });
 
     } catch (error) {
@@ -373,6 +389,7 @@ const userController = {
     }
   },
 
+  // remove product from the cart
   removeProduct: async (req, res) => {
     try {
       const userId = req.session.user._id;
@@ -382,7 +399,7 @@ const userController = {
         { $pull: { cart: { productId: pId } } }
       );
 
-      
+
       if (status) {
         return res.status(200).redirect('/cart')
       }
@@ -391,23 +408,26 @@ const userController = {
     }
 
   },
+
+  //update the cart
   updateCart: async (req, res) => {
     try {
       const pId = req.body.itemId
       const userId = req.session.user._id
       const quantity = req.body.amount;
-      const result = await User.updateOne(
-          {
-            _id: userId,
-            'cart.productId': pId, // Match the product id in the user's cart
-          },
-          {
-            $set: {
-              'cart.$.quantity': quantity, // Update the quantity for the matched product
-            },
-          }
 
-        );
+      const result = await User.updateOne(
+        {
+          _id: userId,
+          'cart.productId': pId, // Match the product id in the user's cart
+        },
+        {
+          $set: {
+            'cart.$.quantity': quantity, // Update the quantity for the matched product
+          },
+        }
+
+      );
       if (result.nModified === 0) {
 
         return res.status(200).json({ message: 'No documents were updated' });
@@ -417,8 +437,97 @@ const userController = {
 
       }
 
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //checkout page
+  checkOut: async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      if (!userId) {
+        return res.redirect('/')
+      }
+      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
+      const cart = user.cart;
+      const addresses = user.addresses
+
+      const products = [];
+      for (const prod of cart) {
+        try {
+          const item = await Products.findById(prod.productId);
+          if (item) {
+            products.push(item);
+          } else {
+            //  product with the given ID is not found
+            console.log(`Product not found for ID: ${prod.productId}`);
+          }
+        } catch (error) {
+          // Handle any errors that occur during product fetching
+          console.error(`Error fetching product: ${error}`);
+        }
+      }
+      // return res.json({cart,  products,addresses})
+      return res.render('checkout', { cart: cart, products: products, address: addresses });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  addAddress: async (req, res) => {
+    try {
+      const { addressLine1, city, tag } = req.body
+      let { pin } = req.body
+      pin = Number(pin)
+      const data = { addressLine1, city, tag, pin }
+      console.log(data);
+      const userId = req.session.user._id;
+      const user = await User.findById(userId)
+      if (user.googleAuth) {//for googlE aUTH USERS
+        const gUser = await googelUser.findById(userId);
+        gUser.addresses.push(data)
+        gUser.save()
+      }else{
+        user.addresses.push(data)
+        user.save()
+      }
+      return res.redirect('/checkout')
+    } catch (error) {
+      console.log(error);
+    }
 
 
+
+
+  },
+  // order
+  order: async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      const paymentId = crypto.randomBytes(3).toString('hex')
+      const status = 'pending'
+      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
+      const items = user.cart;
+
+      const { total, address, paymentMode } = req.body
+      const shippingAddress = user.addresses.find(addr => addr.tag == address)
+      console.log(shippingAddress);
+      const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
+      const result = await Order.create(data)
+      items.forEach(async (prod) => {
+        let updatedProduct = await Products.findOneAndUpdate(
+          { _id: prod.productId },
+          { $inc: { quantity: -prod.quantity } }, //update the quantity
+          { new: true }
+        );
+
+      });
+      let updatedCart = await User.findOneAndUpdate(
+        { _id: userId },
+        { $set: { cart: [] } }, //update the cart
+        { new: true }
+      );
+      return res.render('cart', { cart: [], products: [], msg: 'ORDER SUCCESFULLY PLACED' });
     } catch (error) {
       console.log(error);
     }

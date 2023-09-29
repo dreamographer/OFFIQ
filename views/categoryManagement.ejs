@@ -12,12 +12,12 @@
     <!-- alphine js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <title>Dashboard</title>
+    <title>Category Mangement</title>
 </head>
 
 <body class="font-[Montserrat]">
     <!-- Main div -->
-    <div class="flex flex-col h-screen overflow-y-hidden bg-gray-100">
+    <div class="flex flex-col h-screen overflow-hidden bg-gray-100">
         <!-- header -->
         <div class="bg-white h-20 text-white shadow w-full flex px-6 items-center justify-between">
             <div class="flex items-center">
@@ -87,13 +87,13 @@
             </div>
 
             <!-- content div -->
-            <div class="flex justify-center w-full">
-                <div class="flex flex-col pt-10 ">
+            <div class="flex justify-center w-full overflow-auto">
+                <div class="flex flex-col overflow-auto pt-10 ">
                     <!-- search -->
                     <div class="mx-auto max-w-md">
                         <form action="" class="relative mx-auto w-max">
                             <input type="search"
-                                class="appearance-none peer cursor-pointer relative z-10 h-12 w-full rounded-full border bg-transparent pl-12 outline-none  focus:cursor-text focus:border-gray-700  "
+                                class="appearance-none cursor-pointer relative z-10 h-12 w-full rounded-full border bg-transparent pl-12 outline-none  focus:cursor-text focus:border-gray-700  "
                                 placeholder="Search Catagory" />
                             <svg xmlns="http://www.w3.org/2000/svg"
                                 class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:gray-200 "
@@ -106,12 +106,14 @@
 
                     </div>
 
-                    <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
+                    <div class="overflow-x-hidden  lg:mx-0.5">
                         <!-- initialization of aphine values -->
                         <div x-data="{ editModal : false ,addModel:false,name:'',desc:'',id:''}"
                             class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
-                            <div class="w-screen sm:w-full h-auto overflow-auto">
-                                <div>
+                            <div class=" h-auto w- overflow-auto">
+
+                                <div class="w-80 md:w-[33rem] sm:w-[40rem] lg:w-[70rem] overflow-auto">
+
                                     <!-- category Table -->
                                     <table class="min-w-full  table-fixed " id="myTable">
                                         <thead class="bg-gray-200 border-b">
@@ -140,7 +142,7 @@
                                                         <%= catagory.name %>
                                                     </td>
                                                     <td
-                                                        class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                                                        class="text-sm text-gray-900 font-light max-w-sm overflow-hidden px-6 py-4 whitespace-nowrap">
                                                         <%= catagory.description %>
                                                     </td>
                                                     <td
@@ -345,7 +347,7 @@
 
                                 </div>
                             </div>
-                            <div class=" mt-10 flex w-full justify-center">
+                            <div class=" mt-10 flex w-full md:w-60 justify-center">
                                 <button @click="addModel = !addModel"
                                     class="middle none w-52 center mr-4 rounded-lg bg-[#076AE1] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                     data-ripple-light="true">
@@ -361,7 +363,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- adding sub category -->
     <script>
