@@ -75,7 +75,7 @@ const sendOTP = async (name, email, otp) => {
 
 //verification of otp
 async function verifyOTP(email, otp) {
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email },{addresses:0,cart:0,wishlist:0});
   if (user && otp === decrypt(user.otp, key) && Date.now() <= user.otpExpires) {
     user.verified = true;
     user.otp = undefined;
@@ -103,7 +103,7 @@ const userController = {
   userLogin: async (req, res) => {
     const { email, password } = req.body;//data given by the user
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email },{addresses:0,cart:0,wishlist:0});
       if (user != null) {//data from the DB
         if (!(user.googleAuth) && decrypt(user.password, key) === password && !(user.blocked)) {
           req.session.user = user;
@@ -272,15 +272,18 @@ const userController = {
   },
 
   //rendering the home page
-  home: (req, res) => {
-    return res.redirect('/products');
+  home: async(req, res) => {
+    let category = await Category.find({});
+
+    return res.render('home', { category: category });
   },
 
   //render products view page
   products: async (req, res) => {
     try {
-      const products = await Products.find({});
-      let category = await Category.find({});
+      const cId=req.params.id
+      const products = await Products.find({category:cId});
+      let category = await Category.find({_id:cId});
       return res.render('products', { products: products, category: category });
     } catch (error) {
       console.log(error);
@@ -565,7 +568,14 @@ const userController = {
   userProfile:async (req, res) => {
     try {
       const userId = req.session.user._id;
+      console.log(req.session.user);
+      const user={
+        _id:req.session.user._id,
+        fullname:req.session.user.fullname,
+        email :  req.session.user.email ,
+        profileUrl:req.session.user.profileUrl
 
+      }
       const order = await Order.find({userId});
 
       let products = []
@@ -590,7 +600,7 @@ const userController = {
           }
         }
       }
-      return res.render('user', { order: order, products: products })
+      return res.render('user', { order: order, products: products ,user:user})
 
     } catch (error) {
       console.log(error);

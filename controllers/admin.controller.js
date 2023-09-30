@@ -295,7 +295,7 @@ const adminController = {
         );
       }
 
-      console.log(product);
+      
 
       if (product) {
         console.log('product added');

@@ -1,8 +1,14 @@
 <%-include('header') %>
     <div class="p-3 mt-28 w-screen overflow-auto ">
+        <div class="flex w-screen justify-center">
 
+            <img src="<% if(user.profileUrl == null) {%>/images/user.png<%}else{ %><%=user.profileUrl %><%}%>" class="rounded-full border-black border-4 md:border-5 shadow-xl w-28 h-28 md:w-32 md:h-32 object-cover" />
+       </div>
+       <div class="flex w-screen justify-center">
+
+   </div>
         <h4 class="border-b-2 text-lg font-bold">MY ORDERS</h4>
-        <table class="  table-fixed " id="myTable">
+        <table class="min-w-full  table-fixed " id="myTable">
             <thead class="bg-gray-200 border-b">
                 <tr>
 
@@ -87,7 +93,7 @@
                                             <% } %>
                         </td>
                         <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                            <% if (order.status!='cancelled' ) { %>
+                            <% if (order.status!='cancelled' && order.status!='delivered' ) { %>
                             <button data-oid="<%= order._id %>"
                                 class="btn text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCEL ORDER
                             </button>

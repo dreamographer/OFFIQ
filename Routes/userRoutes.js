@@ -22,9 +22,9 @@ router.post('/updatePassword',sessionMangement,userController.updatePassword);
 //user login error
 router.get('/login',sessionMangement,userController.loginErr) 
 //render home page
-router.get('/',userAuth,userController.home);
+router.get('/',userController.home);
 //all Product page
-router.get('/products',userController.products)
+router.get('/products/:id',userController.products)
 //product view page
 router.get('/productpage/:id',userController.productPage)
 // cart
