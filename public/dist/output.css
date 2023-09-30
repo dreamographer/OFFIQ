@@ -1127,6 +1127,10 @@ video {
   width: 100vw;
 }
 
+.min-w-\[22rem\] {
+  min-width: 22rem;
+}
+
 .min-w-\[240px\] {
   min-width: 240px;
 }
@@ -1378,10 +1382,6 @@ video {
 
 .border-2 {
   border-width: 2px;
-}
-
-.border-4 {
-  border-width: 4px;
 }
 
 .border-b {
@@ -2522,6 +2522,10 @@ video {
 
   .md\:w-full {
     width: 100%;
+  }
+
+  .md\:min-w-\[26rem\] {
+    min-width: 26rem;
   }
 
   .md\:-translate-y-24 {

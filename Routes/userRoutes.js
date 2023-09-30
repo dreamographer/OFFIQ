@@ -38,7 +38,9 @@ router.post('/updateCart',userAuth,userController.updateCart)
 //checkout
 router.get('/checkout',userAuth,userController.checkOut) 
 //add address
-router.post('/addAddress',userAuth ,userController.addAddress )   //address Add
+router.post('/addAddress',userAuth ,userController.addAddress ) 
+//Edit address
+router.post('/editAddress',userAuth ,userController.editAddress )   //address Add
 // order
 router.post('/order',userAuth,userController.order)
 // user profile

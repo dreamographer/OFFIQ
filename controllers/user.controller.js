@@ -75,7 +75,7 @@ const sendOTP = async (name, email, otp) => {
 
 //verification of otp
 async function verifyOTP(email, otp) {
-  const user = await User.findOne({ email: email },{addresses:0,cart:0,wishlist:0});
+  const user = await User.findOne({ email: email }, { addresses: 0, cart: 0, wishlist: 0 });
   if (user && otp === decrypt(user.otp, key) && Date.now() <= user.otpExpires) {
     user.verified = true;
     user.otp = undefined;
@@ -103,7 +103,7 @@ const userController = {
   userLogin: async (req, res) => {
     const { email, password } = req.body;//data given by the user
     try {
-      const user = await User.findOne({ email },{addresses:0,cart:0,wishlist:0});
+      const user = await User.findOne({ email }, { addresses: 0, cart: 0, wishlist: 0 });
       if (user != null) {//data from the DB
         if (!(user.googleAuth) && decrypt(user.password, key) === password && !(user.blocked)) {
           req.session.user = user;
@@ -126,6 +126,9 @@ const userController = {
       return res.status(500).send('Error fetching user data');
     }
   },
+
+
+  // forogot password page
   forgotPage: (req, res) => {
     return res.render('forgotPassword')
   },
@@ -272,7 +275,7 @@ const userController = {
   },
 
   //rendering the home page
-  home: async(req, res) => {
+  home: async (req, res) => {
     let category = await Category.find({});
 
     return res.render('home', { category: category });
@@ -281,9 +284,10 @@ const userController = {
   //render products view page
   products: async (req, res) => {
     try {
-      const cId=req.params.id
-      const products = await Products.find({category:cId});
-      let category = await Category.find({_id:cId});
+      const cId = req.params.id
+      const products = await Products.find({ category: cId });
+      let category = await Category.find({ _id: cId });
+      console.log(category);
       return res.render('products', { products: products, category: category });
     } catch (error) {
       console.log(error);
@@ -477,20 +481,22 @@ const userController = {
       console.log(error);
     }
   },
+
+  // add new address
   addAddress: async (req, res) => {
     try {
       const { addressLine1, city, tag } = req.body
       let { pin } = req.body
       pin = Number(pin)
       const data = { addressLine1, city, tag, pin }
-      console.log(data);
+   
       const userId = req.session.user._id;
       const user = await User.findById(userId)
       if (user.googleAuth) {//for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
         gUser.addresses.push(data)
         gUser.save()
-      }else{
+      } else {
         user.addresses.push(data)
         user.save()
       }
@@ -499,6 +505,7 @@ const userController = {
       console.log(error);
     }
   },
+
   // order
   order: async (req, res) => {
     try {
@@ -531,6 +538,7 @@ const userController = {
     }
   },
 
+  // order managent
   orderManagement: async (req, res) => {
     try {
       const order = await Order.find({});
@@ -557,7 +565,7 @@ const userController = {
           }
         }
       }
-      console.log(products);
+      
       return res.render('orderManagement', { order: order, products: products })
 
     } catch (error) {
@@ -565,13 +573,14 @@ const userController = {
     }
   },
 
-  userProfile:async (req, res) => {
+  // render the user profile
+  userProfile: async (req, res) => {
     try {
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId });
-      
+
       const addresses = user.addresses
-      const order = await Order.find({userId});
+      const order = await Order.find({ userId });
 
       let products = []
       for (const ord of order) {
@@ -595,23 +604,68 @@ const userController = {
           }
         }
       }
-      return res.render('user', { order: order, products: products ,user:user})
+      return res.render('user', { order: order, products: products, user: user })
 
     } catch (error) {
       console.log(error);
     }
   },
-  cancelOrder:async(req,res)=>{
+
+  //edit the address
+  editAddress: async (req, res) => {
     try {
-      const oId=req.body.oId
-      const status=req.body.status
-      console.log(status,oId);
-      const update=await Order.findByIdAndUpdate(oId,{$set:{status:status}})
+      const { addrId,addressLine1, city, tag } = req.body 
+      let { pin } = req.body
+      pin = Number(pin)
+     
+      const userId = req.session.user._id;
+      const user = await User.findById(userId)
+      if (user.googleAuth) { //for googlE aUTH USERS
+        const gUser = await googelUser.findById(userId);
+        const addrIndex = gUser.addresses.findIndex((item)=>item._id==addrId);  //finding the index of the array if address be updated
+        if(addrIndex !== -1) {
+          const addr = gUser.addresses.splice(addrIndex, 1)[0];//getting the data which nee dto be updated 
+          // modyfying the data
+          addr.addressLine1 = addressLine1;
+          addr.city = city;
+          addr.tag = tag;
+          addr.pin = pin;
+          gUser.addresses.splice(addrIndex, 0, addr); //adding the modified data to the array
+          const update = await googelUser.updateOne({_id:userId},{$set:{"addresses":gUser.addresses}}); //updatingthe address
+        }
+      } else {  //for other users
+        const user = await User.findById(userId);
+        const addrIndex = user.addresses.findIndex((item)=>item._id==addrId);
+        if(addrIndex !== -1) {
+          const addr = user.addresses.splice(addrIndex, 1)[0];
+         
+          addr.addressLine1 = addressLine1;
+          addr.city = city;
+          addr.tag = tag;
+          addr.pin = pin;
+          user.addresses.splice(addrIndex, 0, addr);
+          const update = await User.updateOne({_id:userId},{$set:{"addresses":user.addresses}});
+        }
+      }
+      return res.redirect('back')
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  // cancell the order
+  cancelOrder: async (req, res) => {
+    try {
+      const oId = req.body.oId
+      const status = req.body.status
+     
+      const update = await Order.findByIdAndUpdate(oId, { $set: { status: status } })
       return
     } catch (error) {
       console.log(error);
     }
   },
+
   //logout the user
   logout: (req, res) => {
     if (req.session.user) {
