@@ -453,8 +453,8 @@ const userController = {
         return res.redirect('/')
       }
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
-      const cart = user.cart;
       const addresses = user.addresses
+      const cart = user.cart;
 
       const products = [];
       for (const prod of cart) {
@@ -494,7 +494,7 @@ const userController = {
         user.addresses.push(data)
         user.save()
       }
-      return res.redirect('/checkout')
+      return res.redirect('back')
     } catch (error) {
       console.log(error);
     }
@@ -568,14 +568,9 @@ const userController = {
   userProfile:async (req, res) => {
     try {
       const userId = req.session.user._id;
-      console.log(req.session.user);
-      const user={
-        _id:req.session.user._id,
-        fullname:req.session.user.fullname,
-        email :  req.session.user.email ,
-        profileUrl:req.session.user.profileUrl
-
-      }
+      const user = await User.findOne({ _id: userId });
+      
+      const addresses = user.addresses
       const order = await Order.find({userId});
 
       let products = []
