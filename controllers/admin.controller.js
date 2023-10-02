@@ -68,10 +68,11 @@ const adminController = {
 
   // update the blocj status
   updateBlock: async (req, res) => {
-    const userId = req.params.userId;
-    let { blocked } = req.body;
-    blocked = JSON.parse(blocked);
     try {
+      const userId = req.params.userId;
+      let { blocked } = req.body;
+      blocked = JSON.parse(blocked);
+
       await User.updateOne({ _id: userId }, { blocked: !blocked });//updating the data
       res.json({ success: true, isBlocked: !blocked });
     } catch (error) {
@@ -85,10 +86,10 @@ const adminController = {
   categoryManagement: async (req, res) => {
     try {
       const catagory = await Catagory.find({}); // Fetch fdata
-      res.render('categoryManagement', { Catagory: catagory })
+     return res.render('categoryManagement', { Catagory: catagory ,errorMessage:''})
     }
-    catch {
-
+    catch (error){
+      console.log(error);
     }
   },
 
@@ -99,11 +100,16 @@ const adminController = {
       let data = req.body;
       const subName = data.subName
       const subDescription = data.subDescription
-      const name = data.name
-      const existingCategory = await Catagory.findOne({ name });
-      if (existingCategory) {
+      const name = data.name.toUpperCase()
+      const categories = await Catagory.find({});//fetching the data from the db
+      const existingCategory = categories.filter((item) => {
+        return item.name.toUpperCase() == name//checkign if the categoryu already exists in the db
+      })
+
+      if (existingCategory.length > 0) {
         // Category with the same name already exists
-        return res.status(409).send('Category with this name already exists.');
+       return res.render('categoryManagement', { Catagory: categories,errorMessage:'Category with this name already exists.' })
+
       }
       let subcategory = {}
       //checking if there is one subcategory or many 
@@ -295,7 +301,7 @@ const adminController = {
         );
       }
 
-      
+
 
       if (product) {
         console.log('product added');
@@ -361,11 +367,11 @@ const adminController = {
 
 
   //updata status
-  updateStatus:async(req,res)=>{
+  updateStatus: async (req, res) => {
     try {
-      const oId=req.body.oId
-      const status=req.body.status
-      const update=await Order.findByIdAndUpdate(oId,{$set:{status:status}})
+      const oId = req.body.oId
+      const status = req.body.status
+      const update = await Order.findByIdAndUpdate(oId, { $set: { status: status } })
       return
     } catch (error) {
       console.log(error);

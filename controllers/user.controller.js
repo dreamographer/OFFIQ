@@ -67,6 +67,7 @@ const sendOTP = async (name, email, otp) => {
       subject: 'OTP for verification',
       html: `<h1>Hy ${name}</h1><br><p>Your OTP for the verification is <h2>${otp}</h2></p>`,
     });
+    return info
 
   } catch (error) {
     console.log(error);
@@ -87,11 +88,13 @@ async function verifyOTP(email, otp) {
 }
 
 //deletion of data when email is unverified
-async function deleteUnverifiedDocs() {
-  const tenMinutesAgo = new Date(Date.now() - 600000); // 600000 milliseconds is 10 minutes
+async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
   try {
-    const deleted = await User.deleteMany({ verified: false, createdAt: { $lt: tenMinutesAgo } })
-    console.log(`Deleted ${deleted.deletedCount} documents.`);
+    const deleted = await User.deleteMany({ verified: false})
+    if (deleted) {
+      console.log("user deleted");
+    }
+    return
   } catch (error) {
     console.error(err);
   }
@@ -101,6 +104,7 @@ async function deleteUnverifiedDocs() {
 const userController = {
   //login of the user
   userLogin: async (req, res) => {
+    deleteUnverifiedDocs()
     const { email, password } = req.body;//data given by the user
     try {
       const user = await User.findOne({ email }, { addresses: 0, cart: 0, wishlist: 0 });
@@ -149,7 +153,8 @@ const userController = {
 
         const need = "forgotPassword"
 
-        sendOTP(user.fullname, email, otp)
+        const send=await sendOTP(user.fullname, email, otp)
+        console.log(send);
         return res.render('otpVerify', { email: email, need: need, error: '' })
       }
 
@@ -173,6 +178,10 @@ const userController = {
 
   //render signup page
   signUp: (req, res) => {
+   setTimeout(() => {
+    deleteUnverifiedDocs()
+   }, 1000*60*10); 
+
     return res.render('signup');
   },
 
@@ -184,7 +193,8 @@ const userController = {
       const email = data.email
       const user = await User.findOne({ email });
       if (user) {
-        return res.json("Email already exist") //update this section
+        req.session.exist=true
+        return res.redirect('/login') 
       } else {
         data.password = encrypt(data.password, key);//encripting the password
         try {
@@ -192,11 +202,9 @@ const userController = {
           data.otp = encrypt(otp, key)
           data.otpExpires = expirationTime
           const user = await User.create(data) //inserting the data
-          sendOTP(user.fullname, user.email, otp)
-          setInterval(deleteUnverifiedDocs, 600000);
+          const send=await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
-
-          return res.render('otpVerify', { email: user.email, need: need, error: '' })
+          return res.render('otpVerify', { email: user.email, need: need, error: '',minutes :1,seconds :10})
 
         } catch (err) {
           console.log(err);
@@ -226,10 +234,11 @@ const userController = {
         }
       }
       else {
+        const {minutes,seconds}=req.body;
         if (need == "userSignIN") {
-          return res.render('otpVerify', { email: email, need: "userSignIN", error: '' })
+          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes :minutes,seconds :seconds })
         } else {
-          return res.render('otpVerify', { email: email, need: "forgotPassword", error: '' })
+          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' ,minutes :minutes,seconds :seconds  })
 
         }
 
@@ -244,11 +253,11 @@ const userController = {
     try {
       let { otp, expirationTime } = generateOTP();
       const email = req.query.email
+      const need = req.query.need
       sendOTP("Resend", email, otp)
       otp = encrypt(otp, key)
       const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
-      const need = "forgotPassword"
-      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send' })
+      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send',minutes : 1 ,seconds :10 })
     } catch (error) {
       console.error(error);
     }
@@ -265,7 +274,12 @@ const userController = {
         req.session.err = false;
         // Pass an error message to the login view
         return res.render('login', { errorMessage: 'Incorrect email or password' });
-      } else {
+      } else if(req.session.exist){
+        req.session.exist=false;
+        return res.render('login', { errorMessage: 'Email already registered , Please login' });
+
+      }
+      else {
         return res.render('login', { errorMessage: '' });
       }
 

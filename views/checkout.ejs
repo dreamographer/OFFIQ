@@ -94,10 +94,20 @@
                         <div class="relative mt-5" onclick="document.getElementById(`radio_<%=i%>`).checked = true">
                             <input required class="peer  hidden absolute bottom-4 right-0 " id="radio_<%= i %>" type="radio"
                                 name="address" <%=i===0 ? 'checked' : '' %> value='<%=address.tag%>'>
-                                <span
-                                    class="peer-checked:border-1 peer-checked:border-gray-700 peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4">
-                                    <%=address.tag%>
-                                </span>
+                                <div>
+                                    <p class="font-bold">
+                                        <%=address.tag%>
+                                    </p>
+                                    <p>
+                                        <%=address.addressLine1%>
+                                    </p>
+                                    <p>
+                                        <%=address.city%>
+                                    </p>
+                                    <p>
+                                        <%=address.pin%>
+                                    </p>
+                                </div>
 
                         </div>
                         <% }); %>

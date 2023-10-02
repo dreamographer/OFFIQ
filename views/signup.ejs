@@ -96,8 +96,50 @@
                 </div>
             </div>
         </div>
+        <!-- toast -->
+        <div id="toast" class="fixed bottom-0 right-0 m-5 p-5 bg-black text-white rounded-lg shadow-lg hidden">
+            <div id="progressBar" class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3overflow-hidden  transition-all duration-15000 ease-linear"> 
+                <div class="h-full bg-red-700" style="width: 0%;"></div>
+            </div>
+            <p id="toastMessage" class="mt-2">Error message</p>
+        </div>
+   
 
     </div>
+
+
+        <!-- toast -->
+    <script>
+         function showToast(errorMessage) {
+            
+            // Get the toast, toastMessage, and progressBar elements
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const progressBar = document.getElementById('progressBar').firstElementChild;
+
+            // Update the message and show the toast
+            toastMessage.innerText = errorMessage;
+            toast.classList.remove('hidden');
+
+            // Update the width of the progress bar every 0.15 seconds for 5 seconds
+            let width = 0;
+            const intervalId = setInterval(() => {
+                width += 1;
+                progressBar.style.width = `${width}%`;
+
+                // After 15 seconds, hide the toast and clear the interval
+                if (width >= 100) {
+                    toast.classList.add('hidden');
+                    clearInterval(intervalId);
+                    // Reset the width of the progress bar for the next toast message
+                    progressBar.style.width = '0%';
+                }
+            }, 50); // 50 milliseconds * 100 iterations = 5 seconds
+        }
+
+    </script>
+
+
     <!-- realtime validation -->
     <script>
         //valdation of fullname
@@ -182,7 +224,7 @@
         signupForm.addEventListener('submit', (event) => {
             event.preventDefault(); // Prevent default form submission
 
-            const fullname = signupForm.fullname.value.trim;
+            const fullname = signupForm.fullname.value.trim();
             const email = signupForm.email.value;
             const password = signupForm.password.value;
             const confirmPassword = signupForm.Cpassword.value;
@@ -212,7 +254,8 @@
             if (errors.length > 0) {
                 // Display error messages to the user
                 const errorMessage = errors.join('\n');
-                alert(errorMessage);
+                showToast(errorMessage)
+                
             } else {
                 // Submit the form if there are no errors
                 signupForm.submit();

@@ -189,7 +189,7 @@
     <!-- remove the toast -->
     <script>
         setTimeout(function() {
-            var toast = document.getElementById('toast');
+            let toast = document.getElementById('toast');
             if(toast) {
                 toast.remove();
             }
@@ -197,16 +197,16 @@
     </script>
     <!-- item amount toggle  -->
     <script>
-        var pluses = document.getElementsByClassName("plus");
-        var minuses = document.getElementsByClassName("minus");
-        var amounts = document.getElementsByClassName("amount");
+        let pluses = document.getElementsByClassName("plus");
+        let minuses = document.getElementsByClassName("minus");
+        let amounts = document.getElementsByClassName("amount");
 
         for (let i = 0; i < pluses.length; i++) {
             pluses[i].addEventListener("click", function () {
                 amounts[i].innerHTML = parseInt(amounts[i].innerHTML) + 1;
 
-                var itemId = this.dataset.itemId;
-                var newAmount = parseInt(amounts[i].innerHTML);
+                let itemId = this.dataset.itemId;
+                let newAmount = parseInt(amounts[i].innerHTML);
 
                 // Send the updated amount to the server
                 fetch('/updateCart', {
@@ -233,8 +233,8 @@
                 if (parseInt(amounts[i].innerHTML) >= 0) {
                     amounts[i].innerHTML = parseInt(amounts[i].innerHTML) - 1;
 
-                    var itemId = this.dataset.itemId;
-                    var newAmount = parseInt(amounts[i].innerHTML);
+                    let itemId = this.dataset.itemId;
+                    let newAmount = parseInt(amounts[i].innerHTML);
                     // chek if its less than 0
                     if (newAmount <= 0) {
                         window.location.href = `/removeProduct/${itemId}`
@@ -263,7 +263,7 @@
     </script>
     <script>
         <!--LOADING  -->
-        var scrollPosition = [
+        let scrollPosition = [
             self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
             self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
         ];

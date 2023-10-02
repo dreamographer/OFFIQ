@@ -86,7 +86,6 @@
       
     <script>
 
-
         function showToast(errorMessage) {
             
             // Get the toast, toastMessage, and progressBar elements
@@ -113,52 +112,6 @@
                 }
             }, 50); // 50 milliseconds * 100 iterations = 5 seconds
         }
-
-        // Simulate an error message from the server
-        
-        const signupForm = document.getElementById('signupForm');
-        const submitButton = document.getElementById('submitButton');
-
-        signupForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent default form submission
-
-            const fullname = signupForm.fullname.value;
-            const email = signupForm.email.value;
-            const password = signupForm.password.value;
-            const confirmPassword = signupForm.Cpassword.value;
-
-            const errors = [];
-
-            if (fullname.length < 5) {
-                errors.push('fullname must have at least 5 characters');
-            }
-
-            if (password !== confirmPassword) {
-                errors.push('Passwords do not match');
-            }
-
-            // Basic email validation (regex)
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(email)) {
-                errors.push('Invalid email format');
-            }
-
-            // Password validation: at least 8 characters with a combination of letters and numbers
-            const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
-            if (!passwordPattern.test(password)) {
-                errors.push('Password must be at least 8 characters and contain both letters and numbers');
-            }
-
-            if (errors.length > 0) {
-                // Display error messages to the user
-                const errorMessage = errors.join('\n');
-                alert(errorMessage);
-            } else {
-                // Submit the form if there are no errors
-                signupForm.submit();
-            }
-        });
-
 
     </script>
     <% if (errorMessage) { %>   
