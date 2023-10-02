@@ -86,9 +86,9 @@ const adminController = {
   categoryManagement: async (req, res) => {
     try {
       const catagory = await Catagory.find({}); // Fetch fdata
-     return res.render('categoryManagement', { Catagory: catagory ,errorMessage:''})
+      return res.render('categoryManagement', { Catagory: catagory, errorMessage: '' })
     }
-    catch (error){
+    catch (error) {
       console.log(error);
     }
   },
@@ -98,8 +98,8 @@ const adminController = {
   addCategory: async (req, res) => {
     try {
       let data = req.body;
-      const subName = data.subName
-      const subDescription = data.subDescription
+      let subName = data.subName
+      let subDescription = data.subDescription
       const name = data.name.toUpperCase()
       const categories = await Catagory.find({});//fetching the data from the db
       const existingCategory = categories.filter((item) => {
@@ -108,13 +108,16 @@ const adminController = {
 
       if (existingCategory.length > 0) {
         // Category with the same name already exists
-       return res.render('categoryManagement', { Catagory: categories,errorMessage:'Category with this name already exists.' })
+        return res.render('categoryManagement', { Catagory: categories, errorMessage: 'Category with this name already exists.' })
 
       }
       let subcategory = {}
       //checking if there is one subcategory or many 
       if (Array.isArray(subName)) {
         //joining the name and description of subcaegory
+        subName=subName.filter(item => item !== '');
+        subName = [...new Set(subName.map(item => item.toLowerCase()))];
+        subDescription=subDescription.filter(item => item !== '');
         subcategory = subName.map((value, i) => {
           return { subName: value, subDescription: subDescription[i] }
         })
@@ -141,8 +144,20 @@ const adminController = {
     try {
       const id = req.body.id
       const updatedData = { ...req.body }
-      const subName = updatedData.subName
-      const subDescription = updatedData.subDescription
+      // checking wheather the category name already exists
+      const name = updatedData.name.toUpperCase()
+      const categories = await Catagory.find({});//fetching the data from the db
+      const existingCategory = categories.filter((item) => {
+        return item.name.toUpperCase() == name && !(item._id.equals(updatedData.id)) //checkign if the categoryu already exists in the db
+      })
+
+      if (existingCategory.length > 0) {
+        // Category with the same name already exists
+        return res.render('categoryManagement', { Catagory: categories, errorMessage: 'Category with this name already exists.' })
+
+      }
+      let subName = updatedData.subName //extracting subcategory data to make it one object
+      let subDescription = updatedData.subDescription
       let subcategory = {}
       delete updatedData.subDescription;
       delete updatedData.subName;
@@ -154,16 +169,21 @@ const adminController = {
       let result
       //check if subcategory exists
       if (subName) {
+        
         // checking if only one sub category awailable or many
         if (Array.isArray(subName)) {
+          subName=subName.filter(item => item !== '');
+          subName = [...new Set(subName.map(item => item.toLowerCase()))];
+          subDescription=subDescription.filter(item => item !== '');
           //joining the name and description of subcaegory
           subcategory = subName.map((value, i) => {
             return { subName: value, subDescription: subDescription[i] }
           })
+          updatedData.subcategory=subcategory;
           result = await Catagory.findOneAndUpdate(
             { _id: id },
             {
-              $push: { subcategory: { $each: subcategory } },//pushing to the existing array
+              // $set: { subcategory: { $each: subcategory } },//pushing to the existing array
               $set: { ...updatedData },
             },
             {
@@ -173,10 +193,11 @@ const adminController = {
           );
         } else {
           subcategory = { subName: subName, subDescription: subDescription }//add oly one data
+          updatedData.subcategory=subcategory;
           result = await Catagory.findOneAndUpdate(
             { _id: id },
             {
-              $push: { subcategory: subcategory },
+              // $push: { subcategory: subcategory },
               $set: { ...updatedData },
             },
             {
