@@ -24,10 +24,10 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
+  image: [{
     type: String,
     required: true
-  },
+  }],
   subcategory: [subcategorySchema], // Array of subcategory objects
 });
 

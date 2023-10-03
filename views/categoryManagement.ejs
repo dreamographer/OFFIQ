@@ -142,7 +142,10 @@
                                         x-transition:leave-end="opacity-0 scale-90 translate-y-1">
                                         <!-- Title -->
                                         <span class="font-bold block text-2xl mb-3">
-                                            DO YOU Really want to Delete this User
+                                            DO YOU Really want to Delete this Category
+                                        </span>
+                                        <span class="font-bold block text-xl text-red-700 mb-3">
+                                            This action cant be undone
                                         </span>
                                         <!-- Buttons -->
                                         <div class="text-right space-x-5 mt-5">
@@ -312,7 +315,7 @@
                                                         class="block md:text-xs  float-left text-gray-700">Image</label>
                                                     <input
                                                         class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        id="file_input" name="categoryImage" type="file" required>
+                                                        id="file_input" name="categoryImage" type="file" required multiple   accept="image/*">
 
                                                 </div>
 

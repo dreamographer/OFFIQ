@@ -86,7 +86,13 @@ const adminController = {
   categoryManagement: async (req, res) => {
     try {
       const catagory = await Catagory.find({}); // Fetch fdata
-      return res.render('categoryManagement', { Catagory: catagory, errorMessage: '' })
+      if (req.session.err) {
+        err=req.session.err
+        req.session.err=null
+      }else{
+        err=''
+      }
+      return res.render('categoryManagement', { Catagory: catagory, errorMessage: err })
     }
     catch (error) {
       console.log(error);
@@ -125,7 +131,7 @@ const adminController = {
         subcategory = { subName: subName, subDescription: subDescription }
       }
       data.subcategory = subcategory
-      const imagePaths = req.file.path.substring(6);//removing public/from adderees
+      const imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
       data.image = imagePaths;
       delete data.subDescription;
       delete data.subName;
@@ -163,7 +169,8 @@ const adminController = {
       delete updatedData.subName;
       //cheking if the file exists
       if (req.file) {
-        const imagePaths = req.file.path.substring(6);//removing public/from adderees
+        const imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
+        //removing public/from adderees
         updatedData.image = imagePaths;
       }
       let result
@@ -253,8 +260,14 @@ const adminController = {
     try {
       const products = await Products.find({}); // Fetch product data
       const category = await Catagory.find({});
-
-      res.render('productManagement', { products: products, category: category })
+      let err
+      if (req.session.err) {
+        err=req.session.err
+        req.session.err=null
+      }else{
+        err=''
+      }
+      res.render('productManagement', { products: products, category: category,err:err })
     }
     catch {
 
@@ -321,7 +334,7 @@ const adminController = {
           { new: true }
         );
       }
-
+ 
 
 
       if (product) {

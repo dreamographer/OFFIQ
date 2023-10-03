@@ -5,27 +5,19 @@ const adminController = require('../controllers/admin.controller')
 //middlewares
 const adminAuth = require('../middlewares/adminAuth')
 const adminSession = require('../middlewares/adminSession')
+const validateImage=require('../middlewares/validateImage')
 
-const path = require('path');
+
 router.use(express.urlencoded({ extended: true }));
 router.use(express.json())
-//multer
-const multer = require('multer')
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  },
-});
 
-const upload = multer({ storage: storage });
+const validateCategoryImage = validateImage('categoryImage');
+const validateProductImage = validateImage('productImage');
 
 try {
   //admin login
   router.post('/login', adminController.adminLogin);
-
+ 
   //login  fot the admin
   router.get('/', adminAuth, adminController.adminDashboard);
 
@@ -42,10 +34,10 @@ try {
   router.get('/categoryManagement', adminSession, adminController.categoryManagement)
 
   //add category
-  router.post('/addCategory', adminSession, upload.single('categoryImage'), adminController.addCategory)
+  router.post('/addCategory', adminSession,validateCategoryImage, adminController.addCategory)
 
   //update categoru
-  router.post('/updateCategory', adminSession, upload.single('categoryImage'), adminController.updateCategory)
+  router.post('/updateCategory', adminSession,validateCategoryImage, adminController.updateCategory)
 
   //Delete Category
   router.get('/deleteCategory/:id', adminSession, adminController.deleteCategory)
@@ -54,10 +46,10 @@ try {
   router.get('/productManagement', adminSession, adminController.productManagement)
 
   // Add product
-  router.post('/addProduct', adminSession, upload.array('productImage'), adminController.addProduct)
+  router.post('/addProduct', adminSession, validateProductImage, adminController.addProduct)
  
   // Edit product
-  router.post('/editProduct', adminSession, upload.array('productImage'), adminController.editProduct)
+  router.post('/editProduct', adminSession, validateProductImage, adminController.editProduct)
 
   //delete Product
   router.get('/deleteProduct/:id', adminSession, adminController.deleteProduct)
