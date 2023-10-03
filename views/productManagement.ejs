@@ -50,15 +50,15 @@
                 id="sideNav">
                 <nav>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin">
+                        href="/admin">
                         <i class="fas fa-home mr-2"></i>Dashboard
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/userMangement">
+                        href="/admin/userMangement">
                         <i class="fas fa-users mr-2"></i>User Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/categoryManagement">
+                        href="/admin/categoryManagement">
                         <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
                     </a>
                     <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
@@ -68,7 +68,7 @@
                     </a>
 
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/orderManagement">
+                        href="/admin/orderManagement">
                         <i class="fas fa-exchange-alt mr-2"></i>Order Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
@@ -189,15 +189,15 @@
                                                     </td>
                                                     <td
                                                         class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
-                                                       <a href="../admin/editProduct">
+                                                       <a href="/admin/editProduct/<%= product._id%>">
                                                          <button>
-                                                            <i @click=" editModel = !editModel ,id='<%= product._id%>', name=' <%= product.name %> ', desc=' <%= product.description %>', price='<%= product.price %>', rating='<%= product.rating %>',catId='<%= product.category %>', qty='<%= product.quantity %>'"
+                                                            <i 
                                                                 class="fa fa-edit fa-lg" style="color: green"
                                                                 aria-hidden="true"></i>
                                                         </button>
                                                     </a>
 
-                                                        <a href="../admin/deleteProduct/<%= product._id%>"><button>
+                                                        <a href="/admin/deleteProduct/<%= product._id%>"><button>
                                                                 <i class="fas fa-thin fa-trash-can fa-lg"
                                                                     style="color: #ff0000;"></i>
                                                             </button></a>
@@ -226,7 +226,7 @@
                                             </span>
                                             <!-- Body -->
                                             <div>
-                                                <form id="addProduct" class="mt-3" action="../admin/addProduct"
+                                                <form id="addProduct" class="mt-3" action="/admin/addProduct"
                                                     method="POST" enctype="multipart/form-data">
                                                     <div>
                                                         <label class="block md:text-xs float-left text-gray-700">Product
@@ -379,41 +379,72 @@
         </script>
         <% } %>
 
-            <script>
-                document.querySelector('#file_input').addEventListener('change', function () {
-                    previewImages(this);
-                });
-
-                function previewImages(input) {
-                    if (input.files) {
-                        var preview = document.querySelector('#preview');
-                        preview.innerHTML = '';
-                        for (let i = 0; i < input.files.length; i++) {
-                            let reader = new FileReader();
-                            reader.onload = function (e) {
-                                let image = document.createElement('img');
-                                image.src = e.target.result;
-                                image.style.width = '100px';
-                                image.style.height = '100px';
-
-                                let removeButton = document.createElement('button');
-                                removeButton.textContent = 'Remove';
-                                removeButton.addEventListener('click', function () {
-                                    this.parentElement.remove();
+        <!-- preview image -->
+         
+        <script>
+            const fileInput = document.querySelector('#file_input');
+            const preview = document.querySelector('#preview');
+        
+            // Keep track of selected files
+            const selectedFiles = [];
+        
+            fileInput.addEventListener('change', function () {
+                console.log(this.files);
+                previewImages(this);
+            });
+        
+            function previewImages(input) {
+                if (input.files) {
+                    // Clear previous selections
+                    selectedFiles.length = 0;
+        
+                    preview.innerHTML = '';
+                    for (let i = 0; i < input.files.length; i++) {
+                        const file = input.files[i];
+                        selectedFiles.push(file);
+                        console.log(selectedFiles);
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                            let image = document.createElement('img');
+                            image.src = e.target.result;
+                            image.style.width = '100px';
+                            image.style.height = '100px';
+                            let removeButton = document.createElement('button');
+                            removeButton.textContent = 'Remove';
+                            removeButton.addEventListener('click', function () {
+                                // Remove the image preview
+                                this.parentElement.remove();
+                            
+                                
+                                // Remove the file from the selected files array
+                                const index = selectedFiles.indexOf(file);
+                                if (index > -1) {
+                                    selectedFiles.splice(index, 1);
+                                }
+                                
+                                // Update the file input value to deselect the removed file
+                                fileInput.value = '';
+                                const dataTransfer = new DataTransfer();
+                                selectedFiles.forEach(file => {
+                                    dataTransfer.items.add(file);
+                                    
                                 });
+                                fileInput.files = dataTransfer.files;
+                                console.log(fileInput.files);
 
-                                let container = document.createElement('div');
-                                container.appendChild(image);
-                                container.appendChild(removeButton);
-
-                                preview.appendChild(container);
-                            }
-                            reader.readAsDataURL(input.files[i]);
+                            });
+        
+                            let container = document.createElement('div');
+                            container.appendChild(image);
+                            container.appendChild(removeButton);
+        
+                            preview.appendChild(container);
                         }
+                        reader.readAsDataURL(file);
                     }
                 }
-
-            </script>
+            }
+        </script>
             <script>
                 // for fetching data based on the category
 
@@ -447,7 +478,7 @@
 
                 // Function to fetch subcategories based on the selected category
                 async function fetchSubcategories(categoryId) {
-                    const response = await fetch(`../admin/getSubcategory/${categoryId}`);
+                    const response = await fetch(`/admin/getSubcategory/${categoryId}`);
                     const data = await response.json();
                     return data.subcategories;
                 }

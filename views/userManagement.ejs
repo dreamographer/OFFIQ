@@ -50,7 +50,7 @@
                 id="sideNav">
                 <nav>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin">
+                        href="/admin">
                         <i class="fas fa-home mr-2"></i>Dashboard
                     </a>
 
@@ -59,11 +59,11 @@
                         <i class="fas fa-users mr-2"></i>User Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/categoryManagement">
+                        href="/admin/categoryManagement">
                         <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/productManagement">
+                        href="/admin/productManagement">
                         <i class="fas fa-store mr-2"></i>Product Management
                     </a>
 
@@ -215,7 +215,7 @@
                     // Toggle the current status
 
                     // Send an AJAX request to update the "blocked" status
-                    fetch(`../admin/update-block-status/${userId}`, {
+                    fetch(`/admin/update-block-status/${userId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',

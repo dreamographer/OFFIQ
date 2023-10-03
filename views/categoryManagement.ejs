@@ -8,12 +8,12 @@
             id="sideNav">
             <nav>
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                    href="../admin">
+                    href="/admin">
                     <i class="fas fa-home mr-2"></i>Dashboard
                 </a>
 
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                    href="../admin/userMangement">
+                    href="/admin/userMangement">
                     <i class="fas fa-users mr-2"></i>User Management
                 </a>
                 <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
@@ -21,7 +21,7 @@
                     <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
                 </a>
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                    href="../admin/productManagement">
+                    href="/admin/productManagement">
                     <i class="fas fa-store mr-2"></i>Product Management
                 </a>
 
@@ -34,7 +34,7 @@
                     <i class="fas fa-file-alt mr-2"></i>Report
                 </a>
                 <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="../admin/logout">
+                    href="/admin/logout">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </a>
             </nav>
@@ -51,7 +51,7 @@
                     <form action="" class="relative mx-auto w-max">
                         <input type="search"
                             class="appearance-none cursor-pointer relative z-10 h-12 w-full rounded-full border bg-transparent pl-12 outline-none  focus:cursor-text focus:border-gray-700  "
-                            placeholder="Search Catagory" />
+                            placeholder="Search Category" />
                         <svg xmlns="http://www.w3.org/2000/svg"
                             class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:gray-200 "
                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -67,7 +67,7 @@
 
 
                     <!-- initialization of aphine values -->
-                    <div x-data="{ editModal : false ,showModal: false, addModel:false,name:'',desc:'',id:'',category:'',subCat:[]}"
+                    <div x-data="{ editModal : false ,showModal: false, addModel:false,name:'',desc:'',id:'',category:'',subCat:[],image:[]}"
                         class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                         <div class=" h-auto w- overflow-auto">
 
@@ -92,28 +92,28 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% Catagory.forEach(catagory=> { %>
+                                        <% Category.forEach(category=> { %>
                                             <tr
                                                 class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
 
                                                 <td
                                                     class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                                                    <%= catagory.name %>
+                                                    <%= category.name %>
                                                 </td>
                                                 <td
                                                     class="text-sm text-gray-900 font-light max-w-sm overflow-hidden px-6 py-4 whitespace-nowrap">
-                                                    <%= catagory.description %>
+                                                    <%= category.description %>
                                                 </td>
                                                 <td
                                                     class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
-                                                    <button>
-                                                        <i @click="editModal = !editModal ,id='<%= catagory._id %>',name='<%= catagory.name %>',subCat=JSON.parse('<%= JSON.stringify(catagory.subcategory) %>'),desc='<%= catagory.description %>'"
+                                                    <button class="edit">
+                                                        <i @click="editModal = !editModal ,id='<%= category._id %>',name='<%= category.name %>',subCat=JSON.parse('<%= JSON.stringify(category.subcategory) %>'),image=<%= JSON.stringify(category.image) %>,desc='<%= category.description %>'"
                                                             class="fa fa-edit fa-lg" style="color: green"
                                                             aria-hidden="true"></i>
 
                                                     </button>
 
-                                                    <button @click="showModal = !showModal,id='<%= catagory._id %>'">
+                                                    <button @click="showModal = !showModal,id='<%= category._id %>'">
                                                         <i class="fas fa-thin fa-trash-can fa-lg"
                                                             style="color: #ff0000;"></i>
                                                     </button>
@@ -149,7 +149,7 @@
                                         </span>
                                         <!-- Buttons -->
                                         <div class="text-right space-x-5 mt-5">
-                                            <a x-bind:href="'../admin/deleteCategory/' + id">
+                                            <a x-bind:href="'/admin/deleteCategory/' + id">
                                                 <button
                                                     class="toggle-block-button px-4 py-2 text-sm bg-white rounded-xl border transition-colors duration-150 ease-linear border-gray-200 text-gray-500 focus:outline-none focus:ring-0 font-bold hover:bg-red-700 hover:text-white focus:bg-indigo-50 focus:text-indigo">YES</button>
                                             </a>
@@ -182,7 +182,7 @@
                                         </span>
                                         <!-- Body -->
                                         <div>
-                                            <form class="mt-3" action="../admin/updateCategory" method="POST"
+                                            <form class="mt-3" action="/admin/updateCategory" method="POST"
                                                 enctype="multipart/form-data">
                                                 <input type="hidden" :value="id" name="id">
                                                 <div>
@@ -207,12 +207,25 @@
                                                     <label
                                                         class="block md:text-xs  float-left text-gray-700">Image</label>
                                                     <input
-                                                        class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        id="file_input" name="categoryImage" type="file" value="">
+                                                        class="file_input w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                        id="file_input" name="categoryImage" type="file" required
+                                                        multiple accept="image/*">
+                                                    <div id="preview" class="preview flex flex-wrap gap-2">
+                                                        <template x-for="(img,i ) in image">
 
+                                                            <div>
+                                                                <img x-bind:src="img" alt="product image"
+                                                                    class="w-[100px] h-[100px]">
+                                                                <button  class="remove-image" x-bind:data-image="i"
+                                                                    x-bind:data-id="id" type="button">Remove</button>
+                                                            </div>
+
+                                                        </template>
+
+                                                    </div>
                                                 </div>
 
-                                                <!-- sub catagory -->
+                                                <!-- sub category -->
                                                 <p class=" mt-3 block md:text-xs  text-gray-700">Sub Category</p>
 
                                                 <div class="h-32 mt-3 overflow-auto">
@@ -235,15 +248,15 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="sub1">
-                                                            <!-- Sub catagory form table -->
+                                                            <!-- Sub category form table -->
                                                             <template x-for="sub in subCat">
                                                                 <tr>
                                                                     <td>
                                                                         <input type="text" name="subName"
-                                                                            id="subcatagory"
+                                                                            id="subcategory"
                                                                             placeholder="Enter Category Name"
                                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                                            autofocus="" autocomplete="" 
+                                                                            autofocus="" autocomplete=""
                                                                             x-bind:value='sub.subName'>
                                                                     </td>
                                                                     <td>
@@ -251,7 +264,7 @@
                                                                             placeholder="Enter the description"
                                                                             class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                                             autofocus="" autocomplete=""
-                                                                             x-bind:value='sub.subDescription'></textarea>
+                                                                            x-bind:value='sub.subDescription'></textarea>
                                                                     </td>
                                                                 </tr>
                                                             </template>
@@ -291,7 +304,7 @@
                                         </span>
                                         <!-- Body -->
                                         <div>
-                                            <form class="mt-3" action="../admin/addCategory" method="POST"
+                                            <form class="mt-3" action="/admin/addCategory" method="POST"
                                                 enctype="multipart/form-data">
                                                 <div>
                                                     <label class="block md:text-xs float-left text-gray-700">Category
@@ -314,12 +327,13 @@
                                                     <label
                                                         class="block md:text-xs  float-left text-gray-700">Image</label>
                                                     <input
-                                                        class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        id="file_input" name="categoryImage" type="file" required multiple   accept="image/*">
-
+                                                        class="file_input w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                        id="file_input" name="categoryImage" type="file" required
+                                                        multiple accept="image/*">
+                                                    <div id="preview" class="preview flex flex-wrap gap-2"></div>
                                                 </div>
 
-                                                <!-- sub catagory -->
+                                                <!-- sub category -->
                                                 <p class=" mt-3 block md:text-xs  text-gray-700">Sub Category</p>
 
                                                 <div class="h-32 mt-3 overflow-auto">
@@ -342,7 +356,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody id="sub2">
-                                                            <!-- Sub catagory form table -->
+                                                            <!-- Sub category form table -->
 
                                                         </tbody>
                                                     </table>
@@ -361,7 +375,7 @@
                             </div>
                         </div>
                         <div class=" mt-10 flex w-full md:w-60 justify-center">
-                            <button @click="addModel = !addModel" 
+                            <button @click="addModel = !addModel"
                                 class="middle none w-52 center mr-4 rounded-lg bg-[#076AE1] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 data-ripple-light="true">
                                 Add new Category
@@ -432,6 +446,141 @@
         </script>
         <% } %>
 
+
+
+
+
+
+
+            <!-- preview existing images -->
+
+            <script>
+                const fileInput = document.querySelectorAll('.file_input');
+                const preview = document.querySelectorAll('.preview');
+
+                // Keep track of selected files
+                fileInput.forEach((fileInput, n) => {
+
+                    const selectedFiles = [];
+                    fileInput.addEventListener('change', function () {
+
+                        previewImages(this);
+                    });
+
+
+                    function previewImages(input) {
+                        if (input.files) {
+                            // Clear previous selections
+                            selectedFiles.length = 0;
+
+                            for (let i = 0; i < input.files.length; i++) {
+                                const file = input.files[i];
+                                selectedFiles.push(file);
+
+                                let reader = new FileReader();
+                                reader.onload = function (e) {
+                                    let image = document.createElement('img');
+                                    image.src = e.target.result;
+                                    image.style.width = '100px';
+                                    image.style.height = '100px';
+                                    let removeButton = document.createElement('button');
+                                    removeButton.textContent = 'Remove';
+                                    removeButton.addEventListener('click', function () {
+                                        // Remove the image preview
+                                        this.parentElement.remove();
+
+
+                                        // Remove the file from the selected files array
+                                        const index = selectedFiles.indexOf(file);
+                                        if (index > -1) {
+                                            selectedFiles.splice(index, 1);
+                                        }
+
+                                        // Update the file input value to deselect the removed file
+                                        fileInput.value = '';
+                                        const dataTransfer = new DataTransfer();
+                                        selectedFiles.forEach(file => {
+                                            dataTransfer.items.add(file);
+
+                                        });
+                                        fileInput.files = dataTransfer.files;
+
+
+                                    });
+
+                                    let container = document.createElement('div');
+                                    container.appendChild(image);
+                                    container.appendChild(removeButton);
+
+                                    preview[n].appendChild(container);
+                                }
+                                reader.readAsDataURL(file);
+                            }
+                        }
+                    }
+                })
+            </script>
+
+            <!-- delete existing image -->
+            <script>
+                // Get all the "remove" buttons
+                const editTrigger = document.querySelectorAll('.edit')
+                editTrigger.forEach((editTrigger,i) => {
+
+
+                    editTrigger.addEventListener('click', () => {
+                        const removeButton = document.querySelectorAll('.remove-image');
+                       removeButton.forEach((removeButton)=>{
+                        removeButton.addEventListener('click', () => {
+                            console.log("event triggered");
+
+                            // Get the image name from the data attribute
+                            const imageIndex = removeButton.dataset.image;
+                            const cId = removeButton.dataset.id;
+                            // Send a request to the server to remove the image
+                            fetch('/admin/removeCatImage', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ imageIndex, cId })
+                            })
+                                .then(response => {
+                                    // Handle the response from the server
+                                    if (response.ok) {
+                                        // Image removed successfully
+                                        console.log('Image removed');
+                                        window.location.reload()
+                                    } else {
+                                        // Error occurred while removing the image
+                                        console.error('Error removing image');
+                                    }
+                                })
+                                .catch(error => {
+                                    // Handle any network or server errors
+                                    console.error('Network or server error:', error);
+                                });
+                        });
+                    })
+
+                    })
+                })
+
+
+            </script>
+            <!--ReLOADING  -->
+            <script>
+                let scrollPosition = [
+                    self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+                    self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                ];
+
+                window.onload = function () {
+                    window.scrollTo(scrollPosition[0], scrollPosition[1]);
+                };
+            </script>
+
+
             <!-- adding sub category -->
             <script>
 
@@ -450,7 +599,7 @@
                     const cellDescription2 = row2.insertCell(1);
                     const subName = `
     <input type="text" name="subName"
-        id="subcatagory"
+        id="subcategory"
         placeholder="Enter Category Name"
         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
         autofocus="" autocomplete="" >

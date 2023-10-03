@@ -988,6 +988,10 @@ video {
   height: 24rem;
 }
 
+.h-\[100px\] {
+  height: 100px;
+}
+
 .h-\[80\%\] {
   height: 80%;
 }
@@ -1079,6 +1083,10 @@ video {
 
 .w-96 {
   width: 24rem;
+}
+
+.w-\[100px\] {
+  width: 100px;
 }
 
 .w-\[20rem\] {
@@ -1671,6 +1679,10 @@ video {
 
 .pr-4 {
   padding-right: 1rem;
+}
+
+.pr-5 {
+  padding-right: 1.25rem;
 }
 
 .pt-10 {
@@ -2387,6 +2399,10 @@ video {
 
   .sm\:w-\[40rem\] {
     width: 40rem;
+  }
+
+  .sm\:w-\[50rem\] {
+    width: 50rem;
   }
 
   .sm\:w-full {

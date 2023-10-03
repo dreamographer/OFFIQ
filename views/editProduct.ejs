@@ -43,22 +43,22 @@
         </div>
 
         <!-- body div -->
-        <div class="flex-1 flex ">
+        <div class="flex-1 flex  ">
 
             <!-- navigation div -->
             <div class="p-2 bg-white absolute z-20 h-screen transition-all ease-linear duration-300 md:relative w-60 flex-col hidden md:flex"
                 id="sideNav">
                 <nav>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin">
+                        href="/admin">
                         <i class="fas fa-home mr-2"></i>Dashboard
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/userMangement">
+                        href="/admin/userMangement">
                         <i class="fas fa-users mr-2"></i>User Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/categoryManagement">
+                        href="/admin/categoryManagement">
                         <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
                     </a>
                     <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
@@ -68,7 +68,7 @@
                     </a>
 
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="../admin/orderManagement">
+                        href="/admin/orderManagement">
                         <i class="fas fa-exchange-alt mr-2"></i>Order Management
                     </a>
                     <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
@@ -86,8 +86,8 @@
             </div>
 
             <!-- content div -->
-            <div class="flex justify-center  overflow-hidden">
-                <div class="flex flex-col pt-10 sm:w-screen">
+            <div class="flex justify-center w-screen pr-5 pl-5 overflow-hidden">
+                <div class="flex flex-col pt-10 w-full  sm:w-[50rem]">
 
 
                     <div class="overflow-x-hidden  lg:mx-0.5">
@@ -98,40 +98,42 @@
                         </span>
                         <!-- Body -->
                         <div>
-                            <form id="editProduct" class="mt-3" action="../admin/editProduct" method="POST"
+                            <form id="editProduct" class="mt-3" action="/admin/editProduct" method="POST"
                                 enctype="multipart/form-data">
-                                <input type="hidden" name="id" :value="id">
+                                <input type="hidden" name="id" value="<%=product._id%>">
                                 <div>
                                     <label class="block md:text-xs float-left text-gray-700">Product
                                         Name</label>
                                     <input type="text" name="name" placeholder="Enter Product Name"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" :value="name" autocomplete="" required="">
+                                        autofocus="" value='<%=product.name%>' autocomplete="" required="">
                                 </div>
                                 <div>
                                     <label class="block md:text-xs mt-4 float-left text-gray-700">Description</label>
                                     <textarea name="description" id="description"
                                         placeholder="description of the product"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" :value="desc" required=""></textarea>
+                                        autofocus="" autocomplete="" required=""><%=product.description%></textarea>
                                 </div>
                                 <div>
                                     <label class="block md:text-xs float-left text-gray-700">Price</label>
                                     <input type="text" name="price" placeholder="product price"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" :value="price" required="">
+                                        autofocus="" autocomplete="" value='<%=product.price%>' required="">
                                 </div>
                                 <div>
                                     <label class="block md:text-xs float-left text-gray-700">Quantity</label>
                                     <input type="text" name="quantity" placeholder="product Quantity"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" :value="qty" required="">
+                                        autofocus="" autocomplete="" value='<%=product.quantity%>' required="">
                                 </div>
                                 <div>
                                     <label class="block md:text-xs float-left text-gray-700">Rating</label>
-                                    <input type="text" name="rating" placeholder="product rating"
+                                    <input type="number" name="rating" placeholder="product rating"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" :value="rating" required="">
+                                        autofocus="" autocomplete="" value='<%=product.rating%>' required="" min="1"
+                                        max="5">
+
                                 </div>
 
 
@@ -139,10 +141,11 @@
                                     <label class="block md:text-xs float-left text-gray-700">Category</label>
                                     <select name="category" id="category1"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
-                                        <option :value="catId">Select Category</option>
+                                        <option value="<%=product.category%>">Select Category</option>
                                         <% category.forEach(category=> { %>
-                                            <option value="<%=category._id%>">
-                                                <%=category.name%>
+                                            <option value="<%=category._id%>"
+                                                <%if(product.category.equals(category._id)) {%>selected <% } %>>
+                                                    <%=category.name%>
                                             </option>
                                             <% }); %>
                                     </select>
@@ -153,6 +156,9 @@
                                     <select name="subCategory" id="subcategory1"
                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none">
                                         <!-- Subcategory options will be populated here dynamically -->
+                                        <option value="<%=product.subCategory%>" selected>
+                                            <%=category.name%>
+                                        </option>
                                     </select>
                                 </div>
 
@@ -161,6 +167,20 @@
                                     <input
                                         class="w-full rounded-lg  placeholder:text-sm text-sm px-4 py-3 bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                         id="file_input" name="productImage" type="file" multiple accept="image/*">
+
+                                    <div id="preview" class="flex flex-wrap gap-2">
+
+                                        <% product.images.forEach((image,i)=> { %>
+                                            <div>
+                                                <img src="<%= image %>" alt="product image" class="w-[100px] h-[100px]">
+                                                <button class="remove-image" data-image="<%=i%> " data-id="<%=product._id%>"
+                                                    type="button">Remove</button>
+                                            </div>
+                                            <% }); %>
+
+                                    </div>
+
+
                                 </div>
                                 <button type="submit"
                                     class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
@@ -191,7 +211,6 @@
 
     <!-- function for toast -->
     <script>
-
 
         function showToast(errorMessage) {
             // Get the toast, toastMessage, and progressBar elements
@@ -229,27 +248,98 @@
         </script>
         <% } %>
 
+
+
+            <!-- delete existing image -->
             <script>
-                document.querySelector('#file_input').addEventListener('change', function () {
+                // Get all the "remove" buttons
+                const removeButtons = document.querySelectorAll('.remove-image');
+
+             
+                removeButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        // Get the image name from the data attribute
+                        const imageName = button.dataset.image;
+                        const pId= button.dataset.id;
+                        // Send a request to the server to remove the image
+                        fetch('/admin/removeImage', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ imageName ,pId})
+                        })
+                            .then(response => {
+                                // Handle the response from the server
+                                if (response.ok) {
+                                    // Image removed successfully
+                                    console.log('Image removed');
+                                    window.location.reload()
+                                } else {
+                                    // Error occurred while removing the image
+                                    console.error('Error removing image');
+                                }
+                            })
+                            .catch(error => {
+                                // Handle any network or server errors
+                                console.error('Network or server error:', error);
+                            });
+                    });
+                });
+
+            </script>
+            <!-- preview existing images -->
+
+            <script>
+                const fileInput = document.querySelector('#file_input');
+                const preview = document.querySelector('#preview');
+
+                // Keep track of selected files
+                const selectedFiles = [];
+
+                fileInput.addEventListener('change', function () {
+                    console.log(this.files);
                     previewImages(this);
                 });
 
                 function previewImages(input) {
                     if (input.files) {
-                        var preview = document.querySelector('#preview');
-                        preview.innerHTML = '';
+                        // Clear previous selections
+                        selectedFiles.length = 0;
+
                         for (let i = 0; i < input.files.length; i++) {
+                            const file = input.files[i];
+                            selectedFiles.push(file);
+
                             let reader = new FileReader();
                             reader.onload = function (e) {
                                 let image = document.createElement('img');
                                 image.src = e.target.result;
                                 image.style.width = '100px';
                                 image.style.height = '100px';
-
                                 let removeButton = document.createElement('button');
                                 removeButton.textContent = 'Remove';
                                 removeButton.addEventListener('click', function () {
+                                    // Remove the image preview
                                     this.parentElement.remove();
+
+
+                                    // Remove the file from the selected files array
+                                    const index = selectedFiles.indexOf(file);
+                                    if (index > -1) {
+                                        selectedFiles.splice(index, 1);
+                                    }
+
+                                    // Update the file input value to deselect the removed file
+                                    fileInput.value = '';
+                                    const dataTransfer = new DataTransfer();
+                                    selectedFiles.forEach(file => {
+                                        dataTransfer.items.add(file);
+
+                                    });
+                                    fileInput.files = dataTransfer.files;
+
+
                                 });
 
                                 let container = document.createElement('div');
@@ -258,18 +348,35 @@
 
                                 preview.appendChild(container);
                             }
-                            reader.readAsDataURL(input.files[i]);
+                            reader.readAsDataURL(file);
                         }
                     }
                 }
-
             </script>
+             <!--ReLOADING  -->
+     <script>
+        let scrollPosition = [
+            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+            self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+        ];
+
+        window.onload = function () {
+            window.scrollTo(scrollPosition[0], scrollPosition[1]);
+        };
+    </script>
+
             <script>
                 // for fetching data based on the category
                 const categorySelect = document.getElementById('category1');
                 const subcategorySelect = document.getElementById('subcategory1');
 
                 setupCategorySelection(categorySelect, subcategorySelect);
+
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const selectedCategoryId = categorySelect.value;
+                    const subcategories = await fetchSubcategories(selectedCategoryId);
+                    populateSubcategories(subcategories, subcategorySelect);
+                });
 
                 function setupCategorySelection(categorySelect, subcategorySelect) {
                     categorySelect.addEventListener('change', async () => {
@@ -291,20 +398,23 @@
                         const option = document.createElement('option');
                         option.value = subcategory._id;
                         option.textContent = subcategory.subName;
+                        if (subcategory._id == '<%=product.subCategory%>') {
+                            option.selected = true
+                        }
                         subcategorySelect.appendChild(option);
                     });
                 }
 
                 // Function to fetch subcategories based on the selected category
                 async function fetchSubcategories(categoryId) {
-                    const response = await fetch(`../admin/getSubcategory/${categoryId}`);
+                    const response = await fetch(`/admin/getSubcategory/${categoryId}`);
                     const data = await response.json();
                     return data.subcategories;
                 }
 
 
             </script>
-          
+    
 
             <script>
                 const menuBtn = document.getElementById('menuBtn');

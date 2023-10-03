@@ -30,14 +30,17 @@ try {
   //update blocked
   router.put('/update-block-status/:userId', adminSession, adminController.updateBlock)
 
-  //catagory managemetn 
+  //category managemetn 
   router.get('/categoryManagement', adminSession, adminController.categoryManagement)
 
   //add category
   router.post('/addCategory', adminSession,validateCategoryImage, adminController.addCategory)
 
-  //update categoru
+  //update category
   router.post('/updateCategory', adminSession,validateCategoryImage, adminController.updateCategory)
+  
+  // deleteCategory image
+  router.post('/removeCatImage', adminSession, adminController.deleteCatImage)
 
   //Delete Category
   router.get('/deleteCategory/:id', adminSession, adminController.deleteCategory)
@@ -48,8 +51,15 @@ try {
   // Add product
   router.post('/addProduct', adminSession, validateProductImage, adminController.addProduct)
  
+  // Edit product PAGE
+  router.get('/editProduct/:pid', adminSession,adminController.editProductPage)
+  
+  // delete imgage
+  router.post('/removeImage', adminSession,adminController.removeImage)
+  
   // Edit product
   router.post('/editProduct', adminSession, validateProductImage, adminController.editProduct)
+
 
   //delete Product
   router.get('/deleteProduct/:id', adminSession, adminController.deleteProduct)
