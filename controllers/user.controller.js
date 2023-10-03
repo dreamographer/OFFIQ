@@ -346,6 +346,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
+     
       return res.render('cart', { cart: cart, products: products, msg: '' });
     } catch (error) {
       console.log(error);

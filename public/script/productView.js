@@ -78,7 +78,7 @@ document.addEventListener("click", function (e) {
 		if (e.target.id == "plus") {
 			amountAdd += 1;
 		} else if (e.target.id == "minus") {
-			if (amountAdd <= 0) return;
+			if (amountAdd <= 1) return;
 			amountAdd -= 1;
 		}
 
