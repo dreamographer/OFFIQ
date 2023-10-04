@@ -155,7 +155,7 @@ const userController = {
 
         const send = await sendOTP(user.fullname, email, otp)
         console.log(send);
-        return res.render('otpVerify', { email: email, need: need, error: '' })
+        return res.render('otpVerify', { email: email, need: need, error: '', minutes: 1, seconds: 10 })
       }
 
     } catch (err) {

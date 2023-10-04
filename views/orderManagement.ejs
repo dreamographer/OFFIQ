@@ -108,8 +108,8 @@
                                     </thead>
                                     <tbody>
                                         <% order.forEach((order,i)=> { %>
-                                            <tr
-                                                class="bg-white border-b  transition duration-300 ease-in-out hover:bg-gray-100">
+                                            <tr class="bg-white border-b clickable-row cursor-pointer transition duration-300 ease-in-out hover:bg-gray-100"
+                                                data-href="orderPage/<%= order._id %>">
 
                                                 <td
                                                     class=" text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
@@ -216,19 +216,19 @@
                 item.addEventListener('change', (event) => {
                     const status = item.value
                     const selectedOption = item.options[item.selectedIndex];
-                    const oid=selectedOption.dataset.oid;
+                    const oid = selectedOption.dataset.oid;
                     fetch('/admin/updateStatus', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ status: status, oId:oid}),
+                        body: JSON.stringify({ status: status, oId: oid }),
                     })
                         .then(response => response.json())
                         .catch((error) => {
                             console.error('Error:', error);
                         });
-                        // window.location.reload()
+                    // window.location.reload()
 
                 })
             });
@@ -236,16 +236,16 @@
         </script>
         <!-- maintain same place -->
         <script>
-        <!--LOADING  -->
-        let scrollPosition = [
-            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-            self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-        ];
+            <!--LOADING  -->
+            let scrollPosition = [
+                self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+                self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+            ];
 
-        window.onload = function () {
-            window.scrollTo(scrollPosition[0], scrollPosition[1]);
-        };
-    </script> 
+            window.onload = function () {
+                window.scrollTo(scrollPosition[0], scrollPosition[1]);
+            };
+        </script>
 
         <!-- search -->
         <script>
@@ -266,6 +266,23 @@
                     }
                 }
         </script>
+
+        <!-- order detail page -->
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const rows = document.querySelectorAll(".clickable-row");
+                rows.forEach(function (row) {
+                    row.addEventListener("click", function () {
+                        const href = this.getAttribute("data-href");
+                        if (href) {
+                            window.location.href = href;
+                        }
+                    });
+                });
+            });
+        </script>
+
 
         <script>
             const menuBtn = document.getElementById('menuBtn');

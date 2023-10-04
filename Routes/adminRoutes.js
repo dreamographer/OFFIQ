@@ -70,6 +70,10 @@ try {
   // order management
   router.get('/orderManagement',adminSession,adminController.orderManagement)
 
+  // order Page
+   router.get('/orderPage/:oId',adminSession,adminController.orderPage)
+
+
   // update status
   router.post('/updateStatus', adminController.updateStatus)
 

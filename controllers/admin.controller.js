@@ -453,14 +453,46 @@ const adminController = {
           }
         }
       }
-      console.log(products);
       return res.render('orderManagement', { order: order, products: products })
 
     } catch (error) {
       console.log(error);
     }
   },
+  orderPage: async (req, res) => {
+    try {
+  
+      const oId=req.params.oId
+      const order = await Order.find({ _id:oId});
 
+      let products = []
+      for (const ord of order) {
+        for (const prod of ord.items) {
+          try {
+            const item = await Products.findById(prod.productId);
+
+            if (item) {
+              // Check if product already exists in the array
+              const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+              // If product does not exist in the array, push it
+              if (!productExists) {
+                products.push(item);
+              }
+            } else {
+              console.log(`Product not found for ID: ${prod.productId}`);
+            }
+          } catch (error) {
+            console.error(`Error fetching product: ${error}`);
+          }
+        }
+      }
+      res.render('orderPageAdmin', { order: order[0], products: products})
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   //updata status
   updateStatus: async (req, res) => {
