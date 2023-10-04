@@ -534,20 +534,25 @@ const userController = {
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
       const result = await Order.create(data)
-      items.forEach(async (prod) => {
-        let updatedProduct = await Products.findOneAndUpdate(
+      let updatedProduct=[]
+      let promises =items.map(async (prod) => {
+        updatedProduct = await Products.findOneAndUpdate(
           { _id: prod.productId },
           { $inc: { quantity: -prod.quantity } }, //update the quantity
           { new: true }
         );
-
+        return updatedProduct;
       });
+
+      await Promise.all(promises)
+      console.log(updatedProduct);
       let updatedCart = await User.findOneAndUpdate(
         { _id: userId },
         { $set: { cart: [] } }, //update the cart
         { new: true }
       );
-      return res.render('cart', { cart: [], products: [], msg: 'ORDER SUCCESFULLY PLACED' });
+      return res.redirect(`/orderPage/${result._id}`)
+      // return res.render('cart', { cart: [], products: [], msg: 'ORDER SUCCESFULLY PLACED' });
     } catch (error) {
       console.log(error);
     }
@@ -623,12 +628,18 @@ const userController = {
       console.log(error);
     }
   },
+
+  // order Detail page
   orderPage: async (req, res) => {
     try {
+      let msg=''
+      if(req.headers.referer=='http://localhost:3000/checkout'){
+        msg="YOUR ORDER HAS BEEN PLACED"
+      }
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId });
-      const oId=req.params.oId
-      const order = await Order.find({ _id:oId});
+      const oId = req.params.oId
+      const order = await Order.find({ _id: oId });
 
       let products = []
       for (const ord of order) {
@@ -652,7 +663,7 @@ const userController = {
           }
         }
       }
-      res.render('orderPage', { order: order[0], products: products, user: user })
+      res.render('orderPage', { order: order[0], products: products, user: user, msg: msg })
 
     } catch (error) {
       console.log(error);

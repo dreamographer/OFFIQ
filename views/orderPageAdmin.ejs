@@ -36,7 +36,7 @@
                     Payment ID :   <%= order.paymentId %>
                 </p>
                 <div class="flex justify-between "> 
-                    <p class="flex p-3">
+                    <p class="flex p-3 md:p-0">
                         Shipping Address : &nbsp <span>  <%= order.shippingAddress.addressLine1 %> <br>
                         <%= order.shippingAddress.city %> <br>
                             <%= order.shippingAddress.pin %> <br></span>
@@ -93,7 +93,10 @@
                             <span class="font-semibold">
                                 <%=product.name %>
                             </span>
-                            <span class="float-right text-gray-400">
+                            <span class="float-right text-gray-600">
+                               Price : ₹<%=product.price %> 
+                            </span>
+                            <span class="float-right text-gray-600">
                                quantity : <%=order.items[i].quantity %> 
                             </span>
                             <p class="text-lg font-semibold">Total : ₹<%=product.price*order.items[i].quantity %>

@@ -157,7 +157,7 @@ const adminController = {
       category.save()
       return res.status(200).send() 
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   },
 
@@ -189,6 +189,7 @@ const adminController = {
       if (req.files) {
        
         imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
+        console.log(imagePaths);
         //removing public/from adderees
         
       }
@@ -224,12 +225,16 @@ const adminController = {
         } else {
           subcategory = { subName: subName, subDescription: subDescription }//add oly one data
           updatedData.subcategory = subcategory;
+          let updateObject = {
+            $set: { ...updatedData },
+          };
+          
+          if (imagePaths && imagePaths.length > 0) {
+            updateObject.$push = { image: { $each: imagePaths } };
+          }
           result = await Category.findOneAndUpdate(
             { _id: id },
-            {
-              // $push: { subcategory: subcategory },
-              $set: { ...updatedData },
-            },
+            updateObject,
             {
               new: true, // To return the updated document
               upsert: true, // Create a new document if it doesn't exist
@@ -400,7 +405,7 @@ const adminController = {
 
 
       if (product) {
-        console.log('product added');
+        console.log('product updated');
         return res.redirect('/admin/productManagement');
       }
     } catch (error) {

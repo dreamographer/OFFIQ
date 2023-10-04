@@ -11,6 +11,11 @@
         rel="stylesheet">
     <!-- alphine js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- cropperjs -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/2.3.4/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+
+
     <title>Product Management</title>
 </head>
 
@@ -173,13 +178,14 @@
                                         <% product.images.forEach((image,i)=> { %>
                                             <div>
                                                 <img src="<%= image %>" alt="product image" class="w-[100px] h-[100px]">
-                                                <button class="remove-image" data-image="<%=i%> " data-id="<%=product._id%>"
-                                                    type="button">Remove</button>
+                                                <button class="remove-image" data-image="<%=i%> "
+                                                    data-id="<%=product._id%>" type="button">Remove</button>
                                             </div>
                                             <% }); %>
 
                                     </div>
-
+                                    <div id="croppedImageContainer"></div>
+                                    <div><button type="button"  id="save"></button></div>
 
                                 </div>
                                 <button type="submit"
@@ -249,25 +255,94 @@
         <% } %>
 
 
+            <!-- cropper js -->
+            <script>
+                // Get references to elements
+                const fileInput = document.getElementById('file_input');
+                const croppedImageContainer = document.getElementById('croppedImageContainer');
+              
+                // Initialize Cropper.js
+                let cropper;
+              
+                fileInput.addEventListener('change', (e) => {
+                  const file = e.target.files[0];
+                  // Ensure the file is an image
+                  if (file && file.type.startsWith('image/')) {
+                    // Create a new FileReader to read the selected image
+                    const reader = new FileReader();
+              
+                    reader.onload = (e) => {
+                      // Destroy any previous instances of Cropper.js
+                      if (cropper) {
+                        cropper.destroy();
+                      }
+              
+                      // Create an image element and set its source to the selected file
+                      const img = new Image();
+                      img.src = e.target.result;
+              
+                      // Append the image to the container
+                      croppedImageContainer.innerHTML = '';
+                      croppedImageContainer.appendChild(img);
+              
+                      // Initialize Cropper.js on the image
+                      cropper = new Cropper(img, {
+                        aspectRatio: 1, // Set the aspect ratio as needed
+                        viewMode: 1,    // Set the view mode as needed
+                      });
+                    };
+                    reader.readAsDataURL(file);
+                   
+                    // Read the selected file as a data URL
+                  }
+                });
+                 // Add a save button for the image
+                 let saveButton=document.getElementById('save')
+                    saveButton.textContent = 'Save';
+                    saveButton.onclick = function() {
+                        let canvas = cropper.getCroppedCanvas();
+                        canvas.toBlob(function(blob) {
+                            // Create a new blob URL for the cropped image
+                            let croppedImageUrl = URL.createObjectURL(blob);
+                            let fileName="cropped.jpeg"
+                       
+                            const file = new File([blob], fileName, { type: 'image/jpeg' })
+                            
+                            const dataTransfer = new DataTransfer();
+                                 
+                                        dataTransfer.items.add(file);
+
+                                    
+                                    fileInput.files = dataTransfer.files;
+
+                            // Create a new FormData object and append the Blob
+                            let formData = new FormData();
+                            formData.append('croppedImage', blob, 'croppedImage.png');
+                        }, 'image/png');
+                    };
+
+                
+              </script>
+
 
             <!-- delete existing image -->
             <script>
                 // Get all the "remove" buttons
                 const removeButtons = document.querySelectorAll('.remove-image');
 
-             
+
                 removeButtons.forEach(button => {
                     button.addEventListener('click', () => {
                         // Get the image name from the data attribute
                         const imageName = button.dataset.image;
-                        const pId= button.dataset.id;
+                        const pId = button.dataset.id;
                         // Send a request to the server to remove the image
                         fetch('/admin/removeImage', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ imageName ,pId})
+                            body: JSON.stringify({ imageName, pId })
                         })
                             .then(response => {
                                 // Handle the response from the server
@@ -291,7 +366,7 @@
             <!-- preview existing images -->
 
             <script>
-                const fileInput = document.querySelector('#file_input');
+            
                 const preview = document.querySelector('#preview');
 
                 // Keep track of selected files
@@ -353,17 +428,17 @@
                     }
                 }
             </script>
-             <!--ReLOADING  -->
-     <script>
-        let scrollPosition = [
-            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-            self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-        ];
+            <!--ReLOADING  -->
+            <script>
+                let scrollPosition = [
+                    self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+                    self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+                ];
 
-        window.onload = function () {
-            window.scrollTo(scrollPosition[0], scrollPosition[1]);
-        };
-    </script>
+                window.onload = function () {
+                    window.scrollTo(scrollPosition[0], scrollPosition[1]);
+                };
+            </script>
 
             <script>
                 // for fetching data based on the category
@@ -414,7 +489,7 @@
 
 
             </script>
-    
+
 
             <script>
                 const menuBtn = document.getElementById('menuBtn');
