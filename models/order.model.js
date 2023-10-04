@@ -49,6 +49,10 @@ const orderSchema = new Schema({
         type: String,
         // required: true
     },
+    offer:{
+        type: String,
+
+    },
     shippingAddress: addressSchema,
     paymentMode: {
         type: String,

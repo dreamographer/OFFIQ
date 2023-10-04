@@ -1,0 +1,110 @@
+<%-include('header') %>
+    <div class="mt-28 p-3 overflow-hidden">
+        <div class="w-full overflow-auto">
+            <div class="border-b-2 mt-5 mb-5  p-4">
+                <div class="flex justify-between">
+                <h2 class="text-2xl mb-2 font-bold ">ORDER #<%= order._id %>
+                </h2>
+                <p class="font-medium" >Date:<%let options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }; %> <%= order.createdAt.toLocaleDateString("en-US", options) %></p>
+            </div>
+            <div>
+                <p>
+                    Order Status : <% if (order.status=='delivered' ) { %>
+                        <span
+                            class="text-sm text-green-600 font-light px-6 py-4 whitespace-nowrap">DELIVERED</span>
+                        <% }else if (order.status=='cancelled' ) { %>
+                            <span
+                                class="text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCELLED</span>
+
+                            <% }else if (order.status=='pending' ){ %>
+                                <span
+                                    class="text-sm text-yellow-600 font-light px-6 py-4 whitespace-nowrap">PENDING</span>
+
+                                <% } else if (order.status=='confirmed' ){ %>
+                                    <span
+                                        class="text-sm text-orange-600 font-light px-6 py-4 whitespace-nowrap">CONFIRMED</span>
+
+                                    <% } %>
+                </p>
+                <p>
+                    Payment Mode : <%= order.paymentMode %>
+                </p>
+                <p>
+                    Payment ID :   <%= order.paymentId %>
+                </p>
+                <div class="flex justify-between "> 
+                    <p class="flex">
+                        Shipping Address : &nbsp <span>  <%= order.shippingAddress.addressLine1 %> <br>
+                        <%= order.shippingAddress.city %> <br>
+                            <%= order.shippingAddress.pin %> <br></span>
+                    </p>
+                    <p class="text-xl font-semibold">
+                        <% if (order.status!='cancelled' && order.status!='delivered' ) { %>
+                            <button data-oid="<%= order._id %>"
+                                class="btn  text-red-700  px-6 py-4 whitespace-nowrap">CANCEL
+                                ORDER
+                            </button>
+                            <% } else{%>
+                                <button data-oid="<%= order._id %>"
+                                    class="btn  text-red-700  px-6 py-4 whitespace-nowrap">
+                                </button>
+                                <% } %>
+                    </p>
+                </div>
+            </div>
+            </div>
+            <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+                <% products.forEach((product,i)=> { %>
+                    <div class="flex flex-col rounded-lg bg-white sm:flex-row">
+                        <img class="m-2 h-24 w-28 rounded-md border object-cover object-center"
+                            src="<%=product.images[0]%>" alt="" />
+                        <div class="flex w-full flex-col px-4 py-4">
+                            <span class="font-semibold">
+                                <%=product.name %>
+                            </span>
+                            <span class="float-right text-gray-400">
+                               quantity : <%=order.items[i].quantity %> 
+                            </span>
+                            <p class="text-lg font-semibold">Total : ₹<%=product.price*order.items[i].quantity %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+            </div>
+            <div class="border-t-2 mt-5 mb-5  p-4">
+                <p class="text-xl font-bold" >
+                    Grand total : ₹<%= order.total %>
+                </p>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- updation of status -->
+    <script>
+        const btn = document.querySelectorAll('.btn')
+        btn.forEach(item => {
+            item.addEventListener('click', () => {
+                const status = "cancelled"
+                const oid = item.dataset.oid;
+                fetch('/cancelOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status: status, oId: oid }),
+                })
+                    .then(response => response.json())
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                window.location.reload()
+
+            })
+
+        });
+
+    </script>
+    </body>
+
+    </html>

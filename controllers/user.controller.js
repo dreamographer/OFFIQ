@@ -90,7 +90,7 @@ async function verifyOTP(email, otp) {
 //deletion of data when email is unverified
 async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
   try {
-    const deleted = await User.deleteMany({ verified: false})
+    const deleted = await User.deleteMany({ verified: false })
     if (deleted) {
       console.log("user deleted");
     }
@@ -153,7 +153,7 @@ const userController = {
 
         const need = "forgotPassword"
 
-        const send=await sendOTP(user.fullname, email, otp)
+        const send = await sendOTP(user.fullname, email, otp)
         console.log(send);
         return res.render('otpVerify', { email: email, need: need, error: '' })
       }
@@ -178,9 +178,9 @@ const userController = {
 
   //render signup page
   signUp: (req, res) => {
-   setTimeout(() => {
-    deleteUnverifiedDocs()
-   }, 1000*60*10); 
+    setTimeout(() => {
+      deleteUnverifiedDocs()
+    }, 1000 * 60 * 10);
 
     return res.render('signup');
   },
@@ -193,8 +193,8 @@ const userController = {
       const email = data.email
       const user = await User.findOne({ email });
       if (user) {
-        req.session.exist=true
-        return res.redirect('/login') 
+        req.session.exist = true
+        return res.redirect('/login')
       } else {
         data.password = encrypt(data.password, key);//encripting the password
         try {
@@ -202,9 +202,9 @@ const userController = {
           data.otp = encrypt(otp, key)
           data.otpExpires = expirationTime
           const user = await User.create(data) //inserting the data
-          const send=await sendOTP(user.fullname, user.email, otp)
+          const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
-          return res.render('otpVerify', { email: user.email, need: need, error: '',minutes :1,seconds :10})
+          return res.render('otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
 
         } catch (err) {
           console.log(err);
@@ -234,11 +234,11 @@ const userController = {
         }
       }
       else {
-        const {minutes,seconds}=req.body;
+        const { minutes, seconds } = req.body;
         if (need == "userSignIN") {
-          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes :minutes,seconds :seconds })
+          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
         } else {
-          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP' ,minutes :minutes,seconds :seconds  })
+          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
 
         }
 
@@ -257,7 +257,7 @@ const userController = {
       sendOTP("Resend", email, otp)
       otp = encrypt(otp, key)
       const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
-      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send',minutes : 1 ,seconds :10 })
+      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send', minutes: 1, seconds: 10 })
     } catch (error) {
       console.error(error);
     }
@@ -274,8 +274,8 @@ const userController = {
         req.session.err = false;
         // Pass an error message to the login view
         return res.render('login', { errorMessage: 'Incorrect email or password' });
-      } else if(req.session.exist){
-        req.session.exist=false;
+      } else if (req.session.exist) {
+        req.session.exist = false;
         return res.render('login', { errorMessage: 'Email already registered , Please login' });
 
       }
@@ -346,7 +346,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-     
+
       return res.render('cart', { cart: cart, products: products, msg: '' });
     } catch (error) {
       console.log(error);
@@ -504,7 +504,7 @@ const userController = {
       let { pin } = req.body
       pin = Number(pin)
       const data = { addressLine1, city, tag, pin }
-   
+
       const userId = req.session.user._id;
       const user = await User.findById(userId)
       if (user.googleAuth) {//for googlE aUTH USERS
@@ -580,7 +580,7 @@ const userController = {
           }
         }
       }
-      
+
       return res.render('orderManagement', { order: order, products: products })
 
     } catch (error) {
@@ -593,8 +593,6 @@ const userController = {
     try {
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId });
-
-      const addresses = user.addresses
       const order = await Order.find({ userId });
 
       let products = []
@@ -625,20 +623,54 @@ const userController = {
       console.log(error);
     }
   },
+  orderPage: async (req, res) => {
+    try {
+      const userId = req.session.user._id;
+      const user = await User.findOne({ _id: userId });
+      const oId=req.params.oId
+      const order = await Order.find({ _id:oId});
 
+      let products = []
+      for (const ord of order) {
+        for (const prod of ord.items) {
+          try {
+            const item = await Products.findById(prod.productId);
+
+            if (item) {
+              // Check if product already exists in the array
+              const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+              // If product does not exist in the array, push it
+              if (!productExists) {
+                products.push(item);
+              }
+            } else {
+              console.log(`Product not found for ID: ${prod.productId}`);
+            }
+          } catch (error) {
+            console.error(`Error fetching product: ${error}`);
+          }
+        }
+      }
+      res.render('orderPage', { order: order[0], products: products, user: user })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
   //edit the address
   editAddress: async (req, res) => {
     try {
-      const { addrId,addressLine1, city, tag } = req.body 
+      const { addrId, addressLine1, city, tag } = req.body
       let { pin } = req.body
       pin = Number(pin)
-     
+
       const userId = req.session.user._id;
       const user = await User.findById(userId)
       if (user.googleAuth) { //for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
-        const addrIndex = gUser.addresses.findIndex((item)=>item._id==addrId);  //finding the index of the array if address be updated
-        if(addrIndex !== -1) {
+        const addrIndex = gUser.addresses.findIndex((item) => item._id == addrId);  //finding the index of the array if address be updated
+        if (addrIndex !== -1) {
           const addr = gUser.addresses.splice(addrIndex, 1)[0];//getting the data which nee dto be updated 
           // modyfying the data
           addr.addressLine1 = addressLine1;
@@ -646,20 +678,20 @@ const userController = {
           addr.tag = tag;
           addr.pin = pin;
           gUser.addresses.splice(addrIndex, 0, addr); //adding the modified data to the array
-          const update = await googelUser.updateOne({_id:userId},{$set:{"addresses":gUser.addresses}}); //updatingthe address
+          const update = await googelUser.updateOne({ _id: userId }, { $set: { "addresses": gUser.addresses } }); //updatingthe address
         }
       } else {  //for other users
         const user = await User.findById(userId);
-        const addrIndex = user.addresses.findIndex((item)=>item._id==addrId);
-        if(addrIndex !== -1) {
+        const addrIndex = user.addresses.findIndex((item) => item._id == addrId);
+        if (addrIndex !== -1) {
           const addr = user.addresses.splice(addrIndex, 1)[0];
-         
+
           addr.addressLine1 = addressLine1;
           addr.city = city;
           addr.tag = tag;
           addr.pin = pin;
           user.addresses.splice(addrIndex, 0, addr);
-          const update = await User.updateOne({_id:userId},{$set:{"addresses":user.addresses}});
+          const update = await User.updateOne({ _id: userId }, { $set: { "addresses": user.addresses } });
         }
       }
       return res.redirect('back')
@@ -673,7 +705,7 @@ const userController = {
     try {
       const oId = req.body.oId
       const status = req.body.status
-     
+
       const update = await Order.findByIdAndUpdate(oId, { $set: { status: status } })
       return
     } catch (error) {

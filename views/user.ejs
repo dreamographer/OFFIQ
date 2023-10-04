@@ -57,12 +57,14 @@
                 </thead>
                 <tbody>
                     <% order.forEach((order,i)=> { %>
-                        <tr class="bg-white border-b  transition duration-300 ease-in-out hover:bg-gray-100">
-
+                        
+                        <tr class="bg-white border-b  clickable-row transition duration-300 ease-in-out cursor-pointer hover:bg-gray-100" data-href="/orderPage/<%= order._id %>">
+                          
                             <td
                                 class=" text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
                                 <%= order._id %>
                             </td>
+                        
 
                             <td
                                 class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
@@ -122,6 +124,7 @@
                             </td>
 
                         </tr>
+                  
                         <% }); %>
                 </tbody>
             </table>
@@ -284,6 +287,26 @@
                 Address</button>
         </div>
     </div>
+
+
+    <!-- order detail page -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const rows = document.querySelectorAll(".clickable-row");
+          rows.forEach(function (row) {
+            row.addEventListener("click", function () {
+              const href = this.getAttribute("data-href");
+              if (href) {
+                window.location.href = href;
+              }
+            });
+          });
+        });
+      </script>
+
+
+
     <!-- updation of status -->
     <script>
         const btn = document.querySelectorAll('.btn')

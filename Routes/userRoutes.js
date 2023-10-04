@@ -40,11 +40,13 @@ router.get('/checkout',userAuth,userController.checkOut)
 //add address
 router.post('/addAddress',userAuth ,userController.addAddress ) 
 //Edit address
-router.post('/editAddress',userAuth ,userController.editAddress )   //address Add
+router.post('/editAddress',userAuth ,userController.editAddress ) 
 // order
 router.post('/order',userAuth,userController.order)
 // user profile
 router.get('/myAccout',userAuth,userController.userProfile)
+// Order Page
+router.get('/orderPage/:oId',userAuth,userController.orderPage)
 // cancel order
 router.post('/cancelOrder',userAuth,userController.cancelOrder)
 //logout
