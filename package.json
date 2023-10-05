@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.5",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "razorpay": "^2.9.2",
     "validate-image-type": "^2.0.0"
   },
   "devDependencies": {

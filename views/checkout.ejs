@@ -1,6 +1,9 @@
 <%- include('header') %>
     <!-- alphine js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <div class="grid sm:px-10 mt-28 lg:grid-cols-2 lg:px-20 xl:px-32 py-5"
         x-data="{ editModel : false ,addModel:false, tag:'',address:'',city:'',pin:'',addrId:''}">
 
@@ -252,7 +255,7 @@
     </div>
     </form>
 
-
+    <button id="rzp-button1">Pay</button>
 
     </body>
 
@@ -271,6 +274,37 @@
 
 
     </script>
+
+    <!-- Payment Integration -->
+    <script>
+        let options = {
+            "key": "rzp_test_DwVvUwZ6KYYMCR", // Enter the Key ID generated from the Dashboard
+            "amount": "<%=Number(sum)*100%>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "OFFIQ", //your business name
+            "description": "Test Transaction",
+            "image": "https://cdn.razorpay.com/logos/MkXOdj1zs2GhLl_original.png",
+            "order_id": "<%order%>", 
+            "callback_url": "/check",
+            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                "name": "Gaurav Kumar", //your customer's name
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#455163"
+            }
+        };
+        let rzp1 = new Razorpay(options);
+        document.getElementById('rzp-button1').onclick = function(e){
+            rzp1.open();
+            e.preventDefault();
+        }
+        </script>
+
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 
 

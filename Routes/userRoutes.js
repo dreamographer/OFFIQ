@@ -43,6 +43,8 @@ router.post('/addAddress',userAuth ,userController.addAddress )
 router.post('/editAddress',userAuth ,userController.editAddress ) 
 // order
 router.post('/order',userAuth,userController.order)
+// check
+router.post('/check',userAuth,userController.check)
 // user profile
 router.get('/myAccout',userAuth,userController.userProfile)
 // Order Page

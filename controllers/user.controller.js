@@ -16,6 +16,9 @@ const googelUser = require('../models/emailUserModel');//schema for google auth 
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRIPTION_KEY;
 const iv = 'initialisation-#';
+// Razorpay
+const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY}=process.env
+const Razorpay=require('razorpay')
 
 //encription function
 function encrypt(text, key) {
@@ -471,6 +474,9 @@ const userController = {
       if (!userId) {
         return res.redirect('/')
       }
+
+       
+
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const addresses = user.addresses
       const cart = user.cart;
@@ -490,8 +496,25 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      // return res.json({cart,  products,addresses})
-      return res.render('checkout', { cart: cart, products: products, address: addresses });
+ 
+      //RaZor Pay
+      let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
+      instance.orders.create({
+        amount: 100,
+        currency: "INR",
+        receipt: "receipt#1",
+        notes: {
+          key1: "value3",
+          key2: "value2"
+        }
+      },(err,order)=>{
+        if(!err){
+
+          return res.render('checkout', { cart: cart, products: products, address: addresses ,order:order.id});
+          
+        }
+      })
+    
     } catch (error) {
       console.log(error);
     }
@@ -521,6 +544,10 @@ const userController = {
     }
   },
 
+  // check
+  check:async(req,res)=>{
+    console.log(req);
+  },
   // order
   order: async (req, res) => {
     try {
@@ -529,13 +556,15 @@ const userController = {
       const status = 'pending'
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const items = user.cart;
-
       const { total, address, paymentMode } = req.body
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
+
+    
+
       const result = await Order.create(data)
-      let updatedProduct=[]
-      let promises =items.map(async (prod) => {
+      let updatedProduct = []
+      let promises = items.map(async (prod) => {
         updatedProduct = await Products.findOneAndUpdate(
           { _id: prod.productId },
           { $inc: { quantity: -prod.quantity } }, //update the quantity
@@ -552,7 +581,7 @@ const userController = {
         { new: true }
       );
       return res.redirect(`/orderPage/${result._id}`)
-      // return res.render('cart', { cart: [], products: [], msg: 'ORDER SUCCESFULLY PLACED' });
+
     } catch (error) {
       console.log(error);
     }
@@ -632,9 +661,9 @@ const userController = {
   // order Detail page
   orderPage: async (req, res) => {
     try {
-      let msg=''
-      if(req.headers.referer=='http://localhost:3000/checkout'){
-        msg="YOUR ORDER HAS BEEN PLACED"
+      let msg = ''
+      if (req.headers.referer == 'http://localhost:3000/checkout') {
+        msg = "YOUR ORDER HAS BEEN PLACED"
       }
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId });
