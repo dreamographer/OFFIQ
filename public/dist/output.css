@@ -685,6 +685,10 @@ video {
   top: 9rem;
 }
 
+.top-10 {
+  top: 2.5rem;
+}
+
 .z-10 {
   z-index: 10;
 }
@@ -782,6 +786,11 @@ video {
 .my-auto {
   margin-top: auto;
   margin-bottom: auto;
+}
+
+.my-5 {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .-mt-5 {
@@ -2552,6 +2561,10 @@ video {
     height: 24rem;
   }
 
+  .md\:h-64 {
+    height: 16rem;
+  }
+
   .md\:w-1\/4 {
     width: 25%;
   }
@@ -2613,6 +2626,10 @@ video {
 
   .md\:gap-5 {
     gap: 1.25rem;
+  }
+
+  .md\:overflow-auto {
+    overflow: auto;
   }
 
   .md\:p-0 {

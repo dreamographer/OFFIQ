@@ -244,11 +244,16 @@ const adminController = {
 
       } else {
         //if no sub awailaale
+        let updateObject = {
+          $set: { ...updatedData },
+        };
+        
+        if (imagePaths && imagePaths.length > 0) {
+          updateObject.$push = { image: { $each: imagePaths } };
+        }
         result = await Category.findOneAndUpdate(
           { _id: id },
-          {
-            $set: { ...updatedData },
-          },
+          updateObject,
           {
             new: true, // To return the updated document
             upsert: true, // Create a new document if it doesn't exist
