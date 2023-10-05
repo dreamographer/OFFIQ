@@ -184,12 +184,16 @@
                                             <% }); %>
 
                                     </div>
-                                    <div id="croppedImageContainer"></div>
-                                    <div><button type="button"  id="save"></button></div>
+                                    <div id="croppedImageContainer" class="h-64 overflow-auto">
+
+                                    </div>
+                                    <div >
+                                        <button type="button" class="bg-blue-500 z-50 text-white rounded-xl px-4" id="save"></button>
+                                    </div>
 
                                 </div>
                                 <button type="submit"
-                                    class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
+                                    class="w-full block bg-indigo-500  z-50 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
                                                                                                                                         px-4 py-3 mt-5">SAVE</button>
                             </form>
 
@@ -260,70 +264,74 @@
                 // Get references to elements
                 const fileInput = document.getElementById('file_input');
                 const croppedImageContainer = document.getElementById('croppedImageContainer');
-              
-                // Initialize Cropper.js
-                let cropper;
-              
+            
+                // Initialize Cropper.js for multiple images
+                let croppers = [];
+                const selectedFiles = [];
                 fileInput.addEventListener('change', (e) => {
-                  const file = e.target.files[0];
-                  // Ensure the file is an image
-                  if (file && file.type.startsWith('image/')) {
-                    // Create a new FileReader to read the selected image
-                    const reader = new FileReader();
-              
-                    reader.onload = (e) => {
-                      // Destroy any previous instances of Cropper.js
-                      if (cropper) {
-                        cropper.destroy();
-                      }
-              
-                      // Create an image element and set its source to the selected file
-                      const img = new Image();
-                      img.src = e.target.result;
-              
-                      // Append the image to the container
-                      croppedImageContainer.innerHTML = '';
-                      croppedImageContainer.appendChild(img);
-              
-                      // Initialize Cropper.js on the image
-                      cropper = new Cropper(img, {
-                        aspectRatio: 1, // Set the aspect ratio as needed
-                        viewMode: 1,    // Set the view mode as needed
-                      });
-                    };
-                    reader.readAsDataURL(file);
-                   
-                    // Read the selected file as a data URL
-                  }
+                    const files = e.target.files;
+            
+                    // Loop through selected files
+                    for (let i = 0; i < files.length; i++) {
+                        const file = files[i];
+            
+                        // Ensure the file is an image
+                        if (file.type.startsWith('image/')) {
+                            // Create a new FileReader to read the selected image
+                            const reader = new FileReader();
+            
+                            reader.onload = (e) => {
+                                // Create an image element and set its source to the selected file
+                                const img = new Image();
+                                img.src = e.target.result;
+            
+                                // Append the image to the container
+                                croppedImageContainer.appendChild(img);
+            
+                                // Initialize Cropper.js on the image
+                                const cropper = new Cropper(img, {
+                                    
+                                    aspectRatio: 5/4, // Set the aspect ratio as needed
+                                    viewMode: 1,    // Set the view mode as needed
+                                });
+            
+                                // Store the cropper instance in the croppers array
+                                croppers.push(cropper);
+                            };
+            
+                            reader.readAsDataURL(file);
+                        }
+                    }
                 });
-                 // Add a save button for the image
-                 let saveButton=document.getElementById('save')
-                    saveButton.textContent = 'Save';
-                    saveButton.onclick = function() {
+            
+                // Add a save button for the cropped images
+                let saveButton = document.getElementById('save');
+                saveButton.textContent = 'Save';
+                saveButton.onclick = function () {
+                    // Loop through the croppers and save each cropped image
+                    croppers.forEach((cropper, index) => {
                         let canvas = cropper.getCroppedCanvas();
-                        canvas.toBlob(function(blob) {
+                        canvas.toBlob(function (blob) {
                             // Create a new blob URL for the cropped image
                             let croppedImageUrl = URL.createObjectURL(blob);
-                            let fileName="cropped.jpeg"
-                       
-                            const file = new File([blob], fileName, { type: 'image/jpeg' })
-                            
-                            const dataTransfer = new DataTransfer();
-                                 
-                                        dataTransfer.items.add(file);
-
-                                    
-                                    fileInput.files = dataTransfer.files;
-
+                            let fileName = `cropped_${index}.jpeg`;
+            
+                            const file = new File([blob], fileName, { type: 'image/jpeg' });
+                            selectedFiles.push(file)
                             // Create a new FormData object and append the Blob
                             let formData = new FormData();
-                            formData.append('croppedImage', blob, 'croppedImage.png');
-                        }, 'image/png');
-                    };
+                            formData.append(`croppedImage_${index}`, file);
+            
+                        }, 'image/jpeg');
+                    });
+                    const dataTransfer = new DataTransfer();
+                                    selectedFiles.forEach(file => {
+                                        dataTransfer.items.add(file);
 
-                
-              </script>
-
+                                    });
+                                    fileInput.files = dataTransfer.files;
+                };
+            </script>
 
             <!-- delete existing image -->
             <script>
@@ -363,71 +371,7 @@
                 });
 
             </script>
-            <!-- preview existing images -->
-
-            <script>
-            
-                const preview = document.querySelector('#preview');
-
-                // Keep track of selected files
-                const selectedFiles = [];
-
-                fileInput.addEventListener('change', function () {
-                    console.log(this.files);
-                    previewImages(this);
-                });
-
-                function previewImages(input) {
-                    if (input.files) {
-                        // Clear previous selections
-                        selectedFiles.length = 0;
-
-                        for (let i = 0; i < input.files.length; i++) {
-                            const file = input.files[i];
-                            selectedFiles.push(file);
-
-                            let reader = new FileReader();
-                            reader.onload = function (e) {
-                                let image = document.createElement('img');
-                                image.src = e.target.result;
-                                image.style.width = '100px';
-                                image.style.height = '100px';
-                                let removeButton = document.createElement('button');
-                                removeButton.textContent = 'Remove';
-                                removeButton.addEventListener('click', function () {
-                                    // Remove the image preview
-                                    this.parentElement.remove();
-
-
-                                    // Remove the file from the selected files array
-                                    const index = selectedFiles.indexOf(file);
-                                    if (index > -1) {
-                                        selectedFiles.splice(index, 1);
-                                    }
-
-                                    // Update the file input value to deselect the removed file
-                                    fileInput.value = '';
-                                    const dataTransfer = new DataTransfer();
-                                    selectedFiles.forEach(file => {
-                                        dataTransfer.items.add(file);
-
-                                    });
-                                    fileInput.files = dataTransfer.files;
-
-
-                                });
-
-                                let container = document.createElement('div');
-                                container.appendChild(image);
-                                container.appendChild(removeButton);
-
-                                preview.appendChild(container);
-                            }
-                            reader.readAsDataURL(file);
-                        }
-                    }
-                }
-            </script>
+          
             <!--ReLOADING  -->
             <script>
                 let scrollPosition = [
