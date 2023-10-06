@@ -73,10 +73,17 @@ try {
   // order Page
    router.get('/orderPage/:oId',adminSession,adminController.orderPage)
 
-
   // update status
-  router.post('/updateStatus', adminController.updateStatus)
+  router.post('/updateStatus',adminSession, adminController.updateStatus)
 
+  // coupon Management
+  router.get('/couponManagement',adminSession,adminController.couponManagement)
+
+  // add coupon 
+  router.post('/addCoupon',adminSession,adminController.addCoupon)
+
+  // edit coupon
+  router.post('/editCoupon',adminSession,adminController.editCoupon)
 
   //logout
   router.get('/logout', adminController.logout);

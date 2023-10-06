@@ -35,6 +35,8 @@ router.post('/addToCart',userAuth,userController.addToCart)
 router.get('/removeProduct/:id',userAuth,userController.removeProduct)
 //update Cart
 router.post('/updateCart',userAuth,userController.updateCart)
+// Generate Order
+router.post('/genOrder',userAuth,userController.GenerateOrder)
 //checkout
 router.get('/checkout',userAuth,userController.checkOut) 
 //add address
@@ -43,8 +45,6 @@ router.post('/addAddress',userAuth ,userController.addAddress )
 router.post('/editAddress',userAuth ,userController.editAddress ) 
 // order
 router.post('/order',userAuth,userController.order)
-// check
-router.post('/check',userAuth,userController.check)
 // user profile
 router.get('/myAccout',userAuth,userController.userProfile)
 // Order Page

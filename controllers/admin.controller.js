@@ -11,6 +11,7 @@ const Admin = require('../models/admin.models'); //admin schema
 const Category = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
 const Order = require('../models/order.model'); //order schema
+const Coupon = require('../models/couponModel');//coupon schema
 
 //decrypt
 function decrypt(encryptedText, key) {
@@ -469,6 +470,8 @@ const adminController = {
       console.log(error);
     }
   },
+
+  // oderpage
   orderPage: async (req, res) => {
     try {
   
@@ -516,7 +519,45 @@ const adminController = {
     }
   },
 
-
+  // coupon Mangement
+  couponManagement:async (req,res)=>{
+    try {
+      const coupons =  await Coupon.find();
+      return res.render('couponManagement',{coupons:coupons,errorMessage:''})
+      
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // add coupon
+  addCoupon:async (req,res)=>{
+    try {
+      
+      let data=req.body
+      let newCoupon=new Coupon({
+        couponCode:data.couponCode,
+        description:data.description,
+        discountType : data.discountType ,
+        discountValue:data.discountValue,
+        minimumPurchase:data.minimumPurchase,
+        startDate:data.startDate ,
+        endDate:data.endDate 
+      })
+        
+      const coupon = Coupon.create(newCoupon)
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // edit coupon
+  editCoupon:async(req,res)=>{
+    try {
+      console.log(req.body);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  },
   //logout for the admin
   logout: (req, res) => {
     if (req.session.admin) {

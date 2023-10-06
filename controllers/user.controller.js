@@ -19,6 +19,7 @@ const iv = 'initialisation-#';
 // Razorpay
 const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY}=process.env
 const Razorpay=require('razorpay')
+let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
 
 //encription function
 function encrypt(text, key) {
@@ -304,7 +305,7 @@ const userController = {
       const cId = req.params.id
       const products = await Products.find({ category: cId });
       let category = await Category.find({ _id: cId });
-      console.log(category);
+      
       return res.render('products', { products: products, category: category });
     } catch (error) {
       console.log(error);
@@ -431,9 +432,10 @@ const userController = {
     } catch (error) {
       console.log(error);
     }
-
+    
   },
-
+  
+  
   //update the cart
   updateCart: async (req, res) => {
     try {
@@ -466,6 +468,24 @@ const userController = {
       console.log(error);
     }
   },
+// genreate order id in razorpay
+  GenerateOrder:async (req,res)=>{
+    try {
+      const amount=Number(req.body.amount)
+       //RaZor Pay
+      instance.orders.create({
+       amount: amount,
+       currency: "INR",
+       receipt: "receipt#1"
+     }).then(order => {
+       return res.send({orderId:order.id})
+     })
+     
+      
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   //checkout page
   checkOut: async (req, res) => {
@@ -474,9 +494,6 @@ const userController = {
       if (!userId) {
         return res.redirect('/')
       }
-
-       
-
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const addresses = user.addresses
       const cart = user.cart;
@@ -484,7 +501,9 @@ const userController = {
       const products = [];
       for (const prod of cart) {
         try {
+        
           const item = await Products.findById(prod.productId);
+         
           if (item) {
             products.push(item);
           } else {
@@ -496,25 +515,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
- 
-      //RaZor Pay
-      let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
-      instance.orders.create({
-        amount: 100,
-        currency: "INR",
-        receipt: "receipt#1",
-        notes: {
-          key1: "value3",
-          key2: "value2"
-        }
-      },(err,order)=>{
-        if(!err){
-
-          return res.render('checkout', { cart: cart, products: products, address: addresses ,order:order.id});
-          
-        }
-      })
-    
+      return res.render('checkout', { cart: cart, products: products, address: addresses});
     } catch (error) {
       console.log(error);
     }
@@ -523,13 +524,18 @@ const userController = {
   // add new address
   addAddress: async (req, res) => {
     try {
-      const { addressLine1, city, tag } = req.body
+      const { addressLine1, city } = req.body
       let { pin } = req.body
+      let {tag}=req.body
       pin = Number(pin)
-      const data = { addressLine1, city, tag, pin }
-
+      tag=tag.toUpperCase()
+      let data = { addressLine1, city, tag, pin }
       const userId = req.session.user._id;
       const user = await User.findById(userId)
+      
+      if ( user.addresses.some(item => item.tag === tag)) {
+        return res.send('Tag already exist please enter a new tag')
+      }
       if (user.googleAuth) {//for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
         gUser.addresses.push(data)
@@ -544,19 +550,87 @@ const userController = {
     }
   },
 
-  // check
-  check:async(req,res)=>{
-    console.log(req);
+   //edit the address
+   editAddress: async (req, res) => {
+    try {
+      const { addrId, addressLine1, city} = req.body
+      let { pin } = req.body
+      pin = Number(pin)
+      let {tag}=req.body
+      tag=tag.toUpperCase()
+      const userId = req.session.user._id;
+      const user = await User.findById(userId)
+      if (user.addresses.some(item => item.tag === tag)) {
+        return res.send('Tag already exist please enter a new tag')
+      }
+      if (user.googleAuth) { //for googlE aUTH USERS
+        const gUser = await googelUser.findById(userId);
+        const addrIndex = gUser.addresses.findIndex((item) => item._id == addrId);  //finding the index of the array if address be updated
+        if (addrIndex !== -1) {
+          const addr = gUser.addresses.splice(addrIndex, 1)[0];//getting the data which nee dto be updated 
+          // modyfying the data
+          addr.addressLine1 = addressLine1;
+          addr.city = city;
+          addr.tag = tag;
+          addr.pin = pin;
+          gUser.addresses.splice(addrIndex, 0, addr); //adding the modified data to the array
+          const update = await googelUser.updateOne({ _id: userId }, { $set: { "addresses": gUser.addresses } }); //updatingthe address
+        }
+      } else {  //for other users
+        const user = await User.findById(userId);
+        const addrIndex = user.addresses.findIndex((item) => item._id == addrId);
+        if (addrIndex !== -1) {
+          const addr = user.addresses.splice(addrIndex, 1)[0];
+
+          addr.addressLine1 = addressLine1;
+          addr.city = city;
+          addr.tag = tag;
+          addr.pin = pin;
+          user.addresses.splice(addrIndex, 0, addr);
+          const update = await User.updateOne({ _id: userId }, { $set: { "addresses": user.addresses } });
+        }
+      }
+      return res.redirect('back')
+    } catch (error) {
+      console.log(error);
+    }
   },
+
+ 
   // order
   order: async (req, res) => {
     try {
+      let status
+      let paymentId
+      let total,address,paymentMode 
+      if (req.body.razorpay_payment_id) {
+        // online payment
+        let order=await instance.payments.fetch(req.body.razorpay_payment_id)
+        total = Number(order.amount)/100
+        if (order.notes.address=='') {
+          return res.send('please select one address')
+        }
+         address = order.notes.address
+         paymentMode  = order.method  
+        status = 'confirmed'
+        paymentId = order.id
+      }else{ 
+        // COD
+        console.log(req.body.address);
+        if (!req.body.address) {
+          return res.send('please select one address')
+        }
+         total = req.body.total
+         
+         address = req.body.address
+         paymentMode  = req.body.paymentMode
+        status = 'pending'
+        paymentId = crypto.randomBytes(3).toString('hex')
+      }
       const userId = req.session.user._id;
-      const paymentId = crypto.randomBytes(3).toString('hex')
-      const status = 'pending'
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const items = user.cart;
-      const { total, address, paymentMode } = req.body
+      
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
 
@@ -574,7 +648,7 @@ const userController = {
       });
 
       await Promise.all(promises)
-      console.log(updatedProduct);
+  
       let updatedCart = await User.findOneAndUpdate(
         { _id: userId },
         { $set: { cart: [] } }, //update the cart
@@ -698,48 +772,7 @@ const userController = {
       console.log(error);
     }
   },
-  //edit the address
-  editAddress: async (req, res) => {
-    try {
-      const { addrId, addressLine1, city, tag } = req.body
-      let { pin } = req.body
-      pin = Number(pin)
-
-      const userId = req.session.user._id;
-      const user = await User.findById(userId)
-      if (user.googleAuth) { //for googlE aUTH USERS
-        const gUser = await googelUser.findById(userId);
-        const addrIndex = gUser.addresses.findIndex((item) => item._id == addrId);  //finding the index of the array if address be updated
-        if (addrIndex !== -1) {
-          const addr = gUser.addresses.splice(addrIndex, 1)[0];//getting the data which nee dto be updated 
-          // modyfying the data
-          addr.addressLine1 = addressLine1;
-          addr.city = city;
-          addr.tag = tag;
-          addr.pin = pin;
-          gUser.addresses.splice(addrIndex, 0, addr); //adding the modified data to the array
-          const update = await googelUser.updateOne({ _id: userId }, { $set: { "addresses": gUser.addresses } }); //updatingthe address
-        }
-      } else {  //for other users
-        const user = await User.findById(userId);
-        const addrIndex = user.addresses.findIndex((item) => item._id == addrId);
-        if (addrIndex !== -1) {
-          const addr = user.addresses.splice(addrIndex, 1)[0];
-
-          addr.addressLine1 = addressLine1;
-          addr.city = city;
-          addr.tag = tag;
-          addr.pin = pin;
-          user.addresses.splice(addrIndex, 0, addr);
-          const update = await User.updateOne({ _id: userId }, { $set: { "addresses": user.addresses } });
-        }
-      }
-      return res.redirect('back')
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
+ 
   // cancell the order
   cancelOrder: async (req, res) => {
     try {
