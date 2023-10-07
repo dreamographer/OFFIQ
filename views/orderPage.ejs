@@ -109,7 +109,7 @@
                             headers: {
                                 'Content-Type': 'application/json',
                             },
-                            body: JSON.stringify({ status: status, oId: oid }),
+                            body: JSON.stringify({ status: status, oId: oid}),
                         })
                             .then(response => response.json())
                             .catch((error) => {

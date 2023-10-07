@@ -512,7 +512,18 @@ const adminController = {
     try {
       const oId = req.body.oId
       const status = req.body.status
-      const update = await Order.findByIdAndUpdate(oId, { $set: { status: status } })
+      const order = await Order.findById(oId);
+      for (const item of order.items) {
+        const productId = item.productId;
+        const quantity = item.quantity;
+        // Find the corresponding product and update its quantity
+        await Products.findByIdAndUpdate(
+            productId,
+            { $inc: { quantity: quantity } },
+        );
+    }
+    order.status=status
+    order.save()
       return
     } catch (error) {
       console.log(error);
