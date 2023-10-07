@@ -104,7 +104,7 @@ const adminController = {
   //add new catergory
   addCategory: async (req, res) => {
     try {
- 
+
       let data = req.body;
       let subName = data.subName
       let subDescription = data.subDescription
@@ -148,24 +148,24 @@ const adminController = {
   },
 
 
-  deleteCatImage:async (req,res)=>{
+  deleteCatImage: async (req, res) => {
     try {
-      const imageIndex=req.body.imageIndex
-      const cId=req.body.cId
-      
-      const category=await Category.findById(cId)
-      category.image.splice(imageIndex,1)
+      const imageIndex = req.body.imageIndex
+      const cId = req.body.cId
+
+      const category = await Category.findById(cId)
+      category.image.splice(imageIndex, 1)
       category.save()
-      return res.status(200).send() 
+      return res.status(200).send()
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   },
 
   // update the category
   updateCategory: async (req, res) => {
     try {
-  
+
       const id = req.body.id
       const updatedData = { ...req.body }
       // checking wheather the category name already exists
@@ -185,14 +185,14 @@ const adminController = {
       let subcategory = {}
       delete updatedData.subDescription;
       delete updatedData.subName;
-      
+
       //cheking if the file exists
       if (req.files) {
-       
+
         imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
         console.log(imagePaths);
         //removing public/from adderees
-        
+
       }
       let result
       //check if subcategory exists
@@ -211,7 +211,7 @@ const adminController = {
           let updateObject = {
             $set: { ...updatedData },
           };
-          
+
           if (imagePaths && imagePaths.length > 0) {
             updateObject.$push = { image: { $each: imagePaths } };
           }
@@ -229,7 +229,7 @@ const adminController = {
           let updateObject = {
             $set: { ...updatedData },
           };
-          
+
           if (imagePaths && imagePaths.length > 0) {
             updateObject.$push = { image: { $each: imagePaths } };
           }
@@ -248,7 +248,7 @@ const adminController = {
         let updateObject = {
           $set: { ...updatedData },
         };
-        
+
         if (imagePaths && imagePaths.length > 0) {
           updateObject.$push = { image: { $each: imagePaths } };
         }
@@ -348,19 +348,19 @@ const adminController = {
   // edit product Page
   editProductPage: async (req, res) => {
     try {
-      const pId=req.params.pid
+      const pId = req.params.pid
       const category = await Category.find({});
-      const products=await Products.find({_id:pId})
-      const product=products[0]
+      const products = await Products.find({ _id: pId })
+      const product = products[0]
       let err
-     
+
       if (req.session.err) {
         err = req.session.err
         req.session.err = null
       } else {
         err = ''
       }
-      return res.render('editProduct',{product:product,category:category,err:err}) 
+      return res.render('editProduct', { product: product, category: category, err: err })
     }
     catch (error) {
       console.log(error);
@@ -368,13 +368,13 @@ const adminController = {
   },
 
   // remove image from category
-  removeImage:async (req,res)=>{
+  removeImage: async (req, res) => {
     try {
-      const imageUrl=req.body.imageName
-      const pId=req.body.pId
-    
-      const product=await Products.findById(pId)
-      product.images.splice(imageUrl,1)
+      const imageUrl = req.body.imageName
+      const pId = req.body.pId
+
+      const product = await Products.findById(pId)
+      product.images.splice(imageUrl, 1)
       product.save()
       return res.status(200).send()
     } catch (error) {
@@ -399,7 +399,7 @@ const adminController = {
           { new: true }
         );
       } else {
-  
+
 
         product = await Products.updateOne(
           { _id: id },
@@ -474,9 +474,9 @@ const adminController = {
   // oderpage
   orderPage: async (req, res) => {
     try {
-  
-      const oId=req.params.oId
-      const order = await Order.find({ _id:oId});
+
+      const oId = req.params.oId
+      const order = await Order.find({ _id: oId });
 
       let products = []
       for (const ord of order) {
@@ -500,7 +500,7 @@ const adminController = {
           }
         }
       }
-      res.render('orderPageAdmin', { order: order[0], products: products})
+      res.render('orderPageAdmin', { order: order[0], products: products })
 
     } catch (error) {
       console.log(error);
@@ -520,44 +520,97 @@ const adminController = {
   },
 
   // coupon Mangement
-  couponManagement:async (req,res)=>{
+  couponManagement: async (req, res) => {
     try {
-      const coupons =  await Coupon.find();
-      return res.render('couponManagement',{coupons:coupons,errorMessage:''})
-      
+      const coupons = await Coupon.find();
+      if (req.app.locals.data) {
+        console.log(req.app.locals.data);
+        err = req.app.locals.data
+        req.app.locals.data = null
+      } else {
+        err = ''
+      }
+      return res.render('couponManagement', { coupons: coupons, errorMessage: err })
+
     } catch (error) {
       console.log(error);
     }
   },
   // add coupon
-  addCoupon:async (req,res)=>{
+  addCoupon: async (req, res) => {
     try {
-      
-      let data=req.body
-      let newCoupon=new Coupon({
-        couponCode:data.couponCode,
-        description:data.description,
-        discountType : data.discountType ,
-        discountValue:data.discountValue,
-        minimumPurchase:data.minimumPurchase,
-        startDate:data.startDate ,
-        endDate:data.endDate 
+
+      let data = req.body
+      const coupons = await Coupon.findOne({couponCode:data.couponCode});
+      if (coupons){
+        req.app.locals.data = 'Coupon Name already exist';
+        return res.redirect(`/admin/couponManagement`)
+      }
+      let end = new Date(req.body.endDate);
+      let start = new Date(req.body.startDate);
+
+      if (start > end) {
+        req.app.locals.data = 'The end date should be after the start date';
+        return res.redirect(`/admin/couponManagement`)
+      } else if (start == end) {
+        req.app.locals.data = 'Minimun one day should be there';
+        return res.redirect(`/admin/couponManagement`)
+      }
+      let newCoupon = new Coupon({
+        couponCode: data.couponCode,
+        description: data.description,
+        discountType: data.discountType,
+        discountValue: data.discountValue,
+        minimumPurchase: data.minimumPurchase,
+        startDate: data.startDate,
+        endDate: data.endDate
       })
-        
+
       const coupon = Coupon.create(newCoupon)
+
+      return res.redirect(`/admin/couponManagement`)
     } catch (error) {
+
       console.log(error);
     }
   },
   // edit coupon
-  editCoupon:async(req,res)=>{
+  editCoupon: async (req, res) => {
     try {
-      console.log(req.body);
+      const cId = req.body.id
+      let data = req.body
+      const coupons = await Coupon.findOne({couponCode:data.couponCode});
       
+      let end = new Date(req.body.endDate);
+      let start = new Date(req.body.startDate);
+      
+      if (start > end) {
+        req.app.locals.data = 'The end date should after start date';
+        return res.redirect(`/admin/couponManagement`)
+      } else if (start > end) {
+        req.app.locals.data = 'Minimun one day should be there';
+        return res.redirect(`/admin/couponManagement`)
+      }
+      delete data.id
+      let coupon = await Coupon.findByIdAndUpdate(cId, data, { new: true })
+      return res.redirect(`/admin/couponManagement`)
     } catch (error) {
       console.log(error);
     }
   },
+
+  // delete the coupon
+  deleteCoupon:async (req,res)=>{
+    try { 
+      const id=req.params.id;
+      const deletedCoupon=await Coupon.deleteOne({"_id":id})
+      console.log(deletedCoupon);
+      return res.redirect('back')
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   //logout for the admin
   logout: (req, res) => {
     if (req.session.admin) {

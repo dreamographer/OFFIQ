@@ -68,7 +68,7 @@
 
 
                     <!-- initialization of aphine values -->
-                    <div x-data="{ editModal : false ,showModal: false, addModel:false,Code:'',Type:'',id:'',Value:'',Start:'',End:'',desc:''}"
+                    <div x-data="{ editModal : false ,showModal: false, addModel:false,Code:'',Type:'',id:'',Value:'',Start:'',End:'',desc:'',minimumPurchase:''}"
                         class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                         <div class=" h-auto overflow-auto">
 
@@ -133,8 +133,38 @@
                                                 </td>
                                                 <td
                                                     class="text-sm text-gray-900 font-light  text-center px-6 py-4 whitespace-nowrap">
+                                                    <% 
+                                                    let date = new Date(coupon.startDate);
+                                                    let year = date.getFullYear();
+                                                    let month = date.getMonth() + 1; // getMonth() is zero-based
+                                                    let day = date.getDate();
+                                                    
+                                                    // Add leading zeros to month and day if they are less than 10
+                                                    if (month < 10) {
+                                                        month = '0' + month;
+                                                    }
+                                                    if (day < 10) {
+                                                        day = '0' + day;
+                                                    }
+                                                    
+                                                    let formattedStartDate=`${year}-${month}-${day}`
+                                                    let date2 = new Date(coupon.endDate);
+                                                    let year2 = date2.getFullYear();
+                                                    let month2 = date2.getMonth() + 1; // getMonth() is zero-based
+                                                    let day2 = date2.getDate();
+                                                    
+                                                    // Add leading zeros to month and day if they are less than 10
+                                                    if (month2 < 10) {
+                                                        month2 = '0' + month2;
+                                                    }
+                                                    if (day2 < 10) {
+                                                        day2 = '0' + day2;
+                                                    }
+                                                    
+                                                    let formattedEndDate = `${year2}-${month2}-${day2}`; 
+                                                    %>
                                                     <button class="edit">
-                                                        <i @click="editModal = !editModal ,id='<%= coupon._id %>',Code='<%= coupon.couponCode %>',Type='<%= coupon.discountType %>',Value=' <%= coupon.discountValue %>',Start=' <%= coupon.startDate %>',End='<%= coupon.endDate %>',desc='<%= coupon.description %>'"
+                                                        <i @click="editModal = !editModal ,id='<%= coupon._id %>',minimumPurchase='<%= coupon.minimumPurchase %>',Code='<%= coupon.couponCode %>',Type='<%= coupon.discountType %>',Value='<%= coupon.discountValue %>',End='<%=formattedEndDate %>',desc='<%= coupon.description %>',Start='<%=formattedStartDate %>'"
                                                             class="fa fa-edit fa-lg" style="color: green"
                                                             aria-hidden="true"></i>
 
@@ -171,7 +201,7 @@
                                         </span>
                                         <!-- Buttons -->
                                         <div class="text-right space-x-5 mt-5">
-                                            <a x-bind:href="'/admin/deleteCoupon/' + id">
+                                            <a x-bind:href="'/admin/deleteCoupon/'+id">
                                                 <button
                                                     class="toggle-block-button px-4 py-2 text-sm bg-white rounded-xl border transition-colors duration-150 ease-linear border-gray-200 text-gray-500 focus:outline-none focus:ring-0 font-bold hover:bg-red-700 hover:text-white focus:bg-indigo-50 focus:text-indigo">YES</button>
                                             </a>
@@ -206,46 +236,54 @@
                                                     <input type="text" name="couponCode" 
                                                         placeholder="Enter Coupon"
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="" :value="Code">
+                                                        autofocus="" autocomplete="" required="" disabled :value="Code">
                                                 </div>
                                                 <div>
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Description</label>
                                                     <textarea name="description" id="description"
                                                         placeholder="Enter description"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required=""
-                                                        :value="desc"></textarea>
+                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" 
+                                                        required="" :value="desc" ></textarea>
                                                 </div>
                                                 <div>
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Discount Type</label>
-                                                        <input type="text" name="discountType" 
-                                                        placeholder="Enter Coupon Name"
-                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                                        autofocus="" autocomplete="" required="" :value="Type" > 
+                                                        <select name="discountType" :value="Type"
+                                                        autofocus="" autocomplete="" required=""  class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" >
+                                                            <option value="Percentage" >Percentage</option>
+                                                            <option value="Fixed Amount" >Fixed Amount</option>
+                                                        </select>
+                                                        
                                                 </div>
                                                 <div>
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Discount Value</label>
                                                         <input type="text" name="discountValue" 
-                                                        placeholder="Enter Coupon Name"
+                                                        placeholder="Enter Value of the discount"
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required="" :value="Value" >
                                                 </div>
                                                 <div>
                                                     <label
+                                                        class="block md:text-xs mt-4 float-left text-gray-700">Minimum Purchase</label>
+                                                        <input type="text" name="minimumPurchase" 
+                                                        placeholder="Enter Minimum Purchase amount"
+                                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
+                                                        autofocus="" autocomplete="" required="" :value="minimumPurchase" >
+                                                </div>
+                                                <div>
+                                                    <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Start Date</label>
                                                         <input type="date" name="startDate" 
-                                                        placeholder="Enter Coupon Name"
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required="" :value="Start" >
                                                 </div>
                                                 <div>
                                                     <label
-                                                        class="block md:text-xs mt-4 float-left text-gray-700"> End Date</label>
+                                                        class="End block md:text-xs mt-4 float-left text-gray-700"> End Date</label>
                                                         <input type="date" name="endDate" 
-                                                        placeholder="Enter Coupon Name"
+                                                        
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required=""  :value="End">
                                                 </div>
@@ -307,7 +345,7 @@
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Discount Value</label>
                                                         <input type="text" name="discountValue" 
-                                                        placeholder="Enter Coupon Name"
+                                                        placeholder="Enter Discount Value"
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required="" >
                                                 </div>
@@ -315,7 +353,7 @@
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Minimum Purchase</label>
                                                         <input type="text" name="minimumPurchase" 
-                                                        placeholder="Enter Coupon Name"
+                                                        placeholder="Enter Minimum Purchase amount"
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required="" >
                                                 </div>
@@ -323,7 +361,7 @@
                                                     <label
                                                         class="block md:text-xs mt-4 float-left text-gray-700">Start Date</label>
                                                         <input type="date" name="startDate" 
-                                                        placeholder="Enter Coupon Name"
+                                                         
                                                         class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
                                                         autofocus="" autocomplete="" required=""  >
                                                 </div>
@@ -430,6 +468,8 @@
                     window.scrollTo(scrollPosition[0], scrollPosition[1]);
                 };
             </script>
+
+        
 
             <!-- search -->
             <script>

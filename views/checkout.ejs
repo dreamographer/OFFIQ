@@ -224,24 +224,24 @@
                 <div class="mt-6 border-t border-b py-2">
                     <div class="flex items-center justify-between">
                         <p class="text-sm font-medium text-gray-900">Subtotal</p>
-                        <p class="font-semibold text-gray-900">₹<%let sum=cart.reduce((accumulator, item)=> {
-                                let product = products.find(product =>{return product._id.equals(item.productId)
-                                } );
-                                return accumulator + product.price * item.quantity;
-                                }, 0);
-                                %><%=sum%>
+                        <p class="font-semibold text-gray-900">₹<%let total=cart.reduce((accumulator, item)=> {
+                            let product = products.find(product =>{return product._id.equals(item.productId)
+                            } );
+                            return accumulator + product.price * item.quantity;
+                            }, 0);
+                            %><%=total%>
                         </p>
                         <input type="hidden" name="total" value="<%=sum%>">
                     </div>
                     <div class="flex items-center justify-between">
                         <p class="text-sm font-medium text-gray-900">OFFER</p>
                         <!-- if any offer is applied -->
-                        <p class="font-semibold text-gray-900"></p>
+                        <p class="font-semibold text-gray-900"><%=offer%></p>
                     </div>
                 </div>
                 <div class="mt-6 flex items-center justify-between">
                     <p class="text-sm font-medium text-gray-900">Total</p>
-                    <p class="text-2xl font-semibold text-gray-900">₹<%=sum%>
+                    <p class="text-2xl font-semibold text-gray-900"><%=sum%>
                     </p>
                 </div>
             </div>
@@ -249,6 +249,7 @@
                 Order</button>
         </div>
     </div>
+    <input type="hidden" name="offer" id="offer" value="<%=offer%>">
     </form>
     </body>
 
@@ -269,52 +270,54 @@
     </script>
 
 
-<!-- Payment Integration -->
+    <!-- Payment Integration -->
 
     <!--Payment Mode  -->
     <script>
-        const form=document.getElementById('checkoutForm')
-        form.addEventListener('submit',function(event){
+        const form = document.getElementById('checkoutForm')
+        form.addEventListener('submit', function (event) {
             event.preventDefault()
-            paymentMode=form.paymentMode.value
-            if (paymentMode=='UPI') {
+            paymentMode = form.paymentMode.value
+            if (paymentMode == 'UPI') {
                 fetch('/genOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ amount: '<%=Number(sum)*100%>' }),
-            }).then(response => response.json())
-                .then(data => {
-                    id = data.orderId
-                    const address = document.querySelector('input[name="address"]:checked').value
-                    let options = {
-                        "key": "rzp_test_DwVvUwZ6KYYMCR", // Enter the Key ID generated from the Dashboard
-                        "amount": '<%=Number(sum)*100%>', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                        "currency": "INR",
-                        "name": "OFFIQ", //your business name
-                        "description": "Test Transaction",
-                        "image": "https://cdn.razorpay.com/logos/MkXOdj1zs2GhLl_original.png",
-                        "order_id": id,
-                        "callback_url": "/order",
-                        "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-                            "name": "Gaurav Kumar", //your customer's name
-                            "email": "gaurav.kumar@example.com",
-                            "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
-                        },
-                        "notes": {
-                            "address": address
-                        },
-                        "theme": {
-                            "color": "#455163"
-                        }
-                    };
-                    let rzp1 = new Razorpay(options);
-                    rzp1.open();
-                    e.preventDefault();
-                })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ amount: '<%=Number(sum.substring(1))*100%>' }),
+                }).then(response => response.json())
+                    .then(data => {
+                        id = data.orderId
+                        const address = document.querySelector('input[name="address"]:checked').value
+                        const offer=document.getElementById('offer').value
+                        let options = {
+                            "key": "rzp_test_DwVvUwZ6KYYMCR", // Enter the Key ID generated from the Dashboard
+                            "amount": '<%=Number(sum.substring(1))*100%>', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                            "currency": "INR",
+                            "name": "OFFIQ", //your business name
+                            "description": "Test Transaction",
+                            "image": "https://cdn.razorpay.com/logos/MkXOdj1zs2GhLl_original.png",
+                            "order_id": id,
+                            "callback_url": "/order",
+                            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+                                "name": "Gaurav Kumar", //your customer's name
+                                "email": "gaurav.kumar@example.com",
+                                "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+                            },
+                            "notes": {
+                                "address": address,
+                                "offer":offer
+                            },
+                            "theme": {
+                                "color": "#455163"
+                            }
+                        };
+                        let rzp1 = new Razorpay(options);
+                        rzp1.open();
+                        e.preventDefault();
+                    })
 
-            }else{
+            } else {
                 form.submit()
             }
         })

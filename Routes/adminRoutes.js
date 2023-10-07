@@ -70,7 +70,7 @@ try {
   // order management
   router.get('/orderManagement',adminSession,adminController.orderManagement)
 
-  // order Page
+  // order Page 
    router.get('/orderPage/:oId',adminSession,adminController.orderPage)
 
   // update status
@@ -84,6 +84,9 @@ try {
 
   // edit coupon
   router.post('/editCoupon',adminSession,adminController.editCoupon)
+
+  // delete coupon
+  router.get('/deleteCoupon/:id',adminSession,adminController.deleteCoupon)
 
   //logout
   router.get('/logout', adminController.logout);

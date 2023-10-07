@@ -35,10 +35,12 @@ router.post('/addToCart',userAuth,userController.addToCart)
 router.get('/removeProduct/:id',userAuth,userController.removeProduct)
 //update Cart
 router.post('/updateCart',userAuth,userController.updateCart)
+// applay promocode
+router.post('/applyPromo',userAuth,userController.applyPromo)
 // Generate Order
 router.post('/genOrder',userAuth,userController.GenerateOrder)
-//checkout
-router.get('/checkout',userAuth,userController.checkOut) 
+//checkoutt
+router.post('/checkout',userAuth,userController.checkOut) 
 //add address
 router.post('/addAddress',userAuth ,userController.addAddress ) 
 //Edit address

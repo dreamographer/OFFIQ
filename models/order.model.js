@@ -51,7 +51,6 @@ const orderSchema = new Schema({
     },
     offer:{
         type: String,
-
     },
     shippingAddress: addressSchema,
     paymentMode: {

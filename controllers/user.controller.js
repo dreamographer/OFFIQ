@@ -11,14 +11,15 @@ const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const googelUser = require('../models/emailUserModel');//schema for google auth users
+const Coupon = require('../models/couponModel');//coupon schema
 
 //keys
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRIPTION_KEY;
 const iv = 'initialisation-#';
 // Razorpay
-const {RAZORPAY_ID_KEY,RAZORPAY_SECRET_KEY}=process.env
-const Razorpay=require('razorpay')
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env
+const Razorpay = require('razorpay')
 let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
 
 //encription function
@@ -305,7 +306,7 @@ const userController = {
       const cId = req.params.id
       const products = await Products.find({ category: cId });
       let category = await Category.find({ _id: cId });
-      
+
       return res.render('products', { products: products, category: category });
     } catch (error) {
       console.log(error);
@@ -432,10 +433,10 @@ const userController = {
     } catch (error) {
       console.log(error);
     }
-    
+
   },
-  
-  
+
+
   //update the cart
   updateCart: async (req, res) => {
     try {
@@ -468,20 +469,41 @@ const userController = {
       console.log(error);
     }
   },
-// genreate order id in razorpay
-  GenerateOrder:async (req,res)=>{
+
+  // applay promo code
+  applyPromo: async (req, res) => {
     try {
-      const amount=Number(req.body.amount)
-       //RaZor Pay
+      let code=req.body.code
+      let userId = req.session.user._id;
+      const coupon=await Coupon.findOne({couponCode:code})
+      console.log(coupon);
+     if (coupon) {
+       return res.send({ type:coupon.discountType,value:coupon.discountValue })
+     }else{
+      return res.send({error:'Invalid Code'})
+     }
+      const user = await User.findOne({ _id: userId }, { cart: 1 });
+      const cart = user.cart;
+
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // genreate order id in razorpay
+  GenerateOrder: async (req, res) => {
+    try {
+      const amount = Number(req.body.amount)
+      //RaZor Pay
       instance.orders.create({
-       amount: amount,
-       currency: "INR",
-       receipt: "receipt#1"
-     }).then(order => {
-       return res.send({orderId:order.id})
-     })
-     
-      
+        amount: amount,
+        currency: "INR",
+        receipt: "receipt#1"
+      }).then(order => {
+        return res.send({ orderId: order.id })
+      })
+
+
     } catch (error) {
       console.log(error);
     }
@@ -490,6 +512,8 @@ const userController = {
   //checkout page
   checkOut: async (req, res) => {
     try {
+      const sum=req.body.sum
+      let offer=req.body.offer??''
       const userId = req.session.user._id;
       if (!userId) {
         return res.redirect('/')
@@ -501,9 +525,9 @@ const userController = {
       const products = [];
       for (const prod of cart) {
         try {
-        
+
           const item = await Products.findById(prod.productId);
-         
+
           if (item) {
             products.push(item);
           } else {
@@ -515,7 +539,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      return res.render('checkout', { cart: cart, products: products, address: addresses});
+      return res.render('checkout', { cart: cart, products: products, address: addresses,sum:sum ,offer:offer});
     } catch (error) {
       console.log(error);
     }
@@ -526,14 +550,14 @@ const userController = {
     try {
       const { addressLine1, city } = req.body
       let { pin } = req.body
-      let {tag}=req.body
+      let { tag } = req.body
       pin = Number(pin)
-      tag=tag.toUpperCase()
+      tag = tag.toUpperCase()
       let data = { addressLine1, city, tag, pin }
       const userId = req.session.user._id;
       const user = await User.findById(userId)
-      
-      if ( user.addresses.some(item => item.tag === tag)) {
+
+      if (user.addresses.some(item => item.tag === tag)) {
         return res.send('Tag already exist please enter a new tag')
       }
       if (user.googleAuth) {//for googlE aUTH USERS
@@ -550,14 +574,14 @@ const userController = {
     }
   },
 
-   //edit the address
-   editAddress: async (req, res) => {
+  //edit the address
+  editAddress: async (req, res) => {
     try {
-      const { addrId, addressLine1, city} = req.body
+      const { addrId, addressLine1, city } = req.body
       let { pin } = req.body
       pin = Number(pin)
-      let {tag}=req.body
-      tag=tag.toUpperCase()
+      let { tag } = req.body
+      tag = tag.toUpperCase()
       const userId = req.session.user._id;
       const user = await User.findById(userId)
       if (user.addresses.some(item => item.tag === tag)) {
@@ -596,45 +620,44 @@ const userController = {
     }
   },
 
- 
+
   // order
   order: async (req, res) => {
     try {
       let status
       let paymentId
-      let total,address,paymentMode 
+      let total, address, paymentMode,offer
       if (req.body.razorpay_payment_id) {
         // online payment
-        let order=await instance.payments.fetch(req.body.razorpay_payment_id)
-        total = Number(order.amount)/100
-        if (order.notes.address=='') {
+        let order = await instance.payments.fetch(req.body.razorpay_payment_id)
+        total = Number(order.amount) / 100
+        if (order.notes.address == '') {
           return res.send('please select one address')
         }
-         address = order.notes.address
-         paymentMode  = order.method  
+        address = order.notes.address
+        paymentMode = order.method
         status = 'confirmed'
         paymentId = order.id
-      }else{ 
+        offer=order.notes.offer??''
+      } else {
         // COD
         console.log(req.body.address);
         if (!req.body.address) {
           return res.send('please select one address')
         }
-         total = req.body.total
-         
-         address = req.body.address
-         paymentMode  = req.body.paymentMode
+        total = Number(req.body.total.substring(1))
+        offer=req.body.offer??''
+        address = req.body.address
+        paymentMode = req.body.paymentMode
         status = 'pending'
         paymentId = crypto.randomBytes(3).toString('hex')
       }
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const items = user.cart;
-      
-      const shippingAddress = user.addresses.find(addr => addr.tag == address)
-      const data = { userId, paymentId, status, items, total, shippingAddress, paymentMode }
 
-    
+      const shippingAddress = user.addresses.find(addr => addr.tag == address)
+      const data = { userId, paymentId, status, items, total,offer, shippingAddress, paymentMode }
 
       const result = await Order.create(data)
       let updatedProduct = []
@@ -648,7 +671,7 @@ const userController = {
       });
 
       await Promise.all(promises)
-  
+
       let updatedCart = await User.findOneAndUpdate(
         { _id: userId },
         { $set: { cart: [] } }, //update the cart
@@ -772,7 +795,7 @@ const userController = {
       console.log(error);
     }
   },
- 
+
   // cancell the order
   cancelOrder: async (req, res) => {
     try {

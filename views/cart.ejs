@@ -118,83 +118,101 @@
 
                 <div class="py-10">
                     <label for="promo" class="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
-                    <input type="text" id="promo" placeholder="Enter your code"
+                    <input onchange="removeCoupon()" type="text" id="promo" placeholder="Enter your code"
                         class="p-2 rounded-md border  text-sm w-full">
+                    <span id="promoError" class=""></span>
 
                 </div>
-                <a class="group relative inline-block focus:outline-none focus:ring" >
-                
-                    <span
+                <a class="group relative inline-block focus:outline-none focus:ring">
+
+                    <button id="applayBtn" onclick="applyPromo()"
                         class="relative inline-block rounded-md  border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
                         APPLY
-                    </span>
+                    </button>
                 </a>
-                <div class="border-t mt-8">
-                    <div class="flex font-semibold justify-between py-6 text-sm uppercase">
-                        <span>Total cost</span>
-                        <span>₹<%=sum%></span>
-                    </div>
-                    <a class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring"
-                        href="/checkout">
-                        <span
-                            class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
+                <form action="/checkout" method="POST">
+                    <div class="border-t mt-8">
+                        <div class="flex font-semibold justify-between py-6 text-sm uppercase">
+                            <span class="w-1/2">Discount</span>
+                            <input type="text" name="offer" value="-₹0" id="offer"
+                                class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly
+                                onmousedown="return false;" onselectstart="return false;">
+                            <span ></span>
+                        </div>
 
-                        <span
-                            class="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
-                            CHECKOUT
-                        </span>
-                    </a>
-                </div>
+                        <div class="flex font-semibold justify-between py-6 text-sm uppercase">
+                            <span class="w-1/2">Total cost</span>
+                            <input type="text" name="sum" value="₹<%=sum%>" id="total"
+                                class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly
+                                onmousedown="return false;" onselectstart="return false;">
+
+                        </div>
+                        <button type="submit"
+                            class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring">
+                            <span
+                                class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
+
+                            <span
+                                class="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
+                                CHECKOUT
+                            </span>
+                        </button>
+                </form>
             </div>
-            <div id="toastContainer">
-            <% if (msg) {  %>
+        </div>
+
+        <div id="toastContainer">
+            <% if (msg) { %>
                 <div id="toast"
-				class=" fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
-				role="alert">
-				<div class="flex">
-					<svg width="24" id="added" height="24" viewBox="0 0 24 24" fill="none"
-						xmlns="http://www.w3.org/2000/svg">
-						<g clip-path="url(#clip0_259_1647)">
-							<path
-								d="M20.164 13H5.419L4.478 5H12V3H4.242L4.2 2.648C4.11382 1.9186 3.76306 1.24615 3.21419 0.758104C2.66532 0.270054 1.95647 0.000312836 1.222 0L0 0V2H1.222C1.46693 2.00003 1.70334 2.08996 1.88637 2.25272C2.06941 2.41547 2.18634 2.63975 2.215 2.883L3.8 16.351C3.88595 17.0806 4.23662 17.7533 4.78551 18.2415C5.3344 18.7298 6.04337 18.9997 6.778 19H20V17H6.778C6.53291 16.9999 6.29638 16.9099 6.11333 16.7469C5.93027 16.5839 5.81343 16.3594 5.785 16.116L5.654 15H21.836L22.736 10H20.705L20.164 13Z"
-								fill="#374957" />
-							<path
-								d="M7 24.0006C8.10456 24.0006 8.99999 23.1052 8.99999 22.0006C8.99999 20.896 8.10456 20.0006 7 20.0006C5.89543 20.0006 5 20.896 5 22.0006C5 23.1052 5.89543 24.0006 7 24.0006Z"
-								fill="#374957" />
-							<path
-								d="M17 24.0006C18.1046 24.0006 19 23.1052 19 22.0006C19 20.896 18.1046 20.0006 17 20.0006C15.8954 20.0006 15 20.896 15 22.0006C15 23.1052 15.8954 24.0006 17 24.0006Z"
-								fill="#374957" />
-							<path
-								d="M17.0778 8.5427H17.1108C17.3588 8.54352 17.6046 8.49505 17.8337 8.40012C18.0629 8.30519 18.2709 8.16568 18.4458 7.9897L23.7067 2.7287L22.2927 1.3147L17.1118 6.5007L14.8678 4.1607L13.4268 5.5467L15.7328 7.9467C15.9051 8.13172 16.1131 8.27992 16.3443 8.38236C16.5754 8.48479 16.8249 8.53933 17.0778 8.5427Z"
-								fill="#374957" />
-						</g>
-						<defs>
-							<clipPath id="clip0_259_1647">
-								<rect width="24" height="24" fill="white" />
-							</clipPath>
-						</defs>
-					</svg>
-				
+                    class=" fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+                    role="alert">
+                    <div class="flex">
+                        <svg width="24" id="added" height="24" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_259_1647)">
+                                <path
+                                    d="M20.164 13H5.419L4.478 5H12V3H4.242L4.2 2.648C4.11382 1.9186 3.76306 1.24615 3.21419 0.758104C2.66532 0.270054 1.95647 0.000312836 1.222 0L0 0V2H1.222C1.46693 2.00003 1.70334 2.08996 1.88637 2.25272C2.06941 2.41547 2.18634 2.63975 2.215 2.883L3.8 16.351C3.88595 17.0806 4.23662 17.7533 4.78551 18.2415C5.3344 18.7298 6.04337 18.9997 6.778 19H20V17H6.778C6.53291 16.9999 6.29638 16.9099 6.11333 16.7469C5.93027 16.5839 5.81343 16.3594 5.785 16.116L5.654 15H21.836L22.736 10H20.705L20.164 13Z"
+                                    fill="#374957" />
+                                <path
+                                    d="M7 24.0006C8.10456 24.0006 8.99999 23.1052 8.99999 22.0006C8.99999 20.896 8.10456 20.0006 7 20.0006C5.89543 20.0006 5 20.896 5 22.0006C5 23.1052 5.89543 24.0006 7 24.0006Z"
+                                    fill="#374957" />
+                                <path
+                                    d="M17 24.0006C18.1046 24.0006 19 23.1052 19 22.0006C19 20.896 18.1046 20.0006 17 20.0006C15.8954 20.0006 15 20.896 15 22.0006C15 23.1052 15.8954 24.0006 17 24.0006Z"
+                                    fill="#374957" />
+                                <path
+                                    d="M17.0778 8.5427H17.1108C17.3588 8.54352 17.6046 8.49505 17.8337 8.40012C18.0629 8.30519 18.2709 8.16568 18.4458 7.9897L23.7067 2.7287L22.2927 1.3147L17.1118 6.5007L14.8678 4.1607L13.4268 5.5467L15.7328 7.9467C15.9051 8.13172 16.1131 8.27992 16.3443 8.38236C16.5754 8.48479 16.8249 8.53933 17.0778 8.5427Z"
+                                    fill="#374957" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_259_1647">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
 
 
-					<div id="toastMessage" class="pl-4 text-sm font-normal"><%=msg %></div>
-				</div>
-			</div>
-            <%}%>
+
+                        <div id="toastMessage" class="pl-4 text-sm font-normal">
+                            <%=msg %>
+                        </div>
+                    </div>
+                </div>
+                <%}%>
         </div>
-        </div>
+    </div>
     </div>
 
 
     <!-- remove the toast -->
     <script>
-        setTimeout(function() {
+        setTimeout(function () {
             let toast = document.getElementById('toast');
-            if(toast) {
+            if (toast) {
                 toast.remove();
             }
         }, 5000);
     </script>
+
     <!-- item amount toggle  -->
     <script>
         let pluses = document.getElementsByClassName("plus");
@@ -238,22 +256,22 @@
                     // chek if its less than 0
                     if (newAmount <= 0) {
                         window.location.href = `/removeProduct/${itemId}`
-                    }else{
-                    // Send the updated amount to the server
-                    fetch('/updateCart', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ itemId: itemId, amount: newAmount }),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log('Success:', data);
+                    } else {
+                        // Send the updated amount to the server
+                        fetch('/updateCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ itemId: itemId, amount: newAmount }),
                         })
-                        .catch((error) => {
-                            console.error('Error:', error);
-                        });
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Success:', data);
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
                         window.location.reload()
                     }
                 }
@@ -261,7 +279,75 @@
         }
 
     </script>
-        <!--LOADING  -->
+
+    <!-- remove coupon -->
+    <script>
+        let originalValue = '<%=sum%>'
+        let totalElement = document.getElementById('total')
+        let applyBtn = document.getElementById('applayBtn')
+        let offer = document.getElementById('offer')
+        function removeCoupon() {
+            offer.value = `-₹0`
+            totalElement.value = `₹${originalValue}`
+            applyBtn.disabled = false
+        }
+    </script>
+
+    <!-- applay promocode -->
+    <script>
+        function PromoMatched(type, value) {
+            let applyBtn = document.getElementById('applayBtn')
+            let offer = document.getElementById('offer')
+            applyBtn.disabled = true
+            let totalElement = document.getElementById('total')
+            let total = document.getElementById('total').value.substring(1)
+            total = parseInt(total)
+            if (type == 'Percentage') {
+                total = total - (total * value / 100)
+                offer.value = `-${value}%`
+            } else {
+                total -= value
+                offer.value = `-₹${value}`
+
+            }
+            totalElement.value = `₹${total}`
+        }
+
+        // apply the promo code
+        function applyPromo() {
+            let code = document.getElementById("promo").value;
+            let err = document.getElementById('promoError')
+            if (!code) {
+                err.innerHTML = "Please add the code for applying"
+            } else {
+                // Send the updated amount to the server
+                fetch('/applyPromo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ code: code }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            err.innerHTML = "Coupon not found"
+                        } else {
+                            PromoMatched(data.type, data.value)
+                            err.innerHTML = ""
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+
+            }
+
+        }
+    </script>
+
+
+    <!--LOADING  -->
     <script>
         let scrollPosition = [
             self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
