@@ -1,0 +1,161 @@
+<%- include('header') %>
+    <main class="pt-10 mt-28 min-h-screen bg-gray-100">
+        <div class="flex  justify-center ">
+            <!-- search -->
+            <div>
+                <h1 class="font-black text-center  text-[50px] text-gray-700 ">
+                    <%=subcategory%>
+                </h1>
+
+                <div class=" max-w-sm flex items-center ">
+
+
+                    <form action="/productSearch" class="relative mx-auto w-max" method="POST">
+                        <input type="search"  id="searchInput" name="search" 
+                            class="relative z-10 h-12  rounded-full border bg-transparent  outline-none  placeholder-gray-500  w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
+                            placeholder="Search Product" />
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent  px-3.5 border-gray-300 stroke-gray-500 "
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div>
+            <ul class="w-full  flex  justify-center gap-10 flex-wrap" id="searchSuggetion">
+
+            </ul>
+        </div>
+
+        <!-- items -->
+        <div class="relative m-3 space-x-3 flex flex-wrap mx-auto justify-center">
+            <% products.forEach(product=> { %>
+                <!-- item Card -->
+                <a href="/productpage/<%=product._id %>">
+                    <div
+                        class="relative  h-96 overflow-auto max-w-sm min-w-[240px] w-64 bg-white shadow-md rounded-3xl p-2 mx-1 my-3 cursor-pointer group hover:scale-105 transition-transform duration-200">
+                        <div class="overflow-x-hidden rounded-2xl relative ">
+                            <img class="h-40 rounded-2xl w-full object-cover group-hover:hidden transition duration-200"
+                                src="<%=product.images[0]%>" alt="PRODUCT IMAGE">
+
+                            <img class="h-40 rounded-2xl w-full object-cover hidden group-hover:block transition duration-200"
+                                src="<%=product.images[1]%>" alt="PRODUCT IMAGE">
+                            <button class=" absolute right-2 top-2 bg-white rounded-full p-2 group">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-6 w-6 group-hover:opacity-50 opacity-70" fill="none" viewBox="0 0 24 24"
+                                    stroke="black">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </button>
+
+                        </div>
+                        <div class="mt-4 pl-2 mb-2 flex justify-between ">
+                            <div>
+                                <ol class="flex">
+                                    <% for (let index=0; index < product.rating; index++) { %>
+
+                                        <i class="fi fi-ss-star " style="color: yellow;"></i>
+                                        <% } %>
+
+                                </ol>
+
+                                <p class="text-lg font-semibold h-20 text-ellipsis overflow-hidden text-gray-900 mb-0">
+                                    <%=product.name%>
+                                </p>
+                                <p class="text-md absolute bottom-5 left-5  text-gray-800 mt-0">₹<%=product.price%>
+                                </p>
+                            </div>
+                            <div
+                                class="flex flex-col-reverse  mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5 ">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70"
+                                    fill="none" viewBox="0 0 24 24" stroke="gray">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </a>
+                <% }); %>
+        </div>
+
+
+    </main>
+    <!-- search -->
+    <script>
+        const view = document.getElementById('searchSuggetion');
+        const input = document.querySelector('#searchInput');
+        input.addEventListener('input', debounce(handleSearch, 300)); //debounce function to reduce api request
+        function debounce(func, delay) {
+            let timeoutId;
+            return function () {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
+
+        async function handleSearch() {
+            const search = input.value;
+            if (search.trim() == '') {
+                view.innerHTML = ''
+                return
+            }
+            try {
+                const response = await fetch('/productSearch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ search,fetchReq:true}), // Send user's input as JSON in the request body
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const products = data.products; // Assuming your server returns the subcategories
+
+                    // Update the view div with the search results
+                    view.innerHTML = '';
+
+                    products.forEach((products) => {
+                        const product = document.createElement('li');
+                        product.classList.add('truncate')
+                        product.classList.add('w-52')
+                        const linkElement = document.createElement('a');
+                        linkElement.href = `/productpage/${products._id}`
+                        linkElement.appendChild(product)
+                        product.textContent = products.name;
+                        view.appendChild(linkElement);
+                    });
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+
+    </script>
+    <script>
+        const toggleButton = document.getElementById('toggle-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        toggleButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+    </body>
+
+    </html>

@@ -300,6 +300,31 @@ const userController = {
     return res.render('home', { category: category });
   },
 
+  //home page search route 
+  homeSearch: async (req, res) => {
+    try {
+
+      const search = req.body.search;
+
+      const regex = new RegExp(search, 'i');
+      const subcategories = await Category.aggregate([
+        {
+          $unwind: '$subcategory'
+        },
+        {
+          $match: {
+            'subcategory.subName': { $regex: regex }
+          }
+        }
+      ]);
+      const matchingSubcategories = subcategories.map(category => category.subcategory);
+
+      return res.json({ subcategories: matchingSubcategories });
+    } catch (error) {
+      console.log(error);
+    }
+
+  },
   //render products view page
   products: async (req, res) => {
     try {
@@ -311,6 +336,55 @@ const userController = {
     } catch (error) {
       console.log(error);
     }
+  },
+  // render category page
+  category:async(req,res)=>{
+    const cId = req.params.id
+  console.log(cId);
+    const products = await Products.find({ subCategory: cId }); 
+    const category = await Category.findOne({
+      'subcategory._id': cId
+    },{subcategory:1});
+    let subcategory = category.subcategory.find(sub => sub._id.equals(cId));
+    subcategory=subcategory.subName;
+    return res.render('category', { products,subcategory});
+  },
+
+  // search for products
+  productSearch:async (req, res) => {
+    try {
+
+      const search = req.body.search;
+
+      const regex = new RegExp(search, 'i');
+      const products = await Products.aggregate([
+        {
+          $project: {
+            'name': 1,
+          }
+        },
+        {
+          $match: {
+            'name': { $regex: regex }
+          }
+          
+        },
+        {
+          $limit: 5
+        }
+      ]);
+      const acceptHeader = req.get('Accept');
+      if (req.body.fetchReq) {
+        // If the request accepts JSON, return JSON response
+        return res.json({ products: products });
+      } else {
+       
+        return res.send("No result")
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
   },
 
   //render product page
@@ -325,6 +399,7 @@ const userController = {
     }
 
   },
+
 
   // user cart
   cart: async (req, res) => {
@@ -473,15 +548,15 @@ const userController = {
   // applay promo code
   applyPromo: async (req, res) => {
     try {
-      let code=req.body.code
+      let code = req.body.code
       let userId = req.session.user._id;
-      const coupon=await Coupon.findOne({couponCode:code})
+      const coupon = await Coupon.findOne({ couponCode: code })
       console.log(coupon);
-     if (coupon) {
-       return res.send({ type:coupon.discountType,value:coupon.discountValue })
-     }else{
-      return res.send({error:'Invalid Code'})
-     }
+      if (coupon) {
+        return res.send({ type: coupon.discountType, value: coupon.discountValue })
+      } else {
+        return res.send({ error: 'Invalid Code' })
+      }
       const user = await User.findOne({ _id: userId }, { cart: 1 });
       const cart = user.cart;
 
@@ -512,8 +587,8 @@ const userController = {
   //checkout page
   checkOut: async (req, res) => {
     try {
-      const sum=req.body.sum
-      let offer=req.body.offer??''
+      const sum = req.body.sum
+      let offer = req.body.offer ?? ''
       const userId = req.session.user._id;
       if (!userId) {
         return res.redirect('/')
@@ -539,7 +614,7 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      return res.render('checkout', { cart: cart, products: products, address: addresses,sum:sum ,offer:offer});
+      return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer });
     } catch (error) {
       console.log(error);
     }
@@ -626,7 +701,7 @@ const userController = {
     try {
       let status
       let paymentId
-      let total, address, paymentMode,offer
+      let total, address, paymentMode, offer
       if (req.body.razorpay_payment_id) {
         // online payment
         let order = await instance.payments.fetch(req.body.razorpay_payment_id)
@@ -638,7 +713,7 @@ const userController = {
         paymentMode = order.method
         status = 'confirmed'
         paymentId = order.id
-        offer=order.notes.offer??''
+        offer = order.notes.offer ?? ''
       } else {
         // COD
         console.log(req.body.address);
@@ -646,7 +721,7 @@ const userController = {
           return res.send('please select one address')
         }
         total = Number(req.body.total.substring(1))
-        offer=req.body.offer??''
+        offer = req.body.offer ?? ''
         address = req.body.address
         paymentMode = req.body.paymentMode
         status = 'pending'
@@ -657,7 +732,7 @@ const userController = {
       const items = user.cart;
 
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
-      const data = { userId, paymentId, status, items, total,offer, shippingAddress, paymentMode }
+      const data = { userId, paymentId, status, items, total, offer, shippingAddress, paymentMode }
 
       const result = await Order.create(data)
       let updatedProduct = []
@@ -808,12 +883,12 @@ const userController = {
 
         // Find the corresponding product and update its quantity
         await Products.findByIdAndUpdate(
-            productId,
-            { $inc: { quantity: quantity } },
+          productId,
+          { $inc: { quantity: quantity } },
         );
-    }
-    order.status=status
-    order.save()
+      }
+      order.status = status
+      order.save()
       return
     } catch (error) {
       console.log(error);

@@ -23,8 +23,14 @@ router.post('/updatePassword',sessionMangement,userController.updatePassword);
 router.get('/login',sessionMangement,userController.loginErr) 
 //render home page
 router.get('/',userController.home);
+// home page search
+router.post('/homeSearch',userController.homeSearch)
 //all Product page
 router.get('/products/:id',userController.products)
+//Category Page
+router.get('/category/:id',userController.category)
+//serch product
+router.post('/productSearch',userController.productSearch)
 //product view page
 router.get('/productpage/:id',userController.productPage)
 // cart
