@@ -12,6 +12,7 @@ const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const googelUser = require('../models/emailUserModel');//schema for google auth users
 const Coupon = require('../models/couponModel');//coupon schema
+const Wallet=require('../models/WalletModel')//Wallet schma
 
 //keys
 const algorithm = 'aes-256-cbc';
@@ -699,9 +700,11 @@ const userController = {
   // order
   order: async (req, res) => {
     try {
+      const userId = req.session.user._id;
       let status
       let paymentId
       let total, address, paymentMode, offer
+    
       if (req.body.razorpay_payment_id) {
         // online payment
         let order = await instance.payments.fetch(req.body.razorpay_payment_id)
@@ -714,20 +717,32 @@ const userController = {
         status = 'confirmed'
         paymentId = order.id
         offer = order.notes.offer ?? ''
-      } else {
-        // COD
-        console.log(req.body.address);
+      } else{
         if (!req.body.address) {
           return res.send('please select one address')
         }
+         if(req.body.paymentMode=='Wallet'){
+        total = Number(req.body.total.substring(1))
+        const wallet=await Wallet.findOne({user:userId})
+        console.log(wallet);
+        if (wallet.length<=0) { 
+          const succes=Wallet.create({user:userId},{new:true})
+        }
+        else if(wallet.balance-total<0) {
+          return res.send("Not enough balance")
+        }else{
+          wallet.balance=wallet.balance-total
+          wallet.save()
+        }
+      }
+        // COD
         total = Number(req.body.total.substring(1))
         offer = req.body.offer ?? ''
         address = req.body.address
         paymentMode = req.body.paymentMode
         status = 'pending'
         paymentId = crypto.randomBytes(3).toString('hex')
-      }
-      const userId = req.session.user._id;
+    }
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const items = user.cart;
 
@@ -753,7 +768,6 @@ const userController = {
         { new: true }
       );
       return res.redirect(`/orderPage/${result._id}`)
-
     } catch (error) {
       console.log(error);
     }
@@ -874,9 +888,15 @@ const userController = {
   // cancell the order
   cancelOrder: async (req, res) => {
     try {
+      const userId = req.session.user._id;
       const oId = req.body.oId
       const status = req.body.status
       const order = await Order.findById(oId);
+      if (order.paymentMode!='COD') {
+        const wallet=await Wallet.findOne({user:userId})
+        wallet.balance+=order.total
+        wallet.save()
+      }
       for (const item of order.items) {
         const productId = item.productId;
         const quantity = item.quantity;

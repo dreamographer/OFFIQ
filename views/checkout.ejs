@@ -95,12 +95,7 @@
                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
                 <!-- Modal -->
                 <div x-show="editModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
-                    @click.away="editModel = false" x-transition:enter="transition ease duration-100 transform"
-                    x-transition:enter-start="opacity-0 scale-90 translate-y-1"
-                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave="transition ease duration-100 transform"
-                    x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                    x-transition:leave-end="opacity-0 scale-90 translate-y-1">
+                    @click.away="editModel = false">
                     <!-- Title -->
                     <span class="font-bold block text-2xl mb-3">
                         Edit Product
@@ -322,9 +317,11 @@
             }
         })
     </script>
-    <script>
-
-    </script>
+     <script>
+        if ( window.history.replaceState ) {
+      window.history.replaceState( null, null, window.location.href );
+    }
+      </script>
 
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 

@@ -111,11 +111,11 @@
                             },
                             body: JSON.stringify({ status: status, oId: oid}),
                         })
-                            .then(response => response.json())
+                            .then(response => {
+                                return window.location.reload()})
                             .catch((error) => {
                                 console.error('Error:', error);
                             });
-                        window.location.reload()
 
                     })
 

@@ -1,7 +1,7 @@
 <%- include('header') %>
-  <main class=" min-h-screenoverflow-x-hidden">
-    <div class="bg-fixed bg-top  h-screen bg-cover flex text-white flex-col justify-center items-center content-center"
-      style="background-image: url('/images/bg1.jpg');">
+  <main class=" min-h-screen overflow-x-hidden">
+    <div class=" bg-top bg-fixed h-screen bg-cover flex text-gray-700 flex-col justify-center items-center content-center"
+      >
       <div class="backdrop-blur-sm  ">
         <div class="flex  justify-center my-5 ">
           <!-- search -->
@@ -12,7 +12,7 @@
 
             <form action="" class="relative mx-auto w-max">
               <input type="search" id="searchInput"
-                class="peer relative z-10 h-12 rounded-full border bg-transparent outline-none  placeholder-white w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
+                class="peer relative z-10 h-12 rounded-full border bg-transparent outline-none  placeholder-gray-600 w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
                 placeholder="I am looking for" />
 
               <svg xmlns="http://www.w3.org/2000/svg"
@@ -29,8 +29,8 @@
           </ul>
         </div>
 
-        <div class="flex-col items-center justify-center shadow-md  text-center w-screen mb-5">
-          <h2 class="font-black  text-[50px]  "> "Welcome to OFFIQ“</h1>
+        <div class="flex-col items-center justify-center drop-shadow-md  text-center w-screen mb-5">
+          <h2 class="font-black  text-[100px] text-black "> "Welcome to OFFIQ“</h1>
             <h2 class="font-light  text-[30px]  ">Your Office Equipment and Services Destination!</h2>
             <div class="w-full flex justify-center">
               <p class="text-center w-4/6 font-medium ">At OFFIQ, we're dedicated to making your office life easier,
@@ -43,14 +43,14 @@
         </div>
       </div>
     </div>
-
+    <div class="flex-wrap flex justify-center gap-3 bg-fixed bg-cover" style="background-image: url(/images/bg5.jpg);">
     <% category.forEach(category=> { %>
 
       <% let image=category.image[0].replace(/\\/g,'/') %> %>
-        <div class="flex justify-center h-80 my-3 bg-cover bg-right items-center "
+        <div class="flex justify-center h-80 w-1/2 md:w-2/5 my-3 bg-cover rounded-3xl bg-right items-center "
           style="background-image: url('<%=image %>');">
           <a href="/products/<%=category._id%>">
-            <h1 class="font-black text-center  text-[50px] text-white drop-shadow-md ">
+            <h1 class="font-black text-center  text-[50px] text-white drop-shadow-sm">
               <%=category.name%>
             </h1>
           </a>
@@ -58,6 +58,7 @@
         </div>
 
         <% }); %>
+      </div>
   </main>
   <!-- search -->
   <script>
