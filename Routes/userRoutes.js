@@ -50,7 +50,7 @@ router.post('/checkout',userAuth,userController.checkOut)
 //add address
 router.post('/addAddress',userAuth ,userController.addAddress ) 
 //Edit address
-router.post('/editAddress',userAuth ,userController.editAddress ) 
+router.post('/editAddress',userAuth ,userController.editAddress )  
 // order
 router.post('/order',userAuth,userController.order)
 // user profile

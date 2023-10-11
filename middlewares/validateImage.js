@@ -22,8 +22,6 @@ const upload = multer({ storage: storage,fileFilter: (req, file, cb) => {
 
 let uploadArray = upload.array('productImage');
 
-
-
 module.exports = function validateImage(fieldName) {
   const uploadArray = upload.array(fieldName);
   return function (req, res, next) {

@@ -4,6 +4,9 @@ const router = express.Router();
 const nodemailer = require('nodemailer')
 const crypto = require('crypto');  //encription module
 router.use(express.json());
+const pdf = require('html-pdf');
+const fs = require('fs');
+const ejs = require('ejs');
 
 //modals
 const User = require('../models/user.models'); //user schema
@@ -12,12 +15,13 @@ const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const googelUser = require('../models/emailUserModel');//schema for google auth users
 const Coupon = require('../models/couponModel');//coupon schema
-const Wallet=require('../models/WalletModel')//Wallet schma
+const Wallet = require('../models/WalletModel')//Wallet schma
 
 //keys
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRIPTION_KEY;
 const iv = 'initialisation-#';
+
 // Razorpay
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env
 const Razorpay = require('razorpay')
@@ -105,6 +109,50 @@ async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
     console.error(err);
   }
 
+}
+
+// genrate invoice Pdf
+async function generatePdf(oId, userId) {
+  try {
+    const user = await User.findOne({ _id: userId });
+    const order = await Order.findOne({ _id: oId });
+    let products = []
+    for (const prod of order.items) {
+      try {
+        const item = await Products.findById(prod.productId);
+        if (item) {
+          products.push(item);
+        } else {
+          console.log(`Product not found for ID: ${prod.productId}`);
+        }
+      } catch (error) {
+        console.error(`Error fetching product: ${error}`);
+      }
+    }
+    let data1 = { order: order,msg: ' ',products: products,user: user };
+    fs.readFile('public/invoice/pdfModel.ejs', 'utf8', function (err, data) {
+      if (err) {
+        // Handle error
+        console.log(err);
+      } else {
+        // Render the EJS template to HTML
+        var html = ejs.render(data, data1);
+
+        var options = { format: 'Letter' };
+
+        // Use html-pdf to create the PDF
+        pdf.create(html, options).toFile('report.pdf', function (err, res) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(res);
+          }
+        });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const userController = {
@@ -339,20 +387,20 @@ const userController = {
     }
   },
   // render category page
-  category:async(req,res)=>{
+  category: async (req, res) => {
     const cId = req.params.id
-  console.log(cId);
-    const products = await Products.find({ subCategory: cId }); 
+    console.log(cId);
+    const products = await Products.find({ subCategory: cId });
     const category = await Category.findOne({
       'subcategory._id': cId
-    },{subcategory:1});
+    }, { subcategory: 1 });
     let subcategory = category.subcategory.find(sub => sub._id.equals(cId));
-    subcategory=subcategory.subName;
-    return res.render('category', { products,subcategory});
+    subcategory = subcategory.subName;
+    return res.render('category', { products, subcategory });
   },
 
   // search for products
-  productSearch:async (req, res) => {
+  productSearch: async (req, res) => {
     try {
 
       const search = req.body.search;
@@ -368,7 +416,7 @@ const userController = {
           $match: {
             'name': { $regex: regex }
           }
-          
+
         },
         {
           $limit: 5
@@ -379,7 +427,7 @@ const userController = {
         // If the request accepts JSON, return JSON response
         return res.json({ products: products });
       } else {
-       
+
         return res.send("No result")
       }
     } catch (error) {
@@ -660,9 +708,9 @@ const userController = {
       tag = tag.toUpperCase()
       const userId = req.session.user._id;
       const user = await User.findById(userId)
-      if (user.addresses.some(item => item.tag === tag)) {
-        return res.send('Tag already exist please enter a new tag')
-      }
+      // if (user.addresses.some(item => item.tag === tag)) {
+      //   return res.send('Tag already exist please enter a new tag')
+      // }
       if (user.googleAuth) { //for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
         const addrIndex = gUser.addresses.findIndex((item) => item._id == addrId);  //finding the index of the array if address be updated
@@ -696,7 +744,6 @@ const userController = {
     }
   },
 
-
   // order
   order: async (req, res) => {
     try {
@@ -704,7 +751,7 @@ const userController = {
       let status
       let paymentId
       let total, address, paymentMode, offer
-    
+
       if (req.body.razorpay_payment_id) {
         // online payment
         let order = await instance.payments.fetch(req.body.razorpay_payment_id)
@@ -717,35 +764,34 @@ const userController = {
         status = 'confirmed'
         paymentId = order.id
         offer = order.notes.offer ?? ''
-      } else{
+      } else {
         if (!req.body.address) {
           return res.send('please select one address')
         }
-         if(req.body.paymentMode=='Wallet'){
-        total = Number(req.body.total.substring(1))
-        const wallet=await Wallet.findOne({user:userId})
-        console.log(wallet);
-        if (wallet.length<=0) { 
-          const succes=Wallet.create({user:userId},{new:true})
+        if (req.body.paymentMode == 'Wallet') {
+          total = Number(req.body.total.substring(1))
+          const wallet = await Wallet.findOne({ user: userId })
+
+          if (wallet.length <= 0) {
+            const succes = Wallet.create({ user: userId }, { new: true })
+          }
+          else if (wallet.balance - total < 0) {
+            return res.send("Not enough balance")
+          } else {
+            wallet.balance = wallet.balance - total
+            wallet.save()
+          }
         }
-        else if(wallet.balance-total<0) {
-          return res.send("Not enough balance")
-        }else{
-          wallet.balance=wallet.balance-total
-          wallet.save()
-        }
-      }
         // COD
         total = Number(req.body.total.substring(1))
         offer = req.body.offer ?? ''
         address = req.body.address
         paymentMode = req.body.paymentMode
-        status = 'pending'
+        status = 'confirmed'
         paymentId = crypto.randomBytes(3).toString('hex')
-    }
+      }
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
       const items = user.cart;
-
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const data = { userId, paymentId, status, items, total, offer, shippingAddress, paymentMode }
 
@@ -767,11 +813,13 @@ const userController = {
         { $set: { cart: [] } }, //update the cart
         { new: true }
       );
+      generatePdf(result._id, userId)
       return res.redirect(`/orderPage/${result._id}`)
     } catch (error) {
       console.log(error);
     }
   },
+
 
   // order managent
   orderManagement: async (req, res) => {
@@ -808,6 +856,46 @@ const userController = {
     }
   },
 
+  // order Detail page
+  orderPage: async (req, res) => {
+    try {
+      let msg = ''
+      if (req.headers.referer == 'http://localhost:3000/checkout') {
+        msg = "YOUR ORDER HAS BEEN PLACED"
+      }
+      const userId = req.session.user._id;
+      const user = await User.findOne({ _id: userId });
+      const oId = req.params.oId
+      const order = await Order.findOne({ _id: oId });
+
+      let products = []
+
+      for (const prod of order.items) {
+        try {
+          const item = await Products.findById(prod.productId);
+
+          if (item) {
+            // Check if product already exists in the array
+            const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+            // If product does not exist in the array, push it
+            if (!productExists) {
+              products.push(item);
+            }
+          } else {
+            console.log(`Product not found for ID: ${prod.productId}`);
+          }
+        } catch (error) {
+          console.error(`Error fetching product: ${error}`);
+        }
+      }
+      res.render('orderPage', { order: order, products: products, user: user, msg: msg })
+
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   // render the user profile
   userProfile: async (req, res) => {
     try {
@@ -837,48 +925,13 @@ const userController = {
           }
         }
       }
-      return res.render('user', { order: order, products: products, user: user })
+      const wallet = await Wallet.findOne({ user: userId })
 
-    } catch (error) {
-      console.log(error);
-    }
-  },
-
-  // order Detail page
-  orderPage: async (req, res) => {
-    try {
-      let msg = ''
-      if (req.headers.referer == 'http://localhost:3000/checkout') {
-        msg = "YOUR ORDER HAS BEEN PLACED"
+      if (!wallet) {
+        const succes = await Wallet.create({ user: userId }, { new: true })
       }
-      const userId = req.session.user._id;
-      const user = await User.findOne({ _id: userId });
-      const oId = req.params.oId
-      const order = await Order.find({ _id: oId });
-
-      let products = []
-      for (const ord of order) {
-        for (const prod of ord.items) {
-          try {
-            const item = await Products.findById(prod.productId);
-
-            if (item) {
-              // Check if product already exists in the array
-              const productExists = products.some(product => product._id.toString() === item._id.toString());
-
-              // If product does not exist in the array, push it
-              if (!productExists) {
-                products.push(item);
-              }
-            } else {
-              console.log(`Product not found for ID: ${prod.productId}`);
-            }
-          } catch (error) {
-            console.error(`Error fetching product: ${error}`);
-          }
-        }
-      }
-      res.render('orderPage', { order: order[0], products: products, user: user, msg: msg })
+      const balance = wallet.balance
+      return res.render('user', { order: order, products: products, user: user, balance })
 
     } catch (error) {
       console.log(error);
@@ -892,9 +945,9 @@ const userController = {
       const oId = req.body.oId
       const status = req.body.status
       const order = await Order.findById(oId);
-      if (order.paymentMode!='COD') {
-        const wallet=await Wallet.findOne({user:userId})
-        wallet.balance+=order.total
+      if (order.paymentMode != 'COD') {
+        const wallet = await Wallet.findOne({ user: userId })
+        wallet.balance += order.total
         wallet.save()
       }
       for (const item of order.items) {
