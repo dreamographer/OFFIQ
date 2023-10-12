@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer')
 const crypto = require('crypto');  //encription module
 router.use(express.json());
 const pdf = require('html-pdf');
@@ -26,6 +25,13 @@ const iv = 'initialisation-#';
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env
 const Razorpay = require('razorpay')
 let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECRET_KEY })
+
+// Helpers
+//pdf Generation
+const makePdf = require('../helpers/PdfGenerator')
+
+//Otp sending Function
+const sendOTP = require('../helpers/otpSender')
 
 //encription function
 function encrypt(text, key) {
@@ -57,33 +63,6 @@ function generateOTP() {
 }
 
 
-//sending OTP through mail
-const sendOTP = async (name, email, otp) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: 587,
-      secure: false,
-      requireTLS: true,
-      host: 'smtp.gmail.com',
-      auth: {
-        user: 'eatables.bitdrag@gmail.com',
-        pass: process.env.SMTP_KEY
-      }
-    });
-    let info = await transporter.sendMail({
-      from: 'eatables.bitdrag@gmail.com',
-      to: `${email}`,
-      subject: 'OTP for verification',
-      html: `<h1>Hy ${name}</h1><br><p>Your OTP for the verification is <h2>${otp}</h2></p>`,
-    });
-    return info
-
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 //verification of otp
 async function verifyOTP(email, otp) {
   const user = await User.findOne({ email: email }, { addresses: 0, cart: 0, wishlist: 0 });
@@ -112,47 +91,53 @@ async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
 }
 
 // genrate invoice Pdf
-async function generatePdf(oId, userId) {
-  try {
-    const user = await User.findOne({ _id: userId });
-    const order = await Order.findOne({ _id: oId });
-    let products = []
-    for (const prod of order.items) {
-      try {
-        const item = await Products.findById(prod.productId);
-        if (item) {
+async function generatePdf(oId, uId) {
+  const user = await User.findById(uId)
+  const order = await Order.findOne({ _id: oId });
+  let products = []
+
+  for (const prod of order.items) {
+    try {
+      const item = await Products.findById(prod.productId);
+
+      if (item) {
+        // Check if product already exists in the array
+        const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+        // If product does not exist in the array, push it
+        if (!productExists) {
           products.push(item);
-        } else {
-          console.log(`Product not found for ID: ${prod.productId}`);
         }
-      } catch (error) {
-        console.error(`Error fetching product: ${error}`);
-      }
-    }
-    let data1 = { order: order,msg: ' ',products: products,user: user };
-    fs.readFile('public/invoice/pdfModel.ejs', 'utf8', function (err, data) {
-      if (err) {
-        // Handle error
-        console.log(err);
       } else {
-        // Render the EJS template to HTML
-        var html = ejs.render(data, data1);
-
-        var options = { format: 'Letter' };
-
-        // Use html-pdf to create the PDF
-        pdf.create(html, options).toFile('report.pdf', function (err, res) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(res);
-          }
-        });
+        console.log(`Product not found for ID: ${prod.productId}`);
       }
-    });
-  } catch (error) {
-    console.log(error);
+    } catch (error) {
+      console.error(`Error fetching product: ${error}`);
+    }
   }
+  let invoice = {  //data given
+    shipping: {
+      name: user.fullname,
+      address: order.shippingAddress.addressLine1,
+      city: order.shippingAddress.city,
+      postal_code: order.shippingAddress.pin
+    },
+    items: [],
+    subtotal: order.total*100,
+    discount: order.offer,
+    invoice_nr: order._id
+  };
+
+  products.forEach((product, i) => {
+    invoice['items'].push({
+      item: product.name,
+      quantity: order.items[i].quantity,
+      amount: order.items[i].price*100,
+    })
+  });
+  console.log("invoice", invoice)
+  let path = 'test.pdf'
+  makePdf(invoice, path)
 }
 
 const userController = {
@@ -791,7 +776,20 @@ const userController = {
         paymentId = crypto.randomBytes(3).toString('hex')
       }
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
-      const items = user.cart;
+       // Assuming items is an array of objects with productId and quantity properties
+
+      // Use Promise.all to fetch prices for all products concurrently
+      const pricePromises = user.cart.map(async (item) => {
+        const product = await Products.findOne({ _id: item.productId }, { price: 1 });
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: product.price,
+        };
+      });
+
+      const itemPrices = await Promise.all(pricePromises);
+      const items = itemPrices;;
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const data = { userId, paymentId, status, items, total, offer, shippingAddress, paymentMode }
 
@@ -813,6 +811,7 @@ const userController = {
         { $set: { cart: [] } }, //update the cart
         { new: true }
       );
+
       generatePdf(result._id, userId)
       return res.redirect(`/orderPage/${result._id}`)
     } catch (error) {

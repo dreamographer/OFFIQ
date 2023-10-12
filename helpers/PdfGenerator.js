@@ -1,7 +1,7 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 
-function createInvoice(invoice, path) {
+const makePdf=function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
 
   generateHeader(doc);
@@ -62,22 +62,18 @@ function generateCustomerInformation(doc, invoice) {
     .text(formatDate(new Date()), 150, customerInformationTop + 15)
     .text("Grand Total:", 50, customerInformationTop + 30)
     .text(
-      '₹300',
+      formatCurrency(invoice.subtotal),
       150,
       customerInformationTop + 30
     )
 
     .font("public/Fonts/Poppins-Bold.ttf")
-    .text(invoice.shipping.name, 300, customerInformationTop) //nAME OF THE CUSTOMER
+    .text(invoice.shipping.name, 350, customerInformationTop) //nAME OF THE CUSTOMER
     .font("public/Fonts/Poppins-Medium.ttf")
-    .text(invoice.shipping.address, 300, customerInformationTop + 15) //ADDRESS OF THE CUSTOMER
+    .text(invoice.shipping.address, 350, customerInformationTop + 15) //ADDRESS OF THE CUSTOMER
     .text(
-      invoice.shipping.city +
-        ", " +
-        invoice.shipping.state +
-        ", " +
-        invoice.shipping.country,
-      300,
+      invoice.shipping.city,
+      350,
       customerInformationTop + 30
     )
     .moveDown();
@@ -91,7 +87,7 @@ function generateInvoiceTable(doc, invoice) {
   const invoiceTableTop = 350;
 
   doc.font("public/Fonts/Poppins-Bold.ttf");
-  generateTableRow(
+  generateTableRow( //heading of the table
     doc,
     invoiceTableTop,
     "SL.No",
@@ -102,15 +98,16 @@ function generateInvoiceTable(doc, invoice) {
   );
   generateHr(doc, invoiceTableTop + 20);
   doc.font("public/Fonts/Poppins-Medium.ttf");
-
+  let subtotal=0
   for (i = 0; i < invoice.items.length; i++) {
     const item = invoice.items[i];
+    subtotal+=item.amount
     const position = invoiceTableTop + (i + 1) * 30;
-    generateTableRow(
+    generateTableRow( //data of the  table
       doc,
       position,
       i+1,
-      item.description,
+      item.item,
       formatCurrency(item.amount / item.quantity),
       item.quantity,
       formatCurrency(item.amount)
@@ -120,37 +117,37 @@ function generateInvoiceTable(doc, invoice) {
   }
 
   const subtotalPosition = invoiceTableTop + (i + 1) * 30;
-  generateTableRow(
+  generateTableRow( //adding new row
     doc,
     subtotalPosition,
     "",
     "",
     "Subtotal",
     "",
-    formatCurrency(invoice.subtotal)
+    formatCurrency(subtotal)
   );
 
-  const paidToDatePosition = subtotalPosition + 20;
+  const discountToDatePosition = subtotalPosition + 20;
   generateTableRow(
     doc,
-    paidToDatePosition,
+    discountToDatePosition,
     "",
     "",
-    "Paid To Date",
+    "Discount",
     "",
-    formatCurrency(invoice.paid)
+    invoice.discount
   );
 
-  const duePosition = paidToDatePosition + 25;
+  const duePosition = discountToDatePosition + 25;
   doc.font("public/Fonts/Poppins-Bold.ttf");
   generateTableRow(
     doc,
     duePosition,
     "",
     "",
-    "Balance Due",
+    "Grand Total",
     "",
-    formatCurrency(invoice.subtotal - invoice.paid)
+    formatCurrency(invoice.subtotal)
   );
   doc.font("public/Fonts/Poppins-Medium.ttf");
 }
@@ -159,22 +156,25 @@ function generateInvoiceTable(doc, invoice) {
 function generateTableRow(
   doc,
   y,
-  item,
-  description,
+  slno,
+  name,
   unitCost,
   quantity,
-  lineTotal
+  Total
 ) {
+  const cellWidth = 90; // Width of each cell
+
   doc
     .fontSize(10)
-    .text(item, 50, y)
-    .text(description, 150, y)
-    .text(unitCost, 280, y, { width: 90, align: "right" })
-    .text(quantity, 370, y, { width: 90, align: "right" })
-    .text(lineTotal, 0, y, { align: "right" });
+    .text(slno, 50, y)
+    .text(name, 150, y, { width: cellWidth,height:20 }) // Set a maximum width for the name cell
+    .text(unitCost, 150 + cellWidth, y, { width: cellWidth, align: "right" })
+    .text(quantity, 150 + 2 * cellWidth, y, { width: cellWidth, align: "right" })
+    .text(Total, 150 + 3 * cellWidth, y, { width: cellWidth, align: "right" });
 }
 
-function generateHr(doc, y) {
+
+function generateHr(doc, y) { //function for drawing the line
   doc
     .strokeColor("#aaaaaa")
     .lineWidth(1)
@@ -183,11 +183,11 @@ function generateHr(doc, y) {
     .stroke();
 }
 
-function formatCurrency(cents) {
-  return "$" + (cents / 100).toFixed(2);
+function formatCurrency(cents) { //currenxct formating
+  return "₹" + (cents / 100).toFixed(2);
 }
 
-function formatDate(date) {
+function formatDate(date) { //function for formating the date
   const day = date.getDate();
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
@@ -196,32 +196,5 @@ function formatDate(date) {
 }
 
 
-const invoice = {
-  shipping: {
-    name: "John Doe",
-    address: "1234 Main Street",
-    city: "San Francisco",
-    state: "CA",
-    country: "US",
-    postal_code: 94111
-  },
-  items: [
-    {
-      item: "TC 100",
-      description: "Toner Cartridge",
-      quantity: 2,
-      amount: 6000
-    },
-    {
-      item: "USB_EXT",
-      description: "USB Cable Extender",
-      quantity: 1,
-      amount: 2000
-    }
-  ],
-  subtotal: 8000,
-  paid: 0,
-  invoice_nr: 1234
-};
+module.exports=makePdf //creating the pdf
 
-createInvoice(invoice, "invoice.pdf");

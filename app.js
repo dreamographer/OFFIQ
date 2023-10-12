@@ -1,8 +1,8 @@
 require('dotenv').config();
-require('./auth')
+require('./config/auth')
 const passport=require('passport')
 const express = require('express'); 
-const connectDB=require('./dbConnect')  
+const connectDB=require('./config/dbConnect')  
 const session = require('express-session');
 const path=require('path');
 const nocache = require('nocache');

@@ -11,6 +11,10 @@ const cartItemSchema = new mongoose.Schema({
         required: true,
         min: 1, // Ensure quantity is at least 1
     },
+    price:{
+        type: Number,
+        required: true,
+    }
 });
 const addressSchema = new mongoose.Schema({
     addressLine1: {
