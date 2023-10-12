@@ -3,9 +3,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');  //encription module
 router.use(express.json());
-const pdf = require('html-pdf');
-const fs = require('fs');
-const ejs = require('ejs');
+const path=require('path');
 
 //modals
 const User = require('../models/user.models'); //user schema
@@ -125,7 +123,8 @@ async function generatePdf(oId, uId) {
     items: [],
     subtotal: order.total*100,
     discount: order.offer,
-    invoice_nr: order._id
+    invoice_nr: order._id,
+    payment_id:order.paymentId
   };
 
   products.forEach((product, i) => {
@@ -137,7 +136,7 @@ async function generatePdf(oId, uId) {
   });
   console.log("invoice", invoice)
   let path = 'test.pdf'
-  makePdf(invoice, path)
+  makePdf(invoice, order.invoice)
 }
 
 const userController = {
@@ -791,7 +790,8 @@ const userController = {
       const itemPrices = await Promise.all(pricePromises);
       const items = itemPrices;;
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
-      const data = { userId, paymentId, status, items, total, offer, shippingAddress, paymentMode }
+      const invoice=path.join(__dirname,`../public/invoice/invoice_${paymentId}.pdf`)
+      const data = { userId, paymentId, status, items, invoice,total, offer, shippingAddress, paymentMode }
 
       const result = await Order.create(data)
       let updatedProduct = []
@@ -957,11 +957,11 @@ const userController = {
         await Products.findByIdAndUpdate(
           productId,
           { $inc: { quantity: quantity } },
-        );
+        ); 
       }
       order.status = status
       order.save()
-      return
+      return res.status(200).send()
     } catch (error) {
       console.log(error);
     }

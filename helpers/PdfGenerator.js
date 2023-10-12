@@ -58,13 +58,15 @@ function generateCustomerInformation(doc, invoice) {
     .font("public/Fonts/Poppins-Bold.ttf")
     .text(invoice.invoice_nr, 150, customerInformationTop)
     .font("public/Fonts/Poppins-Medium.ttf")
-    .text("Invoice Date:", 50, customerInformationTop + 15)
-    .text(formatDate(new Date()), 150, customerInformationTop + 15)
-    .text("Grand Total:", 50, customerInformationTop + 30)
+    .text("Payment Id:", 50, customerInformationTop + 15)
+    .text(invoice.payment_id, 150, customerInformationTop + 15)
+    .text("Invoice Date:", 50, customerInformationTop + 30)
+    .text(formatDate(new Date()), 150, customerInformationTop + 30)
+    .text("Grand Total:", 50, customerInformationTop + 45)
     .text(
       formatCurrency(invoice.subtotal),
       150,
-      customerInformationTop + 30
+      customerInformationTop + 45
     )
 
     .font("public/Fonts/Poppins-Bold.ttf")
@@ -78,7 +80,7 @@ function generateCustomerInformation(doc, invoice) {
     )
     .moveDown();
 
-  generateHr(doc, 252);
+  generateHr(doc, 272);
 }
 
 // generate the table for the items
