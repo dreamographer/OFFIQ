@@ -4,10 +4,10 @@ const passport=require('passport')
 const express = require('express'); 
 const connectDB=require('./config/dbConnect')  
 const session = require('express-session');
-const path=require('path');
+const path=require('path'); 
 const nocache = require('nocache');
 const app = express();
-const port = 3000; 
+const port = 3000;  
 app.set('view engine', 'ejs'); 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())

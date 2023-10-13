@@ -305,9 +305,7 @@ const userController = {
     try {
       if (req.session.user) {
         return res.redirect('/');
-      } else if (req.session.block) {
-        return res.render('login', { errorMessage: 'User account has been blocked by the admin' });
-      }
+      } 
       else if (req.session.err) {
         req.session.err = false;
         // Pass an error message to the login view
@@ -316,6 +314,8 @@ const userController = {
         req.session.exist = false;
         return res.render('login', { errorMessage: 'Email already registered , Please login' });
 
+      }else if (req.session.block) {
+        return res.render('login', { errorMessage: 'User account has been blocked by the admin' });
       }
       else {
         return res.render('login', { errorMessage: '' });
@@ -437,6 +437,7 @@ const userController = {
   // user cart
   cart: async (req, res) => {
     try {
+      let msg=''
       const userId = req.session.user._id;
       if (!userId) {
         return res.redirect('/')
@@ -459,8 +460,12 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
+      if (req.app.locals.data) {
+        msg=req.app.locals.data
+        req.app.locals.data=null
+      }
 
-      return res.render('cart', { cart: cart, products: products, msg: '' });
+      return res.render('cart', { cart: cart, products: products, msg: msg });
     } catch (error) {
       console.log(error);
     }
@@ -582,16 +587,18 @@ const userController = {
   applyPromo: async (req, res) => {
     try {
       let code = req.body.code
-      let userId = req.session.user._id;
+      let total=req.body.total
       const coupon = await Coupon.findOne({ couponCode: code })
+      if (total<coupon.minimumPurchase) {
+        return res.send({ error: `Minimum purchase value is ${coupon.minimumPurchase}` })
+      }
       console.log(coupon);
       if (coupon) {
         return res.send({ type: coupon.discountType, value: coupon.discountValue })
       } else {
         return res.send({ error: 'Invalid Code' })
       }
-      const user = await User.findOne({ _id: userId }, { cart: 1 });
-      const cart = user.cart;
+      
 
 
     } catch (error) {
@@ -626,16 +633,18 @@ const userController = {
       if (!userId) {
         return res.redirect('/')
       }
-      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
+      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1,wallet:1});
       const addresses = user.addresses
       const cart = user.cart;
 
       const products = [];
       for (const prod of cart) {
         try {
-
           const item = await Products.findById(prod.productId);
-
+          if (prod.quantity>item.quantity) {
+            req.app.locals.data="GIVEN QUANTITY NOT AVAILABLE"
+            return res.redirect('/cart')
+          }
           if (item) {
             products.push(item);
           } else {
@@ -647,7 +656,9 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer });
+      const wallet=await Wallet.findOne({user:userId})
+      console.log(wallet);
+      return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer,wallet:wallet.balance });
     } catch (error) {
       console.log(error);
     }
@@ -924,16 +935,16 @@ const userController = {
           }
         }
       }
-      const wallet = await Wallet.findOne({ user: userId })
+      let wallet = await Wallet.findOne({ user: userId })
 
       if (!wallet) {
-        const succes = await Wallet.create({ user: userId }, { new: true })
+        wallet = await Wallet.create({user:userId}, { new: true })
       }
       const balance = wallet.balance
       return res.render('user', { order: order, products: products, user: user, balance })
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   },
 

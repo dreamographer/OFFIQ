@@ -117,7 +117,8 @@
     <% if (errorMessage) { %>   
         <script>
                 let err = '<%= errorMessage %>';
-                showToast(err);              
+                showToast(err);   
+                errorMessage=null           
         </script>
       <% } %>
       <script>

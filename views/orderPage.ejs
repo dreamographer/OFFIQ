@@ -237,11 +237,11 @@
                                             quantity : <%=order.items[i].quantity %>
                                         </span>
                                         <p class="text-lg font-semibold">Total : ₹
-                                            <%=product.price*order.items[i].quantity %>
+                                            <%=order.items[i].price %>
                                         </p>
                                     </div>
                                 </div>
-                                <% subtotal=subtotal+(product.price*order.items[i].quantity) %>
+                                <% subtotal=subtotal+(order.items[i].price*order.items[i].quantity) %>
                                     <% }); %>
                         </div>
                         <div class="border-t-2 mt-5 mb-5  p-4">

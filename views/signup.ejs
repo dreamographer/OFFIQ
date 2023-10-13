@@ -176,7 +176,7 @@
             const error = document.getElementById('phoneError');
 
             // Regular expression for a typical 10-digit mobile number
-            const mobilePattern = /^[0-9]{10}$/;
+            const mobilePattern = /^[6-9]\d{9}$/;
 
             if (!mobilePattern.test(mobile)) {
                 error.innerText = "Invalid mobile number. Please enter a 10-digit number.";
@@ -228,7 +228,7 @@
             const email = signupForm.email.value;
             const password = signupForm.password.value;
             const confirmPassword = signupForm.Cpassword.value;
-
+            const mobile=signupForm.phone.value
             const errors = [];
 
             if (fullname === '') {
@@ -239,10 +239,14 @@
                 errors.push('Passwords do not match');
             }
 
-            // Basic email validation (regex)
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(email)) {
                 errors.push('Invalid email format');
+            }
+
+            const mobilePattern = /^[6-9]\d{9}$/;
+            if (!mobilePattern.test(mobile)) {
+                errors.push('Invalid Mobile numeber format');
             }
 
             // Password validation: at least 8 characters with a combination of letters and numbers
