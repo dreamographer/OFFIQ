@@ -55,6 +55,102 @@ const adminController = {
     }
   },
 
+  //giving data for chart
+  chartData: async (req, res) => {
+    const filter = req.body.filter
+    let data
+    const targetYear = 2023; //sets the result for one year 
+    if (filter == 'MONTLY') {
+      data = await Order.aggregate([
+        {
+          $match: {
+            $expr: { $eq: [{ $year: "$createdAt" }, targetYear] } ,// Filter orders for the target year
+            status : { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+          $project: {
+            month: { $month: "$createdAt" },//projects the month from the time stamp
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$month",
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,//set the id to 0 for avoding id in the result
+            month: {
+              $switch: { //change the month to currsonding string 
+                branches: [
+                  { case: { $eq: ["$_id", 1] }, then: "Jan" },
+                  { case: { $eq: ["$_id", 2] }, then: "Feb" },
+                  { case: { $eq: ["$_id", 3] }, then: "Mar" },
+                  { case: { $eq: ["$_id", 4] }, then: "Apr" },
+                  { case: { $eq: ["$_id", 5] }, then: "May" },
+                  { case: { $eq: ["$_id", 6] }, then: "Jun" },
+                  { case: { $eq: ["$_id", 7] }, then: "Jul" },
+                  { case: { $eq: ["$_id", 8] }, then: "Aug" },
+                  { case: { $eq: ["$_id", 9] }, then: "Sep" },
+                  { case: { $eq: ["$_id", 10] }, then: "Oct" },
+                  { case: { $eq: ["$_id", 11] }, then: "Nov" },
+                  { case: { $eq: ["$_id", 12] }, then: "Dec" }
+                ],
+                default: "Unknown"
+              }
+            },
+            count: 1 //for showing the count
+          }
+        },
+        {
+          $sort: {
+            month: 1
+          }
+        }
+      ]);
+
+    }
+    else if (filter == "YERALY") {
+      data = await Order.aggregate([
+        {
+          $match: {
+            status : { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+         
+          $project: {
+            year: { $year: "$createdAt" },//projects the month from the time stamp
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$year",
+            count: { $sum: 1 }
+          }
+        },
+        {
+          $project: {
+            _id: 0,//set the id to 0 for avoding id in the result
+            year: '$_id',
+            count: 1 //for showing the count
+          }
+        },
+        {
+          $sort: {
+            year: 1
+          }
+        }
+      ]);
+  
+    }
+
+    console.log(data);
+    return res.status(200).json({ data: data, filter: filter })
+  },
+
   //user management
   userManagement: async (req, res) => {
     try {
@@ -518,12 +614,12 @@ const adminController = {
         const quantity = item.quantity;
         // Find the corresponding product and update its quantity
         await Products.findByIdAndUpdate(
-            productId,
-            { $inc: { quantity: quantity } },
+          productId,
+          { $inc: { quantity: quantity } },
         );
-    }
-    order.status=status
-    order.save()
+      }
+      order.status = status
+      order.save()
       return
     } catch (error) {
       console.log(error);
@@ -552,8 +648,8 @@ const adminController = {
     try {
 
       let data = req.body
-      const coupons = await Coupon.findOne({couponCode:data.couponCode});
-      if (coupons){
+      const coupons = await Coupon.findOne({ couponCode: data.couponCode });
+      if (coupons) {
         req.app.locals.data = 'Coupon Name already exist';
         return res.redirect(`/admin/couponManagement`)
       }
@@ -590,11 +686,11 @@ const adminController = {
     try {
       const cId = req.body.id
       let data = req.body
-      const coupons = await Coupon.findOne({couponCode:data.couponCode});
-      
+      const coupons = await Coupon.findOne({ couponCode: data.couponCode });
+
       let end = new Date(req.body.endDate);
       let start = new Date(req.body.startDate);
-      
+
       if (start > end) {
         req.app.locals.data = 'The end date should after start date';
         return res.redirect(`/admin/couponManagement`)
@@ -611,10 +707,10 @@ const adminController = {
   },
 
   // delete the coupon
-  deleteCoupon:async (req,res)=>{
-    try { 
-      const id=req.params.id;
-      const deletedCoupon=await Coupon.deleteOne({"_id":id})
+  deleteCoupon: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const deletedCoupon = await Coupon.deleteOne({ "_id": id })
       console.log(deletedCoupon);
       return res.redirect('back')
     } catch (error) {

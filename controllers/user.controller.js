@@ -7,10 +7,10 @@ const path=require('path');
 
 //modals
 const User = require('../models/user.models'); //user schema
+const googelUser = require('../models/emailUserModel');//schema for google auth users
 const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
-const googelUser = require('../models/emailUserModel');//schema for google auth users
 const Coupon = require('../models/couponModel');//coupon schema
 const Wallet = require('../models/WalletModel')//Wallet schma
 
@@ -27,7 +27,6 @@ let instance = new Razorpay({ key_id: RAZORPAY_ID_KEY, key_secret: RAZORPAY_SECR
 // Helpers
 //pdf Generation
 const makePdf = require('../helpers/PdfGenerator')
-
 //Otp sending Function
 const sendOTP = require('../helpers/otpSender')
 

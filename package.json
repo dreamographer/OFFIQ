@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "canvas": "^2.11.2",
+    "chartjs": "^0.3.24",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.3.1",
@@ -27,7 +29,6 @@
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.13.0",
     "pdfkit-table": "^0.1.99",
-    "puppeteer": "^21.3.8",
     "razorpay": "^2.9.2"
   },
   "devDependencies": {

@@ -1,60 +1,118 @@
 <%-include('adminHeader')%>
 
-        <div class="flex-1 flex">
-     
-            <div class="p-2 bg-white w-60 flex-col hidden md:flex" id="sideNav">
-                <nav>
-                    <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
-                        href="#">
-                        <i class="fas fa-home mr-2"></i>Dashboard
-                    </a>
-                    
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="/admin/userMangement">
-                        <i class="fas fa-users mr-2"></i>User Management
-                    </a>
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
-                        <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
-                    </a>
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
-                        <i class="fas fa-store mr-2"></i>Product Management
-                    </a>
-                    
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="/admin/orderManagement">
-                        <i class="fas fa-exchange-alt mr-2"></i>Order Management
-                    </a>
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="/admin/couponManagement">
-                        <i class="fa-sharp fas fa-regular fa-tag"></i> Coupon Mangement
-                    </a>
-                    <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                        href="#">
-                        <i class="fas fa-file-alt mr-2"></i>Report
-                    </a>
-                </nav>
+    <div class="flex-1 flex">
 
-      
-                <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
-                    href="/logout">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        <div class="p-2 bg-white w-60 flex-col hidden md:flex" id="sideNav">
+            <nav>
+                <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white"
+                    href="#">
+                    <i class="fas fa-home mr-2"></i>Dashboard
                 </a>
 
-            </div>
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="/admin/userMangement">
+                    <i class="fas fa-users mr-2"></i>User Management
+                </a>
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="#">
+                    <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
+                </a>
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="#">
+                    <i class="fas fa-store mr-2"></i>Product Management
+                </a>
 
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="/admin/orderManagement">
+                    <i class="fas fa-exchange-alt mr-2"></i>Order Management
+                </a>
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="/admin/couponManagement">
+                    <i class="fa-sharp fas fa-regular fa-tag"></i> Coupon Mangement
+                </a>
+                <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
+                    href="#">
+                    <i class="fas fa-file-alt mr-2"></i>Report
+                </a>
+            </nav>
+
+
+            <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
+                href="/logout">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </a>
 
         </div>
+
+        <div style="width: 800px;"><canvas id="sales"></canvas></div>
+        <input type="radio" name="filter" id="month" onchange="updateChart('MONTLY')">
+        <input type="radio" name="filter" id="week" onchange="updateChart('YERALY')">
+
     </div>
+
+    <!-- chart js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+
+        let myChart;
+
+        function updateChart(filter) {
+            // Fetch new data based on the selected FILTER
+            fetch('/admin/getData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    filter: filter
+                })
+            })
+                .then((response) => { return response.json() })
+                .then((data) => {
+
+                    chart(data.data, data.filter);
+                })
+        }
+
+        async function chart(data, filter) { //function for generating the chart
+            if (myChart) {
+                myChart.destroy();
+            }
+            myChart = new Chart(
+                document.getElementById('sales'),
+                {
+                    type: 'bar',
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    data: {
+                        labels: data.map(row => row.month ?? row.year),
+                        datasets: [
+                            {
+                                barPercentage: 1,
+                                barThickness: 90,
+                                label: `${filter} SALES`,
+                                data: data.map(row => row.count),
+                            }
+                        ]
+                    }
+                }
+            );
+        }
+        window.onload = updateChart('MONTLY')
+
+    </script>
+
     <script>
         const menuBtn = document.getElementById('menuBtn');
         const sideNav = document.getElementById('sideNav');
         menuBtn.addEventListener('click', () => {
-            sideNav.classList.toggle('hidden'); 
+            sideNav.classList.toggle('hidden');
         });
     </script>
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
-</body>
+    </body>
 
-</html>
+    </html>

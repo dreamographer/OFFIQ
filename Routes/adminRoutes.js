@@ -24,6 +24,9 @@ try {
   //dashboard of the admin
   router.get('/dashboard', adminSession, adminController.adminDashboard);
 
+  // Chart
+  router.post('/getData',adminSession,adminController.chartData);
+
   //usermangement
   router.get('/userMangement', adminSession, adminController.userManagement);
 
@@ -56,8 +59,8 @@ try {
   
   // delete imgage
   router.post('/removeImage', adminSession,adminController.removeImage)
-  
-  // Edit product
+   
+  // Edit product 
   router.post('/editProduct', adminSession, validateProductImage, adminController.editProduct)
 
 

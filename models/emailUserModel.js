@@ -79,4 +79,4 @@ const userSchema = new mongoose.Schema({
     cart:[cartItemSchema],
     wishlist:[wishlistSchema],
 },{ timestamps: true });
-module.exports = mongoose.model('emailUser', userSchema, 'user') 
+module.exports = mongoose.model('emailUser', userSchema,'user') 
