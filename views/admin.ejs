@@ -1,5 +1,4 @@
 <%-include('adminHeader')%>
-
     <div class="flex-1 flex">
 
         <div class="p-2 bg-white w-60 flex-col hidden md:flex" id="sideNav">
@@ -8,7 +7,6 @@
                     href="#">
                     <i class="fas fa-home mr-2"></i>Dashboard
                 </a>
-
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
                     href="/admin/userMangement">
                     <i class="fas fa-users mr-2"></i>User Management
@@ -21,7 +19,6 @@
                     href="#">
                     <i class="fas fa-store mr-2"></i>Product Management
                 </a>
-
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
                     href="/admin/orderManagement">
                     <i class="fas fa-exchange-alt mr-2"></i>Order Management
@@ -35,19 +32,17 @@
                     <i class="fas fa-file-alt mr-2"></i>Report
                 </a>
             </nav>
-
-
             <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto"
                 href="/logout">
                 <i class="fas fa-sign-out-alt mr-2"></i>Logout
             </a>
-
         </div>
-
-        <div style="width: 800px;"><canvas id="sales"></canvas></div>
+        <div>
+            <div style="width: 800px;"><canvas id="sales"></canvas></div>
+            <div style="width: 800px;"><canvas id="Profit"></canvas></div>
+        </div>
         <input type="radio" name="filter" id="month" onchange="updateChart('MONTLY')">
         <input type="radio" name="filter" id="week" onchange="updateChart('YERALY')">
-
     </div>
 
     <!-- chart js -->
@@ -55,7 +50,7 @@
     <script>
 
         let myChart;
-
+        let ProfitChart
         function updateChart(filter) {
             // Fetch new data based on the selected FILTER
             fetch('/admin/getData', {
@@ -69,12 +64,11 @@
             })
                 .then((response) => { return response.json() })
                 .then((data) => {
-
-                    chart(data.data, data.filter);
+                    salesChart(data, data.filter);
                 })
         }
 
-        async function chart(data, filter) { //function for generating the chart
+        async function salesChart(data, filter) { //function for generating the chart
             if (myChart) {
                 myChart.destroy();
             }
@@ -88,13 +82,40 @@
                         }
                     },
                     data: {
-                        labels: data.map(row => row.month ?? row.year),
+                        labels: data.saleData.map(row => row.month ?? row.year),
                         datasets: [
                             {
                                 barPercentage: 1,
                                 barThickness: 90,
                                 label: `${filter} SALES`,
-                                data: data.map(row => row.count),
+                                data: data.saleData.map(row => row.count),
+                            }
+                        ]
+                    }
+                }
+            );
+
+            if (ProfitChart) {
+                ProfitChart.destroy();
+            }
+
+            ProfitChart = new Chart(
+                document.getElementById('Profit'),
+                {
+                    type: 'bar',
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    data: {
+                        labels: data.profitData.map(row => row.month ?? row.year),
+                        datasets: [
+                            {
+                                barPercentage: 1,
+                                barThickness: 90,
+                                label: `${filter} PROFIT`,
+                                data: data.profitData.map(row => row.totalSales),
                             }
                         ]
                     }

@@ -58,14 +58,15 @@ const adminController = {
   //giving data for chart
   chartData: async (req, res) => {
     const filter = req.body.filter
-    let data
+    let saleData
+    let profitData
     const targetYear = 2023; //sets the result for one year 
     if (filter == 'MONTLY') {
-      data = await Order.aggregate([
+      saleData = await Order.aggregate([
         {
           $match: {
-            $expr: { $eq: [{ $year: "$createdAt" }, targetYear] } ,// Filter orders for the target year
-            status : { $ne: 'cancelled' } //check the staus of the order
+            $expr: { $eq: [{ $year: "$createdAt" }, targetYear] },// Filter orders for the target year
+            status: { $ne: 'cancelled' } //check the staus of the order
           }
         },
         {
@@ -111,16 +112,68 @@ const adminController = {
         }
       ]);
 
-    }
-    else if (filter == "YERALY") {
-      data = await Order.aggregate([
+      profitData = await Order.aggregate([
         {
           $match: {
-            status : { $ne: 'cancelled' } //check the staus of the order
+            $expr: { $eq: [{ $year: "$createdAt" }, targetYear] },// Filter orders for the target year
+            status: { $ne: 'cancelled' } //check the staus of the order
           }
         },
         {
-         
+          $project: {
+            month: { $month: "$createdAt" },//projects the month from the time stamp
+            total: 1
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$month",
+            totalSales: { $sum: '$total' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            month: {
+              $switch: { //change the month to currsonding string 
+                branches: [
+                  { case: { $eq: ["$_id", 1] }, then: "Jan" },
+                  { case: { $eq: ["$_id", 2] }, then: "Feb" },
+                  { case: { $eq: ["$_id", 3] }, then: "Mar" },
+                  { case: { $eq: ["$_id", 4] }, then: "Apr" },
+                  { case: { $eq: ["$_id", 5] }, then: "May" },
+                  { case: { $eq: ["$_id", 6] }, then: "Jun" },
+                  { case: { $eq: ["$_id", 7] }, then: "Jul" },
+                  { case: { $eq: ["$_id", 8] }, then: "Aug" },
+                  { case: { $eq: ["$_id", 9] }, then: "Sep" },
+                  { case: { $eq: ["$_id", 10] }, then: "Oct" },
+                  { case: { $eq: ["$_id", 11] }, then: "Nov" },
+                  { case: { $eq: ["$_id", 12] }, then: "Dec" }
+                ],
+                default: "Unknown"
+              }
+            },
+            totalSales: 1
+          }
+        },
+        {
+          $sort: {
+            month: 1
+          }
+        }
+      ]);
+
+
+    }
+    else if (filter == "YERALY") {
+      saleData = await Order.aggregate([
+        {
+          $match: {
+            status: { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+
           $project: {
             year: { $year: "$createdAt" },//projects the month from the time stamp
           }
@@ -144,11 +197,43 @@ const adminController = {
           }
         }
       ]);
-  
+
+      profitData = await Order.aggregate([
+        {
+          $match: {
+            status: { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+          $project: {
+            year: { $year: "$createdAt" },//projects the month from the time stamp
+            total: 1
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$year",
+            totalSales: { $sum: '$total' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,//set the id to 0 for avoding id in the result
+            year: '$_id',
+            totalSales: 1 //for showing the count
+          }
+        },
+        {
+          $sort: {
+            year: 1
+          }
+        }
+      ]);
+
     }
 
-    console.log(data);
-    return res.status(200).json({ data: data, filter: filter })
+    console.log(saleData);
+    return res.status(200).json({ saleData: saleData, filter: filter, profitData: profitData })
   },
 
   //user management
