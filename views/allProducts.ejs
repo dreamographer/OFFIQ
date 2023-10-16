@@ -56,18 +56,23 @@
         <div class="mt-28 ml-[19%] w-5/6 flex flex-col items-center overflow-hidden ">
             <!-- search -->
             <div class=" max-w-sm flex  mt-5 mb-5">
-                <form action="" class="relative  w-max">
-                    <input type="search" id="searchInput"
-                        class="peer relative z-10 h-12 rounded-full border bg-transparent outline-none  placeholder-gray-600 w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
-                        placeholder="I am looking for" />
+                <form action="/productSearch" class="relative mx-auto w-max" method="POST">
+                    <input type="search"  id="searchInput" name="search" 
+                        class="relative z-10 h-12  rounded-full border bg-transparent  outline-none  placeholder-gray-500  w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
+                        placeholder="Search Product" />
 
                     <svg xmlns="http://www.w3.org/2000/svg"
-                        class="absolute top-2 h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-gray-300 peer-focus:stroke-gray-500 "
+                        class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent  px-3.5 border-gray-300 stroke-gray-500 "
                         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </form>
+            </div>
+            <div>
+                <ul class="w-full  flex  justify-center gap-10 flex-wrap" id="searchSuggetion">
+    
+                </ul>
             </div>
             <!-- items -->
             <div class="flex flex-wrap gap-3 overflow-hidden">
@@ -180,3 +185,75 @@
         </div>
 
     </main>
+     <!-- search -->
+     <script>
+        const view = document.getElementById('searchSuggetion');
+        const input = document.querySelector('#searchInput');
+        input.addEventListener('input', debounce(handleSearch, 300)); //debounce function to reduce api request
+        function debounce(func, delay) {
+            let timeoutId;
+            return function () {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
+
+        async function handleSearch() {
+            const search = input.value;
+            if (search.trim() == '') {
+                view.innerHTML = ''
+                return
+            }
+            try {
+                const response = await fetch('/productSearch', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ search,fetchReq:true}), // Send user's input as JSON in the request body
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const products = data.products; // Assuming your server returns the subcategories
+
+                    // Update the view div with the search results
+                    view.innerHTML = '';
+
+                    products.forEach((products) => {
+                        const product = document.createElement('li');
+                        product.classList.add('truncate') //text overflow handling
+                        product.classList.add('w-52')
+                        const linkElement = document.createElement('a');
+                        linkElement.href = `/productpage/${products._id}`
+                        linkElement.appendChild(product)
+                        product.textContent = products.name;
+                        view.appendChild(linkElement);
+                    });
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+
+
+    </script>
+    <script>
+        const toggleButton = document.getElementById('toggle-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        toggleButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+    </body>
+
+    </html>
