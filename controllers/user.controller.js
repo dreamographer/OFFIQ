@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');  //encription module
 router.use(express.json());
-const path=require('path');
+const path = require('path');
 
 //modals
 const User = require('../models/user.models'); //user schema
@@ -120,17 +120,17 @@ async function generatePdf(oId, uId) {
       postal_code: order.shippingAddress.pin
     },
     items: [],
-    subtotal: order.total*100,
+    subtotal: order.total * 100,
     discount: order.offer,
     invoice_nr: order._id,
-    payment_id:order.paymentId
+    payment_id: order.paymentId
   };
 
   products.forEach((product, i) => {
     invoice['items'].push({
       item: product.name,
       quantity: order.items[i].quantity,
-      amount: order.items[i].price*100,
+      amount: order.items[i].price * 100,
     })
   });
   console.log("invoice", invoice)
@@ -304,7 +304,7 @@ const userController = {
     try {
       if (req.session.user) {
         return res.redirect('/');
-      } 
+      }
       else if (req.session.err) {
         req.session.err = false;
         // Pass an error message to the login view
@@ -313,7 +313,7 @@ const userController = {
         req.session.exist = false;
         return res.render('login', { errorMessage: 'Email already registered , Please login' });
 
-      }else if (req.session.block) {
+      } else if (req.session.block) {
         return res.render('login', { errorMessage: 'User account has been blocked by the admin' });
       }
       else {
@@ -356,6 +356,26 @@ const userController = {
       console.log(error);
     }
 
+  },
+  //ALL products 
+  allProducts: async (req, res) => {
+    try {
+      let pageNo = parseInt(req.params.pageNo)
+    let size = 10
+    let query = {}
+    if (pageNo < 0 || pageNo === 0) {
+      response = { "error": true, "message": "invalid page number, should start with 1" };
+      return res.json(response)
+    }
+    query.skip = size * (pageNo - 1)
+    query.limit = size
+    let data= await Products.paginate({}, { offset: query.skip, limit: query.limit })
+      return res.render('allProducts', { pageData: data})
+      
+    } catch (error) {
+      console.log(error);
+    }
+    
   },
   //render products view page
   products: async (req, res) => {
@@ -436,7 +456,7 @@ const userController = {
   // user cart
   cart: async (req, res) => {
     try {
-      let msg=''
+      let msg = ''
       const userId = req.session.user._id;
       if (!userId) {
         return res.redirect('/')
@@ -460,8 +480,8 @@ const userController = {
         }
       }
       if (req.app.locals.data) {
-        msg=req.app.locals.data
-        req.app.locals.data=null
+        msg = req.app.locals.data
+        req.app.locals.data = null
       }
 
       return res.render('cart', { cart: cart, products: products, msg: msg });
@@ -586,9 +606,9 @@ const userController = {
   applyPromo: async (req, res) => {
     try {
       let code = req.body.code
-      let total=req.body.total
+      let total = req.body.total
       const coupon = await Coupon.findOne({ couponCode: code })
-      if (total<coupon.minimumPurchase) {
+      if (total < coupon.minimumPurchase) {
         return res.send({ error: `Minimum purchase value is ${coupon.minimumPurchase}` })
       }
       console.log(coupon);
@@ -597,7 +617,7 @@ const userController = {
       } else {
         return res.send({ error: 'Invalid Code' })
       }
-      
+
 
 
     } catch (error) {
@@ -632,7 +652,7 @@ const userController = {
       if (!userId) {
         return res.redirect('/')
       }
-      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1,wallet:1});
+      const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1, wallet: 1 });
       const addresses = user.addresses
       const cart = user.cart;
 
@@ -640,8 +660,8 @@ const userController = {
       for (const prod of cart) {
         try {
           const item = await Products.findById(prod.productId);
-          if (prod.quantity>item.quantity) {
-            req.app.locals.data="GIVEN QUANTITY NOT AVAILABLE"
+          if (prod.quantity > item.quantity) {
+            req.app.locals.data = "GIVEN QUANTITY NOT AVAILABLE"
             return res.redirect('/cart')
           }
           if (item) {
@@ -655,9 +675,9 @@ const userController = {
           console.error(`Error fetching product: ${error}`);
         }
       }
-      const wallet=await Wallet.findOne({user:userId})
+      const wallet = await Wallet.findOne({ user: userId })
       console.log(wallet);
-      return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer,wallet:wallet.balance });
+      return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance });
     } catch (error) {
       console.log(error);
     }
@@ -785,32 +805,32 @@ const userController = {
         paymentId = crypto.randomBytes(3).toString('hex')
       }
       const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
-       // Assuming items is an array of objects with productId and quantity properties
+      // Assuming items is an array of objects with productId and quantity properties
 
       // Use Promise.all to fetch prices for all products concurrently
       const pricePromises = user.cart.map(async (item) => {
-        const product = await Products.findOne({ _id: item.productId }, { price: 1 ,category:1});
+        const product = await Products.findOne({ _id: item.productId }, { price: 1, category: 1 });
         return {
           productId: item.productId,
           quantity: item.quantity,
-          category:product.category,
+          category: product.category,
           price: product.price,
         };
       });
 
       let itemPrices = await Promise.all(pricePromises);
-      
+
       const CategoryPromise = itemPrices.map(async (item) => {
-        let category=await Category.findOne({_id:item.category},{name:1,_id:0})
-        return item.category=category.name
+        let category = await Category.findOne({ _id: item.category }, { name: 1, _id: 0 })
+        return item.category = category.name
       });
       let category = await Promise.all(CategoryPromise);
       console.log(`catyegory is ${category}`);
       console.log(itemPrices);
       const items = itemPrices;
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
-      const invoice=path.join(__dirname,`../public/invoice/invoice_${paymentId}.pdf`)
-      const data = { userId, paymentId, status, items, invoice,total, offer, shippingAddress, paymentMode }
+      const invoice = path.join(__dirname, `../public/invoice/invoice_${paymentId}.pdf`)
+      const data = { userId, paymentId, status, items, invoice, total, offer, shippingAddress, paymentMode }
 
       const result = await Order.create(data)
       let updatedProduct = []
@@ -946,7 +966,7 @@ const userController = {
       let wallet = await Wallet.findOne({ user: userId })
 
       if (!wallet) {
-        wallet = await Wallet.create({user:userId}, { new: true })
+        wallet = await Wallet.create({ user: userId }, { new: true })
       }
       const balance = wallet.balance
       return res.render('user', { order: order, products: products, user: user, balance })
@@ -976,7 +996,7 @@ const userController = {
         await Products.findByIdAndUpdate(
           productId,
           { $inc: { quantity: quantity } },
-        ); 
+        );
       }
       order.status = status
       order.save()

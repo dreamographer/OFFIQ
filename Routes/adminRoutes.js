@@ -91,6 +91,15 @@ try {
   // delete coupon
   router.get('/deleteCoupon/:id',adminSession,adminController.deleteCoupon)
 
+  // Report Mangement
+  router.get('/report',adminSession,adminController.Report)
+
+  //get pdf report
+  router.get('/getPdf',adminSession,adminController.pdfReport)
+  
+  // get excel report
+  router.get('/getExcel',adminSession,adminController.excelReport)
+
   //logout
   router.get('/logout', adminController.logout);
 

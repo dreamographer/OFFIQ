@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path=require('path'); 
 //keys
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRIPTION_KEY;
@@ -12,6 +13,14 @@ const Category = require('../models/categoryModel') //category schema
 const Products = require('../models/productModel'); //products schema
 const Order = require('../models/order.model'); //order schema
 const Coupon = require('../models/couponModel');//coupon schema
+
+// excel dependencies
+const ExcelJS = require('exceljs');
+const workbook = new ExcelJS.Workbook();
+const worksheet = workbook.addWorksheet('Sales Data');
+
+// pdf helper
+const makePdf = require('../helpers/ReportPDF')
 
 //decrypt
 function decrypt(encryptedText, key) {
@@ -71,11 +80,11 @@ const adminController = {
           }
         }
       ]);
-      const totalMonthSale = monthSales[0]?monthSales[0].totalSales:0 
+      const totalMonthSale = monthSales[0] ? monthSales[0].totalSales : 0
 
       // Day total sale
       const currentDate = new Date(); // Get the current date
-      const currentDay=currentDate.getDate()
+      const currentDay = currentDate.getDate()
       console.log(currentDay);
       const daySales = await Order.aggregate([
         {
@@ -86,7 +95,7 @@ const adminController = {
                 { $eq: [{ $month: "$createdAt" }, currentMonth] }
               ]
             },
-            status: "confirmed" 
+            status: "confirmed"
           }
         },
         {
@@ -102,7 +111,7 @@ const adminController = {
           }
         }
       ]);
-      const totalDaySale = daySales[0]?daySales[0].totalSales:0
+      const totalDaySale = daySales[0] ? daySales[0].totalSales : 0
 
       // TOTAL PROFIT
       let monthProfit = await Order.aggregate([
@@ -111,13 +120,13 @@ const adminController = {
             $expr: {
               $eq: [{ $month: "$createdAt" }, currentMonth]
             },
-            status: "confirmed" 
+            status: "confirmed"
           }
         },
         {
           $group: {
-            _id:null ,
-            totalSales: { $sum: '$total'} 
+            _id: null,
+            totalSales: { $sum: '$total' }
           }
         },
         {
@@ -127,9 +136,9 @@ const adminController = {
           }
         }
       ]);
-      const Monthprofit = monthProfit[0]?monthProfit[0].totalSales:0
+      const Monthprofit = monthProfit[0] ? monthProfit[0].totalSales : 0
 
-      res.render('admin', { totalDaySale, totalMonthSale ,Monthprofit})
+      res.render('admin', { totalDaySale, totalMonthSale, Monthprofit })
     } catch (err) {
       console.error(err);
       res.status(500).send('Error fetching user data');
@@ -141,8 +150,10 @@ const adminController = {
     const filter = req.body.filter
     let saleData
     let categoryData
+    let profitData
     const targetYear = new Date().getFullYear(); //sets the result for one year 
     if (filter == 'MONTHLY') {
+      // montly sales daty
       saleData = await Order.aggregate([
         {
           $match: {
@@ -193,6 +204,7 @@ const adminController = {
         }
       ]);
 
+      // montly category porffit data
       categoryData = await Order.aggregate([
         {
           $match: {
@@ -219,8 +231,61 @@ const adminController = {
           }
         }
       ]);
+
+      // monthlyu porfit data
+      profitData = await Order.aggregate([
+        {
+          $match: {
+            $expr: { $eq: [{ $year: "$createdAt" }, targetYear] },// Filter orders for the target year
+            status: { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+          $project: {
+            month: { $month: "$createdAt" },//projects the month from the time stamp
+            total: 1
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$month",
+            totalSales: { $sum: '$total' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            month: {
+              $switch: { //change the month to currsonding string 
+                branches: [
+                  { case: { $eq: ["$_id", 1] }, then: "Jan" },
+                  { case: { $eq: ["$_id", 2] }, then: "Feb" },
+                  { case: { $eq: ["$_id", 3] }, then: "Mar" },
+                  { case: { $eq: ["$_id", 4] }, then: "Apr" },
+                  { case: { $eq: ["$_id", 5] }, then: "May" },
+                  { case: { $eq: ["$_id", 6] }, then: "Jun" },
+                  { case: { $eq: ["$_id", 7] }, then: "Jul" },
+                  { case: { $eq: ["$_id", 8] }, then: "Aug" },
+                  { case: { $eq: ["$_id", 9] }, then: "Sep" },
+                  { case: { $eq: ["$_id", 10] }, then: "Oct" },
+                  { case: { $eq: ["$_id", 11] }, then: "Nov" },
+                  { case: { $eq: ["$_id", 12] }, then: "Dec" }
+                ],
+                default: "Unknown"
+              }
+            },
+            totalSales: 1
+          }
+        },
+        {
+          $sort: {
+            month: 1
+          }
+        }
+      ]);
     }
     else if (filter == "YERALY") {
+      // total sale data
       saleData = await Order.aggregate([
         {
           $match: {
@@ -252,6 +317,7 @@ const adminController = {
         }
       ]);
 
+      // cataegroy dale data
       categoryData = await Order.aggregate([
         {
           $match: {
@@ -278,11 +344,45 @@ const adminController = {
         }
       ]);
 
+
+      // Profit Data
+      profitData = await Order.aggregate([
+        {
+          $match: {
+            status: { $ne: 'cancelled' } //check the staus of the order
+          }
+        },
+        {
+          $project: {
+            year: { $year: "$createdAt" },//projects the month from the time stamp
+            total: 1
+          }
+        },
+        {
+          $group: { //grouping the order based on the month and finding the sum
+            _id: "$year",
+            totalSales: { $sum: '$total' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,//set the id to 0 for avoding id in the result
+            year: '$_id',
+            totalSales: 1 //for showing the count
+          }
+        },
+        {
+          $sort: {
+            year: 1
+          }
+        }
+      ]);
+
     }
 
     console.log(saleData);
 
-    return res.status(200).json({ saleData: saleData, filter: filter, categoryData: categoryData })
+    return res.status(200).json({ saleData: saleData, filter: filter, categoryData: categoryData, profitData })
   },
 
   //user management
@@ -852,6 +952,49 @@ const adminController = {
     }
   },
 
+  // report Management
+  Report: async (req, res) => {
+    res.render('Report')
+  },
+
+  // gernerate pdf report
+  pdfReport: async (req, res) => {
+    let result=await Order.find({status:'confirmed'},{items:0,invoice:0,offer:0,shippingAddress:0,updatedAt:0})
+    makePdf(result,path.join(__dirname,`../public/Report/SalesData.pdf`))
+    setTimeout(() => {
+      return res.redirect('/Report/SalesData.pdf')
+    }, 1000);
+  },
+
+  // Gernerate excel report
+  excelReport: async (req, res) => {
+
+    // Add Header Row
+    worksheet.columns = [
+      { header: 'Order ID', key: '_id', width: 30 },
+      { header: 'User ID', key: 'userId', width: 30 },
+      { header: 'Total Amount', key: 'total', width: 10 },
+      { header: 'Payment ID', key: 'paymentId', width: 30 },
+      { header: 'Date', key: 'createdAt', width: 30 },
+      { header: 'Payment Mode', key: 'paymentMode', width: 15 },
+      // Add other headers as needed
+    ];
+
+    let result=await Order.find({status:'confirmed'},{items:0,invoice:0,offer:0,shippingAddress:0,updatedAt:0})
+    console.log(result);
+    // Add Data Rows
+    result.forEach(document => {
+      worksheet.addRow(document);
+    });
+
+    // Write to File
+    
+    workbook.xlsx.writeFile(path.join(__dirname,`../public/Report/SalesData.xlsx`));
+    setTimeout(()=>{
+
+      return res.redirect('/Report/SalesData.xlsx')
+    },1000)
+  },
   //logout for the admin
   logout: (req, res) => {
     if (req.session.admin) {

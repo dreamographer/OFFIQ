@@ -1,0 +1,182 @@
+<%- include('header') %>
+    <main class="min-h-screen flex w-screen overflow-x-hidden bg-gray-100">
+        <div class="mt-28 bg-white w-[18%] h-screen flex-col p-5 hidden md:flex fixed " id="sideNav">
+            <p class="font-bold text-2xl">Filter By</p>
+            <div>
+                <p class="font-medium mt-4 mb-3">Category</p>
+                <div>
+                    <input type="checkbox" name="category" id="category">
+                    <label for="category">Printer</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="category" id="category">
+                    <label for="category">Printer</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="category" id="category">
+                    <label for="category">Printer</label>
+                </div>
+            </div>
+            <div>
+                <p class="font-medium mt-4 mb-3">Price</p>
+                <div>
+                    <input type="radio" name="price">
+                    <label for="category">Below 500</label>
+                </div>
+                <div>
+                    <input type="radio" name="price">
+                    <label for="category">500-1500</label>
+                </div>
+                <div>
+                    <input type="radio" name="price">
+                    <label for="category">1500-2000</label>
+                </div>
+                <div>
+                    <input type="radio" name="price">
+                    <label for="category">Above 2000</label>
+                </div>
+            </div>
+            <div>
+                <p class="font-medium mt-4 mb-3">Sort BY</p>
+                <div>
+                    <input type="radio" name="sort">
+                    <label for="category">Name</label>
+                </div>
+                <div>
+                    <input type="radio" name="sort">
+                    <label for="category">Price</label>
+                </div>
+                <div>
+                    <input type="radio" name="sort">
+                    <label for="category">Arrival</label>
+                </div>
+
+            </div>
+        </div>
+        <div class="mt-28 ml-[19%] w-5/6 flex flex-col items-center overflow-hidden ">
+            <!-- search -->
+            <div class=" max-w-sm flex  mt-5 mb-5">
+                <form action="" class="relative  w-max">
+                    <input type="search" id="searchInput"
+                        class="peer relative z-10 h-12 rounded-full border bg-transparent outline-none  placeholder-gray-600 w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100"
+                        placeholder="I am looking for" />
+
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="absolute top-2 h-8 w-12 border-r border-transparent stroke-gray-500 px-3.5 peer-focus:border-gray-300 peer-focus:stroke-gray-500 "
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </form>
+            </div>
+            <!-- items -->
+            <div class="flex flex-wrap gap-3 overflow-hidden">
+                <% pageData.docs.forEach(product=> { %>
+                    <!-- item Card -->
+                    <a href="/productpage/<%=product._id %>">
+                        <div
+                            class="relative h-96  max-w-sm min-w-[240px] w-64 bg-white shadow-md rounded-3xl p-2 mx-1 my-3 cursor-pointer group hover:scale-105 transition-transform duration-200">
+                            <div class="overflow-x-hidden rounded-2xl relative ">
+                                <img class="h-40 rounded-2xl w-full object-cover group-hover:hidden transition duration-200"
+                                    src="<%=product.images[0]%>" alt="PRODUCT IMAGE">
+
+                                <img class="h-40 rounded-2xl w-full object-cover hidden group-hover:block transition duration-200"
+                                    src="<%=product.images[1]%>" alt="PRODUCT IMAGE">
+                                <button class=" absolute right-2 top-2 bg-white rounded-full p-2 group">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-6 w-6 group-hover:opacity-50 opacity-70" fill="none"
+                                        viewBox="0 0 24 24" stroke="black">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </button>
+
+                            </div>
+                            <div class="mt-4 pl-2 mb-2 flex justify-between ">
+                                <div>
+                                    <ol class="flex">
+                                        <% for (let index=0; index < product.rating; index++) { %>
+
+                                            <i class="fi fi-ss-star " style="color: yellow;"></i>
+                                            <% } %>
+
+                                    </ol>
+
+                                    <p
+                                        class="text-lg font-semibold h-20 text-ellipsis overflow-hidden text-gray-900 mb-0">
+                                        <%=product.name%>
+                                    </p>
+                                    <p class="text-md absolute bottom-5 left-5  text-gray-800 mt-0">₹<%=product.price%>
+                                    </p>
+                                </div>
+                                <div
+                                    class="flex flex-col-reverse mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5 ">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70"
+                                        fill="none" viewBox="0 0 24 24" stroke="gray">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
+                    <% }); %>
+            </div>
+
+            <div class="mb-5 mt-3">
+                <ol class="flex justify-center gap-1 text-xs font-medium">
+                    <% if (pageData.hasPrevPage) { %>
+                        <li>
+                            <a href="/allProducts/<%=pageData.prevPage%>"
+                                class="inline-flex h-8 w-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                <span class="sr-only">Prev Page</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </li>
+                        <%} %>
+                            <% for (let i=1; i <=pageData.totalPages; i++) { %>
+                                <% if (pageData.page==i) {%>
+                                    <a href="/allProducts/<%=i%>">
+                                        <li
+                                            class="block h-8 w-8 rounded border-blue-600 bg-blue-600 text-center leading-8 text-white">
+                                            <%=i %>
+                                        </li>
+                                    </a>
+                                            <% } else{%>
+                                        <li>
+                                            <a href="/allProducts/<%=i%>"
+                                                class="block h-8 w-8 rounded border border-gray-100 bg-white text-center leading-8 text-gray-900 ">
+                                                <%=i %>
+                                            </a>
+                                        </li>
+                                        <%} %>
+                                            <% } %>
+
+                                                <% if (pageData.hasNextPage) { %>
+
+                                                    <li>
+                                                        <a href="/allProducts/<%=pageData.nextPage%>"
+                                                            class="inline-flex h-8 w-8 items-center justify-center rounded border border-gray-100 bg-white text-gray-900 rtl:rotate-180">
+                                                            <span class="sr-only">Next Page</span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3"
+                                                                viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                                                    clip-rule="evenodd" />
+                                                            </svg>
+                                                        </a>
+                                                    </li>
+                                                    <%} %>
+                </ol>
+            </div>
+
+
+        </div>
+
+    </main>
