@@ -47,8 +47,89 @@ const adminController = {
   //admin dashboard
   adminDashboard: async (req, res) => {
     try {
-      const users = await User.find({}, { _id: 1, fullname: 1, email: 1 }); // Fetch user data
-      res.render('admin', { users }); // Render the admin EJS template with users data
+      // month total sale
+      let currentMonth = new Date().getMonth() + 1; // Get the current date
+      let monthSales = await Order.aggregate([
+        {
+          $match: {
+            $expr: {
+              $eq: [{ $month: "$createdAt" }, currentMonth]
+            },
+            status: "confirmed" // Optionally, you can filter by order status
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalSales: { $sum: 1 } // Count the number of orders
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            totalSales: 1
+          }
+        }
+      ]);
+      const totalMonthSale = monthSales[0]?monthSales[0].totalSales:0 
+
+      // Day total sale
+      const currentDate = new Date(); // Get the current date
+      const currentDay=currentDate.getDate()
+      console.log(currentDay);
+      const daySales = await Order.aggregate([
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $eq: [{ $dayOfMonth: "$createdAt" }, currentDay] },
+                { $eq: [{ $month: "$createdAt" }, currentMonth] }
+              ]
+            },
+            status: "confirmed" 
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            totalSales: { $sum: 1 } // Count the number of orders
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            totalSales: 1
+          }
+        }
+      ]);
+      const totalDaySale = daySales[0]?daySales[0].totalSales:0
+
+      // TOTAL PROFIT
+      let monthProfit = await Order.aggregate([
+        {
+          $match: {
+            $expr: {
+              $eq: [{ $month: "$createdAt" }, currentMonth]
+            },
+            status: "confirmed" 
+          }
+        },
+        {
+          $group: {
+            _id:null ,
+            totalSales: { $sum: '$total'} 
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            totalSales: 1
+          }
+        }
+      ]);
+      const Monthprofit = monthProfit[0]?monthProfit[0].totalSales:0
+
+      res.render('admin', { totalDaySale, totalMonthSale ,Monthprofit})
     } catch (err) {
       console.error(err);
       res.status(500).send('Error fetching user data');
@@ -59,9 +140,9 @@ const adminController = {
   chartData: async (req, res) => {
     const filter = req.body.filter
     let saleData
-    let profitData
-    const targetYear = 2023; //sets the result for one year 
-    if (filter == 'MONTLY') {
+    let categoryData
+    const targetYear = new Date().getFullYear(); //sets the result for one year 
+    if (filter == 'MONTHLY') {
       saleData = await Order.aggregate([
         {
           $match: {
@@ -112,58 +193,32 @@ const adminController = {
         }
       ]);
 
-      profitData = await Order.aggregate([
+      categoryData = await Order.aggregate([
         {
           $match: {
             $expr: { $eq: [{ $year: "$createdAt" }, targetYear] },// Filter orders for the target year
-            status: { $ne: 'cancelled' } //check the staus of the order
+            status: { $ne: 'cancelled' } // check for only the confirmd order
           }
         },
         {
-          $project: {
-            month: { $month: "$createdAt" },//projects the month from the time stamp
-            total: 1
-          }
+          $unwind: "$items" // Unwind the "items" array
         },
         {
-          $group: { //grouping the order based on the month and finding the sum
-            _id: "$month",
-            totalSales: { $sum: '$total' }
-          }
-        },
-        {
-          $project: {
-            _id: 0,
-            month: {
-              $switch: { //change the month to currsonding string 
-                branches: [
-                  { case: { $eq: ["$_id", 1] }, then: "Jan" },
-                  { case: { $eq: ["$_id", 2] }, then: "Feb" },
-                  { case: { $eq: ["$_id", 3] }, then: "Mar" },
-                  { case: { $eq: ["$_id", 4] }, then: "Apr" },
-                  { case: { $eq: ["$_id", 5] }, then: "May" },
-                  { case: { $eq: ["$_id", 6] }, then: "Jun" },
-                  { case: { $eq: ["$_id", 7] }, then: "Jul" },
-                  { case: { $eq: ["$_id", 8] }, then: "Aug" },
-                  { case: { $eq: ["$_id", 9] }, then: "Sep" },
-                  { case: { $eq: ["$_id", 10] }, then: "Oct" },
-                  { case: { $eq: ["$_id", 11] }, then: "Nov" },
-                  { case: { $eq: ["$_id", 12] }, then: "Dec" }
-                ],
-                default: "Unknown"
-              }
+          $group: {
+            _id: {
+              category: "$items.category"
             },
-            totalSales: 1
+            itemCount: { $sum: "$items.quantity" }
           }
         },
         {
-          $sort: {
-            month: 1
+          $project: {
+            category: "$_id.category",
+            itemCount: 1,
+            _id: 0
           }
         }
       ]);
-
-
     }
     else if (filter == "YERALY") {
       saleData = await Order.aggregate([
@@ -173,7 +228,6 @@ const adminController = {
           }
         },
         {
-
           $project: {
             year: { $year: "$createdAt" },//projects the month from the time stamp
           }
@@ -198,34 +252,28 @@ const adminController = {
         }
       ]);
 
-      profitData = await Order.aggregate([
+      categoryData = await Order.aggregate([
         {
           $match: {
-            status: { $ne: 'cancelled' } //check the staus of the order
+            status: { $ne: 'cancelled' } // check for only the confirmd order
+          }
+        },
+        {
+          $unwind: "$items" // Unwind the "items" array
+        },
+        {
+          $group: {
+            _id: {
+              category: "$items.category"
+            },
+            itemCount: { $sum: "$items.quantity" }
           }
         },
         {
           $project: {
-            year: { $year: "$createdAt" },//projects the month from the time stamp
-            total: 1
-          }
-        },
-        {
-          $group: { //grouping the order based on the month and finding the sum
-            _id: "$year",
-            totalSales: { $sum: '$total' }
-          }
-        },
-        {
-          $project: {
-            _id: 0,//set the id to 0 for avoding id in the result
-            year: '$_id',
-            totalSales: 1 //for showing the count
-          }
-        },
-        {
-          $sort: {
-            year: 1
+            category: "$_id.category",
+            itemCount: 1,
+            _id: 0
           }
         }
       ]);
@@ -233,7 +281,8 @@ const adminController = {
     }
 
     console.log(saleData);
-    return res.status(200).json({ saleData: saleData, filter: filter, profitData: profitData })
+
+    return res.status(200).json({ saleData: saleData, filter: filter, categoryData: categoryData })
   },
 
   //user management

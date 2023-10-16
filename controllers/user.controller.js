@@ -789,16 +789,25 @@ const userController = {
 
       // Use Promise.all to fetch prices for all products concurrently
       const pricePromises = user.cart.map(async (item) => {
-        const product = await Products.findOne({ _id: item.productId }, { price: 1 });
+        const product = await Products.findOne({ _id: item.productId }, { price: 1 ,category:1});
         return {
           productId: item.productId,
           quantity: item.quantity,
+          category:product.category,
           price: product.price,
         };
       });
 
-      const itemPrices = await Promise.all(pricePromises);
-      const items = itemPrices;;
+      let itemPrices = await Promise.all(pricePromises);
+      
+      const CategoryPromise = itemPrices.map(async (item) => {
+        let category=await Category.findOne({_id:item.category},{name:1,_id:0})
+        return item.category=category.name
+      });
+      let category = await Promise.all(CategoryPromise);
+      console.log(`catyegory is ${category}`);
+      console.log(itemPrices);
+      const items = itemPrices;
       const shippingAddress = user.addresses.find(addr => addr.tag == address)
       const invoice=path.join(__dirname,`../public/invoice/invoice_${paymentId}.pdf`)
       const data = { userId, paymentId, status, items, invoice,total, offer, shippingAddress, paymentMode }

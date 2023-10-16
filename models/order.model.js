@@ -14,6 +14,10 @@ const cartItemSchema = new mongoose.Schema({
     price:{
         type: Number,
         required: true,
+    },
+    category:{
+        type:String,
+        required:true
     }
 });
 const addressSchema = new mongoose.Schema({

@@ -28,7 +28,7 @@
                     <i class="fa-sharp fas fa-regular fa-tag"></i> Coupon Mangement
                 </a>
                 <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white"
-                    href="/admin/report">
+                    href="#">
                     <i class="fas fa-file-alt mr-2"></i>Report
                 </a>
             </nav>
@@ -39,44 +39,35 @@
         </div>
         <!-- BOdy part -->
         <div class="w-full">
-            <div class="flex gap-16 justify-center p-5 text-center">
+            <div class="flex gap-16 justify-center p-5">
                 <div class="w-40 flex-col bg-white rounded-xl">
-                    <p class="font-bold text-2xl"><%=totalDaySale %></p>
-                    <h1>Order</h1>
+                    <h1>Total Sales</h1>
+                    <p class="font-bold">1000</p>
                     <p>Today</p>
                 </div>
                 <div class="w-40 flex-col bg-white rounded-xl">
-                    <p class="font-bold text-2xl"><%=totalMonthSale %></p>
-                    <h1>Order </h1>
+                    <h1>Total Sales </h1>
+                    <p class="font-bold">1000</p>
                     <p>This Month</p>
                 </div>
                 <div class="w-40 flex-col bg-white rounded-xl">
-                    <p class="font-bold text-2xl">₹<%=Monthprofit %></p>
                     <h1>Profit</h1>
+                    <p class="font-bold">1000</p>
                     <p>This month</p>
                 </div>
             </div>
-            <div class=" w-full flex gap-10 justify-center p-5">
-                <h1 class="font-black text-4xl">Report</h1>
-                <div class="flex text-center  items-center gap-5" >
-                    <div>
-                        <input type="radio" name="filter" id="month" onchange="updateChart('MONTHLY')"  checked><label for="month">Monthly</label>
-                    </div>
-                    <div>
-                        <input type="radio" name="filter" id="year" onchange="updateChart('YERALY')"><label for="year">Yearly</label>
-                    </div>
-                </div>
+            <div class=" w-full flex justify-center p-5">
+                <h1 class="font-black ">Report</h1>
             </div>
             <div class="flex  gap-10 justify-center items-center">
                 <div>
-                    <h1 class="text-center font-semibold p-5" >Total Sales</h1>
+                    <div >
+                        <input type="radio" name="filter" id="month" onchange="updateChart('MONTHLY')" checked>Monthly
+                        <input type="radio" name="filter" id="week" onchange="updateChart('YERALY')">Yearly
+                    </div>
                     <div style="width: 400px;"><canvas id="sales"></canvas></div>
                 </div>
-                <div>
-
-                    <h1 class="text-center font-semibold p-5">Sales By Category</h1>
-                    <div style="width: 300px;"><canvas id="Category"></canvas></div>
-                </div>
+                <div style="width: 400px;"><canvas id="Profit"></canvas></div>
             </div>
 
         </div>
@@ -87,7 +78,7 @@
     <script>
 
         let myChart;
-        let categoryChart
+        let ProfitChart
         function updateChart(filter) {
             // Fetch new data based on the selected FILTER
             fetch('/admin/getData', {
@@ -132,27 +123,27 @@
                 }
             );
 
-            if (categoryChart) {
-                categoryChart.destroy();
+            if (ProfitChart) {
+                ProfitChart.destroy();
             }
 
-            categoryChart = new Chart(
-                document.getElementById('Category'),
+            ProfitChart = new Chart(
+                document.getElementById('Profit'),
                 {
-                    type: 'pie',
+                    type: 'line',
                     scales: {
                         y: {
                             beginAtZero: true
                         }
                     },
                     data: {
-                        labels: data.categoryData.map(row => row.category),
+                        labels: data.profitData.map(row => row.month ?? row.year),
                         datasets: [
                             {
                                 barPercentage: 1,
                                 barThickness: 90,
-                                label: `${filter} SAles`,
-                                data: data.categoryData.map(row => row.itemCount),
+                                label: `${filter} PROFIT`,
+                                data: data.profitData.map(row => row.totalSales),
                             }
                         ]
                     }
