@@ -2,10 +2,11 @@
     <main class="min-h-screen flex w-screen overflow-x-hidden bg-gray-100">
         <div class="mt-28 bg-white w-[18%] h-screen flex-col p-5 hidden md:flex fixed " id="sideNav">
             <p class="font-bold text-2xl">Filter By</p>
-            <div>
+            <form action="/filter" method="post">
+            <!-- <div>
                 <p class="font-medium mt-4 mb-3">Category</p>
                 <div>
-                    <input type="checkbox" name="category" id="category">
+                    <input type="checkbox" name="category" id="category" value="">
                     <label for="category">Printer</label>
                 </div>
                 <div>
@@ -16,42 +17,53 @@
                     <input type="checkbox" name="category" id="category">
                     <label for="category">Printer</label>
                 </div>
-            </div>
+            </div> -->
             <div>
                 <p class="font-medium mt-4 mb-3">Price</p>
                 <div>
-                    <input type="radio" name="price">
-                    <label for="category">Below 500</label>
+                    <input type="radio" name="price" id="500" value="0" checked>
+                    <label for="500">ALL</label>
                 </div>
                 <div>
-                    <input type="radio" name="price">
-                    <label for="category">500-1500</label>
+                    <input type="radio" name="price" id="500" value="1">
+                    <label for="500">Below 500</label>
                 </div>
                 <div>
-                    <input type="radio" name="price">
-                    <label for="category">1500-2000</label>
+                    <input type="radio" name="price" id="1500" value="2">
+                    <label for="1500">500-1500</label>
                 </div>
                 <div>
-                    <input type="radio" name="price">
-                    <label for="category">Above 2000</label>
+                    <input type="radio" name="price" id="2000" value="3">
+                    <label for="2000">1500-2000</label>
+                </div>
+                <div>
+                    <input type="radio" name="price" id="above" value="4">
+                    <label for="above">Above 2000</label>
                 </div>
             </div>
             <div>
                 <p class="font-medium mt-4 mb-3">Sort BY</p>
                 <div>
-                    <input type="radio" name="sort">
+                    <input type="radio" name="sort" value="name" checked>
                     <label for="category">Name</label>
                 </div>
                 <div>
-                    <input type="radio" name="sort">
+                    <input type="radio" name="sort" value="price">
                     <label for="category">Price</label>
                 </div>
                 <div>
-                    <input type="radio" name="sort">
+                    <input type="radio" name="sort" value="date">
                     <label for="category">Arrival</label>
                 </div>
 
             </div>
+            <div class="mt-3 flex w-full justify-center">
+                <button class="middle none w-52 center mr-4 rounded-lg bg-[#076AE1] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20  hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none  disabled:opacity-50 disabled:shadow-none"
+                    data-ripple-light="true">
+                    APPLAY
+                </button>
+            </div>
+        </form>
         </div>
         <div class="mt-28 ml-[19%] w-5/6 flex flex-col items-center overflow-hidden ">
             <!-- search -->
@@ -253,6 +265,11 @@
             mobileMenu.classList.toggle('hidden');
         });
     </script>
+    <script>
+        if ( window.history.replaceState ) {
+      window.history.replaceState( null, null, window.location.href );
+    }
+      </script>
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
     </body>
 

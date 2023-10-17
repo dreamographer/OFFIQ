@@ -361,21 +361,99 @@ const userController = {
   allProducts: async (req, res) => {
     try {
       let pageNo = parseInt(req.params.pageNo)
-    let size = 10
-    let query = {}
-    if (pageNo < 0 || pageNo === 0) {
-      response = { "error": true, "message": "invalid page number, should start with 1" };
-      return res.json(response)
-    }
-    query.skip = size * (pageNo - 1)
-    query.limit = size
-    let data= await Products.paginate({}, { offset: query.skip, limit: query.limit })
-      return res.render('allProducts', { pageData: data})
-      
+      let size = 10
+      let query = {}
+      if (pageNo < 0 || pageNo === 0) {
+        response = { "error": true, "message": "invalid page number, should start with 1" };
+        return res.json(response)
+      }
+      query.skip = size * (pageNo - 1)
+      query.limit = size
+      let data = await Products.paginate({}, { offset: query.skip, limit: query.limit, sort: { 'name': 1 } })
+      return res.render('allProducts', { pageData: data })
+
     } catch (error) {
       console.log(error);
     }
-    
+
+  },
+  // filtered result
+  filterResult: async (req, res) => {
+    try {
+      let category = req.body.category
+      let price = req.body.price
+      let sortBy = req.body.sort
+      let pageNo = 1
+      let size = 10
+      let query={}
+      let data
+      // price filter
+      switch (price) {
+        case '0': {
+           query = {}
+
+          break;
+        }
+        case '1': {
+           query = {
+            price: {
+              $lte: 500
+            }
+          }
+
+          break;
+        }
+        case '2': {
+           query = {
+            price: {
+              $gte: 500,
+              $lte: 1500
+            }
+          }
+          break;
+        }
+        case '3': {
+           query = {
+            price: {
+              $gte: 1500,
+              $lte: 2000
+            }
+          }
+          break;
+        }
+        case '4': {
+           query = {
+            price: {
+              $gte: 2000,
+            }
+          }
+          break;
+        }
+      }
+
+      if (pageNo < 0 || pageNo === 0) {
+        response = { "error": true, "message": "invalid page number, should start with 1" };
+        return res.json(response)
+      }
+      let query1 = {}
+      query1.skip = size * (pageNo - 1)
+      query1.limit = size
+      if (sortBy == 'name') {
+         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'name': 1 } })
+         console.log(data);
+      } else if (sortBy == 'price') {
+         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'price': 1 } })
+
+      } else if (sortBy == 'date') {
+         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
+
+      }
+      return res.render('allProducts', { pageData: data })
+
+    } catch (error) {
+      console.log(error);
+    }
+
   },
   //render products view page
   products: async (req, res) => {

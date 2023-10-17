@@ -27,6 +27,8 @@ router.get('/',userController.home);
 router.post('/homeSearch',userController.homeSearch)
 //all Product page
 router.get('/allProducts/:pageNo',userController.allProducts)
+// add filteter
+router.post('/filter',userController.filterResult)
 // products Page
 router.get('/products/:id',userController.products)
 //Category Page
