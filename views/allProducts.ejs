@@ -21,38 +21,38 @@
             <div>
                 <p class="font-medium mt-4 mb-3">Price</p>
                 <div>
-                    <input type="radio" name="price" id="500" value="0" checked>
+                    <input type="radio" name="price" id="500" value="0" <%if (sortBy == '0') {%> checked <%} %>>
                     <label for="500">ALL</label>
                 </div>
                 <div>
-                    <input type="radio" name="price" id="500" value="1">
+                    <input type="radio" name="price" id="500" value="1" <%if (sortBy == '1') {%> checked <%} %>>
                     <label for="500">Below 500</label>
                 </div>
                 <div>
-                    <input type="radio" name="price" id="1500" value="2">
+                    <input type="radio" name="price" id="1500" value="2" <%if (sortBy == '2') {%> checked <%} %>>
                     <label for="1500">500-1500</label>
                 </div>
                 <div>
-                    <input type="radio" name="price" id="2000" value="3">
+                    <input type="radio" name="price" id="2000" value="3" <%if (sortBy == '3') {%> checked <%} %>>
                     <label for="2000">1500-2000</label>
                 </div>
                 <div>
-                    <input type="radio" name="price" id="above" value="4">
+                    <input type="radio" name="price" id="above" value="4" <%if (sortBy == '4') {%> checked <%} %>>
                     <label for="above">Above 2000</label>
                 </div>
             </div>
             <div>
                 <p class="font-medium mt-4 mb-3">Sort BY</p>
                 <div>
-                    <input type="radio" name="sort" value="name" checked>
+                    <input type="radio" name="sort" value="name" <%if (sortBy == 'name') {%> checked <%} %> >
                     <label for="category">Name</label>
                 </div>
                 <div>
-                    <input type="radio" name="sort" value="price">
+                    <input type="radio" name="sort" value="price" <%if (sortBy == 'price') {%> checked <%} %>>
                     <label for="category">Price</label>
                 </div>
                 <div>
-                    <input type="radio" name="sort" value="date">
+                    <input type="radio" name="sort" value="date" <%if (sortBy == 'date') {%> checked <%} %> >
                     <label for="category">Arrival</label>
                 </div>
 
@@ -265,11 +265,11 @@
             mobileMenu.classList.toggle('hidden');
         });
     </script>
-    <script>
+    <!-- <script>
         if ( window.history.replaceState ) {
       window.history.replaceState( null, null, window.location.href );
     }
-      </script>
+      </script> -->
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
     </body>
 

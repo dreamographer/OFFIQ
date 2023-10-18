@@ -370,7 +370,9 @@ const userController = {
       query.skip = size * (pageNo - 1)
       query.limit = size
       let data = await Products.paginate({}, { offset: query.skip, limit: query.limit, sort: { 'name': 1 } })
-      return res.render('allProducts', { pageData: data })
+      let sortBy = "name"
+      let price ='0'
+      return res.render('allProducts', { pageData: data ,sortBy,price})
 
     } catch (error) {
       console.log(error);
@@ -448,7 +450,7 @@ const userController = {
          data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
 
       }
-      return res.render('allProducts', { pageData: data })
+      return res.render('allProducts', { pageData: data ,sortBy,price})
 
     } catch (error) {
       console.log(error);
