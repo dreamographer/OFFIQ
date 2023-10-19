@@ -182,7 +182,8 @@ const userController = {
           let { otp, expirationTime } = generateOTP();
           data.otp = encrypt(otp, key)
           data.otpExpires = expirationTime
-          const user = await User.create(data) //inserting the data
+          const user = await User.create({data}, { new: true }) //inserting the data
+          const wallet = await Wallet.create({ user: user._id }, { new: true }) //creating wallet
           const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
           return res.render('otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })

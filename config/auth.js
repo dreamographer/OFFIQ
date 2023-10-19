@@ -2,6 +2,7 @@ require('dotenv').config();
 const passport = require('passport')
 const user = require('../models/emailUserModel')
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const Wallet = require('../models/WalletModel')//Wallet schma
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -29,7 +30,9 @@ passport.use(new GoogleStrategy({
           verified: true
         });
         newUser.save()
-          .then(() => {
+          .then(async () => {
+            const wallet = await Wallet.create({ user: newUser._id }, { new: true }) //creating wallet
+            console.log(wallet);
             console.log("User data stored in MongoDB");
             return done(null, newUser);
           })
