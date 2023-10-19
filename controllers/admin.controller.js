@@ -854,7 +854,7 @@ const adminController = {
       }
       order.status = status
       order.save()
-      return
+      return res.status(200).json("updated")
     } catch (error) {
       console.log(error);
     }
