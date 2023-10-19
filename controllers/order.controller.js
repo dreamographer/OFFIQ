@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 router.use(express.json());
 const path = require('path');
+const crypto = require('crypto');  //encription module
 
 //modals
 const User = require('../models/user.models'); //user schema
