@@ -6,7 +6,7 @@ const Wallet = require('../models/WalletModel')//Wallet schma
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "https://www.offiq.shop/auth/google/callback"
+  callbackURL: "http://localhost:3000/auth/google/callback"
 },
   async function (accessToken, refreshToken, profile, done) {
     // Retrieve user data from the profile object
@@ -31,6 +31,7 @@ passport.use(new GoogleStrategy({
         });
         newUser.save()
           .then(async () => {
+            console.log(newUser._id);
             const wallet = await Wallet.create({ user: newUser._id }, { new: true }) //creating wallet
             console.log(wallet);
             console.log("User data stored in MongoDB");
