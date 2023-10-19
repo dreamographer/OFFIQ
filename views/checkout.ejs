@@ -319,7 +319,7 @@
         const form = document.getElementById('checkoutForm')
         form.addEventListener('submit', function (event) {
             event.preventDefault()
-            const address = document.querySelector('input[name="address"]:checked').value
+            const address = document.querySelector('input[name="address"]:checked')
             if (!address) {
                 alert("Please select an address")
                 return
