@@ -1445,6 +1445,10 @@ video {
   overflow-x: hidden;
 }
 
+.overflow-y-scroll {
+  overflow-y: scroll;
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1709,6 +1713,10 @@ video {
 
 .p-6 {
   padding: 1.5rem;
+}
+
+.p-10 {
+  padding: 2.5rem;
 }
 
 .px-11 {

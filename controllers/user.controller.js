@@ -387,7 +387,7 @@ const userController = {
     try {
       const userId = req.session.user._id;
       const user = await User.findOne({ _id: userId });
-      const order = await Order.find({ userId });
+      const order = (await Order.find({ userId })).reverse();
 
       let products = []
       for (const ord of order) {
