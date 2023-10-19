@@ -128,7 +128,7 @@
                     },
                     body: JSON.stringify({ status: status, oId: oid }),
                 })
-                    .then(response => response.json())
+                    .then(response=>window.location.reload())
                     .catch((error) => {
                         console.error('Error:', error);
                     });
