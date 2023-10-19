@@ -319,6 +319,11 @@
         const form = document.getElementById('checkoutForm')
         form.addEventListener('submit', function (event) {
             event.preventDefault()
+            const address = document.querySelector('input[name="address"]:checked').value
+            if (!address) {
+                alert("Please select an address")
+                return
+            }
             paymentMode = form.paymentMode.value
             if (paymentMode == 'UPI') {
                 fetch('/genOrder', {
