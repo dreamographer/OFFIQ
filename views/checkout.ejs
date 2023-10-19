@@ -204,11 +204,11 @@
 
                     <div class="flex justify-between">
                         <div>
-                        <input type="radio" value="Wallet" class=" rounded-md  py-3  text-sm   focus:z-10 "
-                            name="paymentMode">
-                        <span>Wallet</span>
-                    </div>
-                        <p> Wallet Balance : <%=wallet%> 
+                            <input type="radio" value="Wallet" class=" rounded-md  py-3  text-sm   focus:z-10 "
+                                name="paymentMode">
+                            <span>Wallet</span>
+                        </div>
+                        <p> Wallet Balance : <%=wallet%>
                         </p>
                     </div>
                     <div>
@@ -253,34 +253,78 @@
     </div>
     <input type="hidden" name="offer" id="offer" value="<%=offer%>">
     </form>
-    </body>
 
+    <!-- toast -->
+    <div id="toast" class="fixed bottom-0 right-0 m-5 p-5 bg-black text-white rounded-lg shadow-lg hidden">
+        <div id="progressBar"
+            class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3 overflow-hidden  transition-all duration-15000 ease-linear">
+            <div class="h-full bg-red-700" style="width: 0%;"></div>
+        </div>
+        <p id="toastMessage" class="mt-2">Error message</p>
+    </div>
+
+    </div>
+
+
+    <!-- function for toast -->
+    <script>
+
+
+        function showToast(errorMessage) {
+
+            // Get the toast, toastMessage, and progressBar elements
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const progressBar = document.getElementById('progressBar').firstElementChild;
+
+            // Update the message and show the toast
+            toastMessage.textContent = errorMessage;
+            toast.classList.remove('hidden');
+
+            // Update the width of the progress bar every 0.15 seconds for 5 seconds
+            let width = 0;
+            const intervalId = setInterval(() => {
+                width += 1;
+                progressBar.style.width = `${width}%`;
+
+                // After 15 seconds, hide the toast and clear the interval
+                if (width >= 100) {
+                    toast.classList.add('hidden');
+                    clearInterval(intervalId);
+                    // Reset the width of the progress bar for the next toast message
+                    progressBar.style.width = '0%';
+                }
+            }, 50); // 50 milliseconds * 100 iterations = 5 seconds
+        }
+
+
+    </script>
     <!-- handle the submission of data -->
     <script>
 
         const innerSubmitButton = document.getElementById('addAddressBtn');
-        
 
-        
+
+
         innerSubmitButton.addEventListener('click', function (e) {
             const formdata = document.getElementById('addAddress')
             e.preventDefault(); // Prevent the inner form from submitting immediately
             const tag = formdata.tag.value
-           
+
             const addressLine1 = formdata.addressLine1.value
-        
+
             const city = formdata.city.value
-          
+
             const pin = formdata.pin.value
-         
+
             fetch('/addAddress', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tag,addressLine1,city,pin}),
+                body: JSON.stringify({ tag, addressLine1, city, pin }),
             }).then(response => window.location.reload())
-            
+
 
         });
         const editSubmitButton = document.getElementById('editAddressBtn');
@@ -290,22 +334,22 @@
             const formdata = document.getElementById('editAddress')
             e.preventDefault(); // Prevent the inner form from submitting immediately
             const tag = formdata.tag.value
-           const addrId=formdata.addrId.value
+            const addrId = formdata.addrId.value
             const addressLine1 = formdata.addressLine1.value
-        
+
             const city = formdata.city.value
-          
+
             const pin = formdata.pin.value
-         
+
             fetch('/editAddress', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ tag,addressLine1,addrId,city,pin}),
+                body: JSON.stringify({ tag, addressLine1, addrId, city, pin }),
             }).then(response => window.location.reload())
-            
-         
+
+
         });
 
 
@@ -321,7 +365,7 @@
             event.preventDefault()
             const address = document.querySelector('input[name="address"]:checked')
             if (!address) {
-                alert("Please select an address")
+                showToast("Please select an address")
                 return
             }
             paymentMode = form.paymentMode.value
@@ -377,5 +421,6 @@
 
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 
+    </body>
 
     </html>

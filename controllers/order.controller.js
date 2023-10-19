@@ -124,7 +124,7 @@ const orderController = {
                 }
             }
             const wallet = await Wallet.findOne({ user: userId })
-            return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance });
+            return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance ,errorMessage:''});
         } catch (error) {
             console.log(error);
         }
