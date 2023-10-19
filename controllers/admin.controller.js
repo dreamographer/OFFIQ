@@ -85,7 +85,7 @@ const adminController = {
       // Day total sale
       const currentDate = new Date(); // Get the current date
       const currentDay = currentDate.getDate()
-      console.log(currentDay);
+
       const daySales = await Order.aggregate([
         {
           $match: {
@@ -469,7 +469,7 @@ const adminController = {
       delete data.subName;
       const category = await Category.create(data);//adding the data
       if (category) {
-        console.log('category added');
+   
         return res.redirect('/admin/categoryManagement');
       }
     } catch (error) {
@@ -520,7 +520,7 @@ const adminController = {
       if (req.files) {
 
         imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
-        console.log(imagePaths);
+      
         //removing public/from adderees
 
       }
@@ -605,7 +605,7 @@ const adminController = {
   //delete category
   deleteCategory: async (req, res) => {
     try {
-      console.log(req.params.id);
+  
       const categoryId = req.params.id;
       const category = await Category.deleteOne({ _id: categoryId });
       const products = await Products.deleteMany({ category: categoryId })
@@ -660,14 +660,14 @@ const adminController = {
   addProduct: async (req, res) => {
     try {
       const data = req.body;
-      console.log(data);
+
       const imagePaths = req.files.map((file) => file.path.substring(6));
       data.images = imagePaths;
       const product = await Products.create(data);
-      console.log(product);
+     
 
       if (product) {
-        console.log('product added');
+        
         return res.redirect('/admin/productManagement');
       }
     } catch (error) {
@@ -741,7 +741,7 @@ const adminController = {
 
 
       if (product) {
-        console.log('product updated');
+    
         return res.redirect('/admin/productManagement');
       }
     } catch (error) {
@@ -753,7 +753,7 @@ const adminController = {
   // delete the products
   deleteProduct: async (req, res) => {
     try {
-      console.log(req.params.id);
+   
       const productId = req.params.id;
 
       const result = await Products.deleteOne({ _id: productId });
@@ -865,7 +865,7 @@ const adminController = {
     try {
       const coupons = await Coupon.find();
       if (req.app.locals.data) {
-        console.log(req.app.locals.data);
+    
         err = req.app.locals.data
         req.app.locals.data = null
       } else {
@@ -945,7 +945,7 @@ const adminController = {
     try {
       const id = req.params.id;
       const deletedCoupon = await Coupon.deleteOne({ "_id": id })
-      console.log(deletedCoupon);
+     
       return res.redirect('back')
     } catch (error) {
       console.log(error);
@@ -981,7 +981,7 @@ const adminController = {
     ];
 
     let result=await Order.find({status:'confirmed'},{items:0,invoice:0,offer:0,shippingAddress:0,updatedAt:0})
-    console.log(result);
+   
     // Add Data Rows
     result.forEach(document => {
       worksheet.addRow(document);

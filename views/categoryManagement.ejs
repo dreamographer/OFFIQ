@@ -422,7 +422,7 @@
 
 
         function showToast(errorMessage) {
-            console.log(errorMessage);
+           
             // Get the toast, toastMessage, and progressBar elements
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
@@ -528,7 +528,7 @@
                         // adding the data to the form
                         const dataTransfer = new DataTransfer();
                         selectedFiles.forEach(file => {
-                            console.log(file);
+                        
                             dataTransfer.items.add(file); 
  
                         });
@@ -553,7 +553,7 @@
                         const removeButton = document.querySelectorAll('.remove-image');
                         removeButton.forEach((removeButton) => {
                             removeButton.addEventListener('click', () => {
-                                console.log("event triggered");
+                               
 
                                 // Get the image name from the data attribute
                                 const imageIndex = removeButton.dataset.image;
@@ -570,7 +570,7 @@
                                         // Handle the response from the server
                                         if (response.ok) {
                                             // Image removed successfully
-                                            console.log('Image removed');
+                                          
                                             window.location.reload()
                                         } else {
                                             // Error occurred while removing the image

@@ -42,8 +42,7 @@ document.addEventListener("click", function (e) {
 	// Dynamic Hero
 	if (e.target.id.includes("thumb")) {
 		const index = e.target.id.substring(e.target.id.length - 1);
-		const limit =e.target.dataset.total;;
-		console.log(limit);
+		const limit =e.target.dataset.total;
 
 		lightBox(thumbsLight, heroLightbox, index);
 
