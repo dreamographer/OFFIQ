@@ -268,7 +268,7 @@ const orderController = {
     orderPage: async (req, res) => {
         try {
             let msg = ''
-            if (req.headers.referer == 'http://www.offiq.shop/checkout') {
+            if (req.headers.referer == 'https://www.offiq.shop/checkout') {
                 msg = "YOUR ORDER HAS BEEN PLACED"
             }
             const userId = req.session.user._id;
