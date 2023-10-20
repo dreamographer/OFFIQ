@@ -41,9 +41,9 @@ router.get('/myAccout',userAuth,userController.userProfile)
 // Routes for the product Controlls
 
 //all Product page
-router.get('/allProducts/:pageNo',productController.allProducts)
+router.all('/allProducts',productController.allProducts)
 // add filteter
-router.post('/filter',productController.filterResult)
+// router.post('/filter',productController.filterResult)
 // products Page
 router.get('/products/:id',productController.products)
 //Category Page
@@ -67,8 +67,10 @@ router.post('/updateCart',userAuth,cartController.updateCart)
 router.post('/applyPromo',userAuth,cartController.applyPromo)
 // Generate Order
 router.post('/genOrder',userAuth,orderController.GenerateOrder)
-//checkoutt
+//checkout
 router.post('/checkout',userAuth,orderController.checkOut) 
+// add to favorite
+router.post('/addToFavorite',userAuth,cartController.addToFavorite)
 
 
 // Routes for order Controlls

@@ -10,49 +10,26 @@ const Category = require('../models/categoryModel'); //category schema
 
 
 
-const productController={
-     //ALL products 
+const productController = {
+  //ALL products 
   allProducts: async (req, res) => {
     try {
-      let pageNo = parseInt(req.params.pageNo)
+      let pageNo =Number(req.body.page)??parseInt(req.query.pageNo)??1
       let size = 10
       let query = {}
-      if (pageNo < 0 || pageNo === 0) {
-        response = { "error": true, "message": "invalid page number, should start with 1" };
-        return res.json(response)
-      }
-      query.skip = size * (pageNo - 1)
-      query.limit = size
-      let data = await Products.paginate({}, { offset: query.skip, limit: query.limit, sort: { 'name': 1 } })
-      let sortBy = "name"
-      let price ='0'
-      return res.render('allProducts', { pageData: data ,sortBy,price})
-
-    } catch (error) {
-      console.log(error);
-    }
-
-  },
-  
-  // filtered result
-  filterResult: async (req, res) => {
-    try {
-      let category = req.body.category
-      let price = req.body.price
-      let sortBy = req.body.sort
-      let pageNo = 1
-      let size = 10
-      let query={}
+      // let category = req.body.category
+      let price = req.body.price ?? 0
+      let sortBy = req.body.sort ?? "name"
       let data
       // price filter
       switch (price) {
         case '0': {
-           query = {}
+          query = {}
 
           break;
         }
         case '1': {
-           query = {
+          query = {
             price: {
               $lte: 500
             }
@@ -61,7 +38,7 @@ const productController={
           break;
         }
         case '2': {
-           query = {
+          query = {
             price: {
               $gte: 500,
               $lte: 1500
@@ -70,7 +47,7 @@ const productController={
           break;
         }
         case '3': {
-           query = {
+          query = {
             price: {
               $gte: 1500,
               $lte: 2000
@@ -79,7 +56,7 @@ const productController={
           break;
         }
         case '4': {
-           query = {
+          query = {
             price: {
               $gte: 2000,
             }
@@ -96,16 +73,17 @@ const productController={
       query1.skip = size * (pageNo - 1)
       query1.limit = size
       if (sortBy == 'name') {
-         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'name': 1 } })
-     
+        data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'name': 1 } })
+
       } else if (sortBy == 'price') {
-         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'price': 1 } })
+        data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'price': 1 } })
 
       } else if (sortBy == 'date') {
-         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
+        data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
 
       }
-      return res.render('allProducts', { pageData: data ,sortBy,price})
+      return res.render('allProducts', { pageData: data, sortBy, price })
+
 
     } catch (error) {
       console.log(error);
@@ -127,7 +105,7 @@ const productController={
   // render category page
   category: async (req, res) => {
     const cId = req.params.id
-   
+
     const products = await Products.find({ subCategory: cId });
     const category = await Category.findOne({
       'subcategory._id': cId
@@ -189,4 +167,4 @@ const productController={
 
 }
 
-module.exports=productController
+module.exports = productController

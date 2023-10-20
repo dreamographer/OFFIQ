@@ -37,7 +37,7 @@ connectDB().then(() => {
 })
 
 //Disable caching  
-app.use(nocache());
+// app.use(nocache());
 
 //initializing passport
 app.use(passport.initialize())

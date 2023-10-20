@@ -59,11 +59,11 @@
             <p class="text-md absolute bottom-5 left-5  text-gray-800 mt-0">₹<%=product.price%>
             </p>
           </div>
-          <div class="flex flex-col-reverse  mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5 ">
+          <button class="flex flex-col-reverse mb-1 mr-4 group cursor-pointer absolute bottom-5 right-5  favorite" value="<%=product._id %>">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:opacity-70" fill="none" viewBox="0 0 24 24" stroke="gray">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-          </div>
+          </button>
         </div>
 
       </div>
@@ -139,7 +139,41 @@
 
   }
 </script>
+<!-- ADD to favorite -->
+<script>
+  const favorite = document.querySelectorAll('.favorite')
+  favorite.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      const productId = btn.value
+      fetch('/addToFavorite', {
+          method: 'POST',
+          redirect: 'follow',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId
+          })
+        })
+        .then(res => {
+          if (res.redirected) {
+            const redirectURL = res.url;
+            return window.location.href = redirectURL;
+          } else {
+            return res.json()
+          }
+        })
+        .then(data => {
+          return showToast(data.message) ///update here
+        })
+        .catch(err => console.log(err))
 
+    })
+  })
+</script>
+
+<!-- add to cart -->
 <script>
   const addToCart = document.querySelectorAll('.addToCart')
   addToCart.forEach((btn) => {
