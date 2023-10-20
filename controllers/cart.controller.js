@@ -46,17 +46,14 @@ const cartController={
     } catch (error) {
       console.log(error);
     }
-
-
   },
 
   // add to cart
   addToCart: async (req, res) => {
     try {
-      const { productId, quantity } = req.body;
+      const productId = req.body.productId;
+      const quantity = req.body.quantity??1;
       const userId = req.session.user._id;
-
-
       if (!userId) {
         return res.status(401).json({ message: 'User not authenticated' });
       }
@@ -65,9 +62,8 @@ const cartController={
         // { $inc: { quantity: -quantity } }, update the quantity
         { new: true }
       );
-
       if (!updatedProduct) {
-        return res.status(204).json({ message: 'Product out of stock' });
+        return res.status(400).json({ message: 'Product out of stock' });
       }
       const user = await User.findById(userId);
       if (user.googleAuth) {//for googlE aUTH USERS
@@ -81,12 +77,10 @@ const cartController={
           // Cart item with the same productId doesn't exist, add a new item
           gUser.cart.push({ productId, quantity });
         }
-
         // Save the updated user document
         await gUser.save();
       } else {
         // Find the user and update the cart
-
         const existingCartItemIndex = user.cart.findIndex(item => item.productId.equals(productId));
         if (existingCartItemIndex !== -1) {
           // Cart item with the same productId exists, update its quantity
