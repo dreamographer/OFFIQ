@@ -7,7 +7,7 @@ router.use(express.json());
 
 const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
-
+const ObjectId = require('mongoose').Types.ObjectId;
 
 
 const productController = {
@@ -89,12 +89,15 @@ const productController = {
     } catch (error) {
       console.log(error);
     }
-
+ 
   },
   //render products view page
   products: async (req, res) => {
     try {
       const cId = req.params.id
+      if(!ObjectId.isValid(cId)){
+        return res.redirect('/notfound')
+      }
       const products = await Products.find({ category: cId });
       if(products.length<1){
        return res.redirect('/notfound')
@@ -109,7 +112,9 @@ const productController = {
   // render category page
   category: async (req, res) => {
     const cId = req.params.id
-
+    if(!ObjectId.isValid(cId)){
+      return res.redirect('/notfound')
+    }
     const products = await Products.find({ subCategory: cId });
 
     if(products.length<1){
@@ -164,6 +169,9 @@ const productController = {
   productPage: async (req, res) => {
     try {
       const ID = req.params.id;
+      if(!ObjectId.isValid(ID)){
+        return res.redirect('/notfound')
+      }
       const user = req.session.user
       const product = await Products.findOne({ '_id': ID });
       if(!product){

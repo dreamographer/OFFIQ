@@ -93,7 +93,7 @@ const orderController = {
     },
 
     //checkout page
-    checkOut: async (req, res) => {
+    checkOut: async (req, res) => { 
         try {
             const sum = req.body.sum
             let offer = req.body.offer ?? ''
@@ -275,6 +275,9 @@ const orderController = {
             const userId = req.session.user._id;
             const user = await User.findOne({ _id: userId });
             const oId = req.params.oId
+            if(!ObjectId.isValid(oId)){
+                return res.redirect('/notfound')
+              }
             const order = await Order.findOne({ _id: oId });
             if (!order) {
                 return res.redirect('/notfound')
