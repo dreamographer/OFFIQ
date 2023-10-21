@@ -660,12 +660,9 @@ const adminController = {
   addProduct: async (req, res) => {
     try {
       const data = req.body;
-
       const imagePaths = req.files.map((file) => file.path.substring(6));
       data.images = imagePaths;
       const product = await Products.create(data);
-     
-
       if (product) {
         
         return res.redirect('/admin/productManagement');

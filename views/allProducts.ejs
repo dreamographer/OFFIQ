@@ -66,14 +66,16 @@
     </div>
     <div class="mt-28 ml-[19%] w-5/6 flex flex-col items-center overflow-hidden ">
       <!-- search -->
-      <div class=" max-w-sm flex  mt-5 mb-5">
-        <form action="/productSearch" class="relative mx-auto w-max" method="POST">
-          <input type="search" id="searchInput" name="search" class="relative z-10 h-12  rounded-full border bg-transparent  outline-none  placeholder-gray-500  w-full cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100" placeholder="Search Product" />
-
-          <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-y-0 my-auto h-8 w-12 border-r border-transparent  px-3.5 border-gray-300 stroke-gray-500 " fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </form>
+      <div class="justify-center w-screen flex  mt-5 mb-5">
+        <div class="relative ">
+          <form action="/productSearch" class=" mx-auto w-max" method="POST">
+            <input type="search" id="searchInput" name="search" class="relative z-10 h-12  rounded-full border bg-transparent  outline-none  placeholder-gray-500  w-min cursor-text border-gray-30 pl-16 pr-4 transition-all duration-100" placeholder="Search Product" />
+  
+            <svg xmlns="http://www.w3.org/2000/svg" class="absolute top-2 my-auto h-8 w-12 border-r border-transparent  px-3.5 border-gray-300 stroke-gray-500 " fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </form>
+        </div>
       </div>
       <div>
         <ul class="w-full  flex  justify-center gap-10 flex-wrap" id="searchSuggetion">

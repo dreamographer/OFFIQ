@@ -1,178 +1,167 @@
 <%- include('header') %>
-    <div class="container mx-auto mt-28 font-[Montserrat]">
-        <h1 class="font-black text-center  text-[50px] text-gray-700  ">MY CART</h1>
-        <div class="md:flex  block shadow-md my-10">
-            <!-- cart -->
-            <div class="md:w-3/4 w-screen overflow-x-auto flex  flex-col py-20 bg-white px-5 ">
-                <table class="border-collapse  mb-5   ">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Product
-                                Details</th>
-                            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Quantity
-                            </th>
-                            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Price</th>
-                            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% products.forEach((product,i)=> { %>
+<div class="container mx-auto mt-28 font-[Montserrat]">
+  <h1 class="font-black text-center  text-[50px] text-gray-700  ">MY CART</h1>
+  <div class="md:flex  block shadow-md my-10">
+    <!-- cart -->
+    <div class="md:w-3/4 w-screen overflow-x-auto flex  flex-col py-20 bg-white px-5 ">
+      <table class="border-collapse  mb-5   ">
+        <thead>
+          <tr>
+            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Product
+              Details</th>
+            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Quantity
+            </th>
+            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Price</th>
+            <th class="py-2 px-6 text-xs uppercase font-semibold text-gray-600 text-center">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (products.length<1) {%>
+          <tr class="text-center" >
+            <td colspan="5" rowspan="5" class="w-full" >
+              <div class="flex-col flex w-full justify-center items-center">
+                <img src="/images/empty-cart.png" alt="empty cart" class="w-64">
+                Cart is empty
+              </div>
+            </td>
+          </tr>
+          <% } %>
+          <% products.forEach((product,i)=> { %>
 
 
-                            <tr class="hover:bg-gray-100 items-center text-center">
-                                <td class="py-6 px-6 border-b flex justify-center">
-                                    <div class="flex w-32 ">
-                                        <div class="md:w-32 w-[300px] ">
-                                            <img class="" src="<%=product.images[0]%>" alt="prod image">
-                                        </div>
-                                        <div class="flex flex-col justify-between  flex-grow">
-                                            <span class="font-bold text-sm text-ellipsis overflow-hidden h-11 w-11 item" >
-                                                <%=product.name %>
-                                            </span>
-                                            <% if (product.quantity==0) {%>
-                                                <span class="text-red-500 text-xs">OUT OF STOCK</span>
-                                                <%}else{ %>
-                                                    <span class="text-green-700 text-xs">IN STOCK</span>
-                                                    <%} %>
-                                                        <a href="/removeProduct/<%=product._id%>"
-                                                            class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-6 flex-col  border-b">
-                                    <div
-                                        class="w-full h-10 text-sm bg-light py-2 flex items-center justify-center space-x-7 rounded-lg font-bold relatives ">
-                                        <div class="minus plus-minus" data-item-id="<%=product._id%>">
-                                            <svg width="12" height="4" xmlns="http://www.w3.org/2000/svg"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink">
-                                                <defs>
-                                                    <path
-                                                        d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z"
-                                                        id="a" />
-                                                </defs>
-                                                <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#a" />
-                                            </svg>
-                                        </div>
-                                        <span id="amount" data-item-id="<%=product._id%>" class="amount select-none">
-                                            <%= cart[i].quantity %>
-                                        </span>
-                                        <div class="plus plus-minus" data-item-id="<%=product._id%>">
-                                            <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg"
-                                                xmlns:xlink="http://www.w3.org/1999/xlink" id="plus">
-                                                <defs>
-                                                    <path
-                                                        d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z"
-                                                        id="b" />
-                                                </defs>
-                                                <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#b" id="plus" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹<%= product.price %>
-                                </td>
-                                <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹
-                                    <%=product.price*cart[i].quantity %>
-                                </td>
-                            </tr>
-                            <% }); %>
-                    </tbody>
-                </table>
-
-                <div class="md:block hidden">
-                    <a href="/" class="flex font-semibold text-indigo-600 text-sm mt-10">
-
-                        <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
-                            <path
-                                d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-                        </svg>
-                        Continue Shopping
-                    </a>
+          <tr class="hover:bg-gray-100 items-center text-center">
+            <td class="py-6 px-6 border-b flex justify-center">
+              <div class="flex w-32 ">
+                <div class="md:w-32 w-[300px] ">
+                  <img class="" src="<%=product.images[0]%>" alt="prod image">
                 </div>
-            </div>
-            <div class="md:hidden block pl-5">
-                <a href="/" class="flex font-semibold text-indigo-600 text-sm mt-10">
+                <div class="flex flex-col justify-between  flex-grow">
+                  <span class="font-bold text-sm text-ellipsis overflow-hidden h-11 w-11 item">
+                    <%=product.name %>
+                  </span>
+                  <% if (product.quantity==0) {%>
+                  <span class="text-red-500 text-xs">OUT OF STOCK</span>
+                  <%}else{ %>
+                  <span class="text-green-700 text-xs">IN STOCK</span>
+                  <%} %>
+                  <a href="/removeProduct/<%=product._id%>" class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
+                </div>
+              </div>
+            </td>
+            <td class="py-6 flex-col  border-b">
+              <div class="w-full h-10 text-sm bg-light py-2 flex items-center justify-center space-x-7 rounded-lg font-bold relatives ">
+                <div class="minus plus-minus" data-item-id="<%=product._id%>">
+                  <svg width="12" height="4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <defs>
+                      <path d="M11.357 3.332A.641.641 0 0 0 12 2.69V.643A.641.641 0 0 0 11.357 0H.643A.641.641 0 0 0 0 .643v2.046c0 .357.287.643.643.643h10.714Z" id="a" />
+                    </defs>
+                    <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#a" />
+                  </svg>
+                </div>
+                <span id="amount" data-item-id="<%=product._id%>" class="amount select-none">
+                  <%= cart[i].quantity %>
+                </span>
+                <div class="plus plus-minus" data-item-id="<%=product._id%>">
+                  <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="plus">
+                    <defs>
+                      <path d="M12 7.023V4.977a.641.641 0 0 0-.643-.643h-3.69V.643A.641.641 0 0 0 7.022 0H4.977a.641.641 0 0 0-.643.643v3.69H.643A.641.641 0 0 0 0 4.978v2.046c0 .356.287.643.643.643h3.69v3.691c0 .356.288.643.644.643h2.046a.641.641 0 0 0 .643-.643v-3.69h3.691A.641.641 0 0 0 12 7.022Z" id="b" />
+                    </defs>
+                    <use fill="#FF7E1B" fill-rule="nonzero" xlink:href="#b" id="plus" />
+                  </svg>
+                </div>
+              </div>
+            </td>
+            <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹<%= product.price %>
+            </td>
+            <td class="py-6 px-6 text-center border-b font-semibold text-sm">₹
+              <%=product.price*cart[i].quantity %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
 
-                    <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
-                        <path
-                            d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-                    </svg>
-                    Continue Shopping
-                </a>
-            </div>
-            <!-- summary -->
-            <div id="summary" class="md:w-1/4 px-8 py-10">
-                <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
-                <div class="flex justify-between mt-10 mb-5">
-                    <span class="font-semibold text-sm uppercase">
-                        <%=cart.length %> Items
-                    </span>
-                    <span class="font-semibold text-sm">₹
-                        <%let sum=cart.reduce((accumulator, item)=> {
+      <div class="md:block hidden">
+        <a href="/" class="flex font-semibold text-indigo-600 text-sm mt-10">
+
+          <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
+            <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+          </svg>
+          Continue Shopping
+        </a>
+      </div>
+    </div>
+    <div class="md:hidden block pl-5">
+      <a href="/" class="flex font-semibold text-indigo-600 text-sm mt-10">
+
+        <svg class="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
+          <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+        </svg>
+        Continue Shopping
+      </a>
+    </div>
+    <!-- summary -->
+    <div id="summary" class="md:w-1/4 px-8 py-10">
+      <h1 class="font-semibold text-2xl border-b pb-8">Order Summary</h1>
+      <div class="flex justify-between mt-10 mb-5">
+        <span class="font-semibold text-sm uppercase">
+          <%=cart.length %> Items
+        </span>
+        <span class="font-semibold text-sm">₹
+          <%let sum=cart.reduce((accumulator, item)=> {
                             let product = products.find(product =>{return product._id.equals(item.productId) } );
                             return accumulator + product.price * item.quantity;
                             }, 0);
                             %><%=sum%>
-                    </span>
-                </div>
+        </span>
+      </div>
 
-                <div class="py-10">
-                    <label for="promo" class="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
-                    <input onchange="removeCoupon()" type="text" id="promo" placeholder="Enter your code"
-                        class="p-2 rounded-md border  text-sm w-full">
-                    <span id="promoError" class=""></span>
+      <div class="py-10">
+        <label for="promo" class="font-semibold inline-block mb-3 text-sm uppercase">Promo Code</label>
+        <input onchange="removeCoupon()" type="text" id="promo" placeholder="Enter your code" class="p-2 rounded-md border  text-sm w-full">
+        <span id="promoError" class=""></span>
 
-                </div>
-                <a class="group relative inline-block focus:outline-none focus:ring">
+      </div>
+      <a class="group relative inline-block focus:outline-none focus:ring">
 
-                    <button id="applayBtn" onclick="applyPromo()"
-                        class="relative inline-block rounded-md  border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
-                        APPLY
-                    </button>
-                </a>
-                <form action="/checkout" method="POST">
-                    <div class="border-t mt-8">
-                        <div class="flex font-semibold justify-between py-6 text-sm uppercase">
-                            <span class="w-1/2">Discount</span>
-                            <input type="text" name="offer" value="-₹0" id="offer"
-                                class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly
-                                onmousedown="return false;" onselectstart="return false;">
-                            <span ></span>
-                        </div>
+        <button id="applayBtn" onclick="applyPromo()" class="relative inline-block rounded-md  border-2 border-current px-8 py-3 text-sm font-bold uppercase tracking-widest">
+          APPLY
+        </button>
+      </a>
+      <form action="/checkout" method="POST">
+        <div class="border-t mt-8">
+          <div class="flex font-semibold justify-between py-6 text-sm uppercase">
+            <span class="w-1/2">Discount</span>
+            <input type="text" name="offer" value="-₹0" id="offer" class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly onmousedown="return false;" onselectstart="return false;">
+            <span></span>
+          </div>
 
-                        <div class="flex font-semibold justify-between py-6 text-sm uppercase">
-                            <span class="w-1/2">Total cost</span>
-                            <input type="text" name="sum" value="₹<%=sum%>" id="total"
-                                class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly
-                                onmousedown="return false;" onselectstart="return false;">
+          <div class="flex font-semibold justify-between py-6 text-sm uppercase">
+            <span class="w-1/2">Total cost</span>
+            <input type="text" name="sum" value="₹<%=sum%>" id="total" class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly onmousedown="return false;" onselectstart="return false;">
 
-                        </div>
-                        <button type="submit"
-                            class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring">
-                            <span
-                                class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
+          </div>
+          <button type="submit"  <% if (products.length<1) {%> disabled<% } %> class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring">
+            <span class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
 
-                            <span
-                                class="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
-                                CHECKOUT
-                            </span>
-                        </button>
-                </form>
-            </div>
+            <span class="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">
+              CHECKOUT
+            </span>
+          </button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toastContainer">
+    <% if (msg!='') { %>
+    <div id="toast" class=" fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800" role="alert">
+      <div class="flex">
+        <div id="toastMessage" class="pl-4 text-sm font-normal">
+          <%=msg %>
         </div>
-
-        <div id="toastContainer">
-            <% if (msg!='') { %>
-                <div id="toast"
-                    class=" fixed bottom-3 right-0 shadow-lg items-center w-full  max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg  dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
-                    role="alert">
-                    <div class="flex">
-                        <div id="toastMessage" class="pl-4 text-sm font-normal">
-                            <%=msg %>
-                        </div>
-                    </div>
-                </div>
-                <%}%>
+      </div>
+    </div>
+    <%}%>
         </div>
     </div>
     </div>
@@ -258,90 +247,93 @@
     <!-- remove coupon -->
     <script>
         let originalValue = '<%=sum%>'
-        let totalElement = document.getElementById('total')
-        let applyBtn = document.getElementById('applayBtn')
-        let offer = document.getElementById('offer')
-        function removeCoupon() {
-            offer.value = `-₹0`
-            totalElement.value = `₹${originalValue}`
-            applyBtn.disabled = false
-        }
+    let totalElement = document.getElementById('total')
+    let applyBtn = document.getElementById('applayBtn')
+    let offer = document.getElementById('offer')
+    function removeCoupon() {
+    offer.value = `-₹0`
+    totalElement.value = `₹${originalValue}`
+    applyBtn.disabled = false
+    }
     </script>
 
     <!-- applay promocode -->
     <script>
-        function PromoMatched(type, value) {
-            let applyBtn = document.getElementById('applayBtn')
-            let offer = document.getElementById('offer')
-            applyBtn.disabled = true
-            let totalElement = document.getElementById('total')
-            let total = document.getElementById('total').value.substring(1)
-            total = parseInt(total)
-            if (type == 'Percentage') {
-                total = total - (total * value / 100)
-                offer.value = `-${value}%`
-            } else {
-                total -= value
-                offer.value = `-₹${value}`
-
-            }
-            totalElement.value = `₹${total}`
-        }
-
-        // apply the promo code
-        function applyPromo() {
-            let code = document.getElementById("promo").value;
-            let err = document.getElementById('promoError')
-            let total=document.getElementById('total').value.substring(1)
-            if (!code) {
-                err.innerHTML = "Please add the code for applying"
-            } else {
-                // Send the updated amount to the server
-                fetch('/applyPromo', { 
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ code: code,total:total }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            err.innerHTML = `${data.error}`
-                        } else {
-                            PromoMatched(data.type, data.value)
-                            err.innerHTML = ""
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-
-            }
+      function PromoMatched(type, value) {
+        let applyBtn = document.getElementById('applayBtn')
+        let offer = document.getElementById('offer')
+        applyBtn.disabled = true
+        let totalElement = document.getElementById('total')
+        let total = document.getElementById('total').value.substring(1)
+        total = parseInt(total)
+        if (type == 'Percentage') {
+          total = total - (total * value / 100)
+          offer.value = `-${value}%`
+        } else {
+          total -= value
+          offer.value = `-₹${value}`
 
         }
+        totalElement.value = `₹${total}`
+      }
+
+      // apply the promo code
+      function applyPromo() {
+        let code = document.getElementById("promo").value;
+        let err = document.getElementById('promoError')
+        let total = document.getElementById('total').value.substring(1)
+        if (!code) {
+          err.innerHTML = "Please add the code for applying"
+        } else {
+          // Send the updated amount to the server
+          fetch('/applyPromo', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                code: code,
+                total: total
+              }),
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+                err.innerHTML = `${data.error}`
+              } else {
+                PromoMatched(data.type, data.value)
+                err.innerHTML = ""
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
+        }
+
+      }
     </script>
 
 
     <!--LOADING  -->
     <script>
-        let scrollPosition = [
-            self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
-            self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
-        ];
+      let scrollPosition = [
+        self.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft,
+        self.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
+      ];
 
-        window.onload = function () {
-            window.scrollTo(scrollPosition[0], scrollPosition[1]);
-        };
+      window.onload = function() {
+        window.scrollTo(scrollPosition[0], scrollPosition[1]);
+      };
     </script>
 
     <script>
-        const toggleButton = document.getElementById('toggle-menu');
-        const mobileMenu = document.getElementById('mobile-menu');
+      const toggleButton = document.getElementById('toggle-menu');
+      const mobileMenu = document.getElementById('mobile-menu');
 
-        toggleButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+      toggleButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
     <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>

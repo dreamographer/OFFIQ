@@ -1,426 +1,405 @@
 <%- include('header') %>
-    <!-- alphine js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- Razorpay -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- alphine js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <div class="grid sm:px-10 mt-28 lg:grid-cols-2 lg:px-20 xl:px-32 py-5"
-        x-data="{ editModel : false ,addModel:false, tag:'',address:'',city:'',pin:'',addrId:''}">
+<div class="grid sm:px-10 mt-28 lg:grid-cols-2 lg:px-20 xl:px-32 py-5" x-data="{ editModel : false ,addModel:false, tag:'',address:'',city:'',pin:'',addrId:''}">
 
-        <div class="px-4 pt-8">
-            <p class="text-xl font-medium">Order Summary</p>
-            <p class="text-gray-400">Check your items. And select a suitable shipping method.</p>
+  <div class="px-4 pt-8">
+    <p class="text-xl font-medium">Order Summary</p>
+    <p class="text-gray-400">Check your items. And select a suitable shipping method.</p>
 
-            <!-- items -->
-            <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-                <% products.forEach((product,i)=> { %>
-                    <div class="flex flex-col rounded-lg bg-white sm:flex-row">
-                        <img class="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                            src="<%=product.images[0]%>" alt="" />
-                        <div class="flex w-full flex-col px-4 py-4">
-                            <span class="font-semibold">
-                                <%=product.name %>
-                            </span>
-                            <span class="float-right text-gray-400">
-                                <%=cart[i].quantity %> Unit
-                            </span>
-                            <p class="text-lg font-bold">₹<%=product.price*cart[i].quantity %>
-                            </p>
-                        </div>
-                    </div>
-                    <% }); %>
-            </div>
+    <!-- items -->
+    <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+      <% products.forEach((product,i)=> { %>
+      <div class="flex flex-col rounded-lg bg-white sm:flex-row">
+        <img class="m-2 h-24 w-28 rounded-md border object-cover object-center" src="<%=product.images[0]%>" alt="" />
+        <div class="flex w-full flex-col px-4 py-4">
+          <span class="font-semibold">
+            <%=product.name %>
+          </span>
+          <span class="float-right text-gray-400">
+            <%=cart[i].quantity %> Unit
+          </span>
+          <p class="text-lg font-bold">₹<%=product.price*cart[i].quantity %>
+          </p>
+        </div>
+      </div>
+      <% }); %>
+    </div>
 
-            <div class=" mt-10 flex w-full md:w-60 justify-center">
-                <!-- modal for adding address -->
-                <div x-show="addModel"
-                    class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0"
-                    x-transition:enter="transition ease duration-300" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease duration-300"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                    <!-- Modal -->
-                    <div x-show="addModel"
-                        class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
-                        @click.away="addModel = false">
-                        <!-- Title -->
-                        <span class="font-bold block text-2xl mb-3">
-                            Add New Address
-                        </span>
-                        <!-- Body -->
-                        <div>
-                            <form class="mt-3" id="addAddress" action="" method="POST">
-                                <div>
-                                    <label class="block md:text-xs float-left text-gray-700">Address
-                                    </label>
-                                    <textarea name="addressLine1" cols="20" rows="3"
-                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        required autofocus="" autocomplete=""
-                                        placeholder="Enter your address"></textarea>
+    <div class=" mt-10 flex w-full md:w-60 justify-center">
+      <!-- modal for adding address -->
+      <div x-show="addModel" class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0" x-transition:enter="transition ease duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <!-- Modal -->
+        <div x-show="addModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 " @click.away="addModel = false">
+          <!-- Title -->
+          <span class="font-bold block text-2xl mb-3">
+            Add New Address
+          </span>
+          <!-- Body -->
+          <div>
+            <form class="mt-3" id="addAddress" action="" method="POST">
+              <div>
+                <label class="block md:text-xs float-left text-gray-700">Address
+                </label>
+                <textarea name="addressLine1" cols="20" rows="3" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" required autofocus="" autocomplete="" placeholder="Enter your address"></textarea>
 
-                                </div>
+              </div>
 
-                                <div>
-                                    <label class="block md:text-xs float-left text-gray-700">City</label>
-                                    <input type="text" name="city" placeholder="City"
-                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" required>
-                                </div>
-                                <div>
-                                    <label class="block md:text-xs float-left text-gray-700">Tag</label>
-                                    <input type="text" name="tag" placeholder="tag"
-                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" required>
-                                </div>
-                                <div>
-                                    <label class="block md:text-xs float-left text-gray-700">Pin</label>
-                                    <input type="text" name="pin" placeholder="pin"
-                                        class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                        autofocus="" autocomplete="" required>
-                                </div>
-                                <button id="addAddressBtn" type="button"
-                                    class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
+              <div>
+                <label class="block md:text-xs float-left text-gray-700">City</label>
+                <input type="text" name="city" placeholder="City" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus="" autocomplete="" required>
+              </div>
+              <div>
+                <label class="block md:text-xs float-left text-gray-700">Tag</label>
+                <input type="text" name="tag" placeholder="tag" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus="" autocomplete="" required>
+              </div>
+              <div>
+                <label class="block md:text-xs float-left text-gray-700">Pin</label>
+                <input type="tel" name="pin" placeholder="pin" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none appearance-none" autofocus="" autocomplete="" required maxlength="6" pattern="\d{6}" inputmode="numeric">
+              </div>
+              <button id="addAddressBtn" type="button" class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
                                                                                                                     px-4 py-3 mt-5">SAVE</button>
-                            </form>
+            </form>
 
-                        </div>
-                    </div>
-                </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!--edit address modal-->
+    <div x-show="editModel" class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0" x-transition:enter="transition ease duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+      <!-- Modal -->
+      <div x-show="editModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 " @click.away="editModel = false">
+        <!-- Title -->
+        <span class="font-bold block text-2xl mb-3">
+          Edit Address
+        </span>
+        <!-- Body -->
+        <div>
+          <form class="mt-3" id="editAddress" action="/editAddress" method="POST">
+            <div>
+              <label class="block md:text-xs float-left text-gray-700">Address
+              </label>
+              <textarea name="addressLine1" cols="20" rows="3" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" required autofocus="" autocomplete="" placeholder="Enter your address" :value="address"></textarea>
 
             </div>
-            <!--edit address modal-->
-            <div x-show="editModel"
-                class="fixed text-gray-500 flex items-center justify-center  overflow-auto z-50 bg-black bg-opacity-40 left-0 right-0 top-0 bottom-0"
-                x-transition:enter="transition ease duration-300" x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100" x-transition:leave="transition ease duration-300"
-                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-                <!-- Modal -->
-                <div x-show="editModel" class="bg-white rounded-xl h-[80%] overflow-auto sm:w-3/6  w-96 shadow-2xl p-6 "
-                    @click.away="editModel = false">
-                    <!-- Title -->
-                    <span class="font-bold block text-2xl mb-3">
-                        Edit Product
-                    </span>
-                    <!-- Body -->
-                    <div>
-                        <form class="mt-3" id="editAddress" action="/editAddress" method="POST">
-                            <div>
-                                <label class="block md:text-xs float-left text-gray-700">Address
-                                </label>
-                                <textarea name="addressLine1" cols="20" rows="3"
-                                    class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                    required autofocus="" autocomplete="" placeholder="Enter your address"
-                                    :value="address"></textarea>
 
-                            </div>
-
-                            <div>
-                                <label class="block md:text-xs float-left text-gray-700">City</label>
-                                <input type="text" name="city" placeholder="City"
-                                    class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                    autofocus="" autocomplete="" required :value="city">
-                            </div>
-                            <input type="hidden" name="addrId" :value="addrId">
-                            <div>
-                                <label class="block md:text-xs float-left text-gray-700">Tag</label>
-                                <input type="text" name="tag" placeholder="tag"
-                                    class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                    autofocus="" autocomplete="" readonly required :value="tag">
-                            </div>
-                            <div>
-                                <label class="block md:text-xs float-left text-gray-700">Pin</label>
-                                <input type="text" name="pin" placeholder="pin"
-                                    class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none"
-                                    autofocus="" autocomplete="" required :value="pin">
-                            </div>
-                            <button id="editAddressBtn" type="button"
-                                class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
+            <div>
+              <label class="block md:text-xs float-left text-gray-700">City</label>
+              <input type="text" name="city" placeholder="City" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus="" autocomplete="" required :value="city">
+            </div>
+            <input type="hidden" name="addrId" :value="addrId">
+            <div>
+              <label class="block md:text-xs float-left text-gray-700">Tag</label>
+              <input type="text" name="tag" placeholder="tag" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus="" autocomplete="" readonly required :value="tag">
+            </div>
+            <div>
+              <label class="block md:text-xs float-left text-gray-700">Pin</label>
+              <input type="text" name="pin" placeholder="pin" class="w-full px-4 py-3 rounded-lg placeholder:text-sm bg-gray-200 mt-1 border focus:border-blue-500 focus:bg-white focus:outline-none" autofocus="" autocomplete="" required :value="pin">
+            </div>
+            <button id="editAddressBtn" type="button" class="w-full block bg-indigo-500 hover:bg-indigo-400 focus:bg-indigo-400 text-white font-semibold rounded-lg
                                                                                                              px-4 py-3 mt-5">SAVE</button>
-                        </form>
+          </form>
 
-                    </div>
-                </div>
-            </div>
-            <!-- form for submitting the order -->
-            <form action="/order" method="post" id="checkoutForm">
-
-
-                <p class="mt-8 text-lg font-medium">Shipping Address</p>
+        </div>
+      </div>
+    </div>
+    <!-- form for submitting the order -->
+    <form action="/order" method="post" id="checkoutForm">
 
 
-                <% address.forEach((address,i)=> { %>
-                    <div class="relative mt-5" onclick="document.getElementById(`radio_<%=i%>`).checked = true">
-                        <input class="peer  hidden absolute bottom-4 right-0 " id="radio_<%= i %>" type="radio"
-                            name="address" <%=i===0 ? 'checked' : '' %> value='<%=address.tag%>'>
-                            <div
-                                class="peer-checked:border-1 peer-checked:border-gray-700 justify-between peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4">
-                                <div class="flex-col">
+      <p class="mt-8 text-lg font-medium">Shipping Address</p>
 
 
-                                    <p class="font-bold">
-                                        <%=address.tag%>
-                                    </p>
-                                    <p>
-                                        <%=address.addressLine1%>
-                                    </p>
-                                    <p>
-                                        <%=address.city%>
-                                    </p>
-                                    <p>
-                                        <%=address.pin%>
-                                    </p>
-                                </div>
-                                <div class="flex items-center">
-                                    <button
-                                        @click="editModel = !editModel,addrId='<%=address._id%>', tag='<%=address.tag%>',address='<%=address.addressLine1%>',city='<%=address.city%>',pin='<%=address.pin%>'"
-                                        type="button">
-                                        <i class="fa fa-edit fa-xl" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                    </div>
-                    <% }); %>
+      <% address.forEach((address,i)=> { %>
+      <div class="relative mt-5" onclick="document.getElementById(`radio_<%=i%>`).checked = true">
+        <input class="peer  hidden absolute bottom-4 right-0 " id="radio_<%= i %>" type="radio" name="address" <%=i===0 ? 'checked' : '' %> value='<%=address.tag%>'>
+        <div class="peer-checked:border-1 peer-checked:border-gray-700 justify-between peer-checked:bg-gray-50 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4">
+          <div class="flex-col">
 
 
-
-                        <button @click="addModel = !addModel" type="button"
-                            class="middle none mt-3 center mr-4 rounded-lg bg-[#111827] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Add
-                            Address</button>
+            <p class="font-bold">
+              <%=address.tag%>
+            </p>
+            <p>
+              <%=address.addressLine1%>
+            </p>
+            <p>
+              <%=address.city%>
+            </p>
+            <p>
+              <%=address.pin%>
+            </p>
+          </div>
+          <div class="flex items-center">
+            <button @click="editModel = !editModel,addrId='<%=address._id%>', tag='<%=address.tag%>',address='<%=address.addressLine1%>',city='<%=address.city%>',pin='<%=address.pin%>'" type="button">
+              <i class="fa fa-edit fa-xl" aria-hidden="true"></i>
+            </button>
+          </div>
         </div>
 
+      </div>
+      <% }); %>
 
 
-        <div class="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
-            <p class="text-xl font-medium">Payment Details</p>
-            <p class="text-gray-400">Complete your order by providing your payment details.</p>
-            <div class="">
-                <label for="paymentMode" class="mt-4 mb-2 block text-lg font-medium">Payment mode</label>
-                <div class="relative">
-                    <div>
-                        <input type="radio" value="UPI" class=" rounded-md  py-3  text-sm   focus:z-10 "
-                            name="paymentMode">
-                        <span>UPI/OTHER</span>
-                    </div>
 
-                    <div class="flex justify-between">
-                        <div>
-                            <input type="radio" value="Wallet" class=" rounded-md  py-3  text-sm   focus:z-10 "
-                                name="paymentMode">
-                            <span>Wallet</span>
-                        </div>
-                        <p> Wallet Balance : <%=wallet%>
-                        </p>
-                    </div>
-                    <div>
-                        <input type="radio" value="COD" class=" rounded-md  py-3  text-sm   focus:z-10 "
-                            name="paymentMode" checked>
-                        <span>COD</span>
-                    </div>
-                </div>
+      <button @click="addModel = !addModel" type="button" class="middle none mt-3 center mr-4 rounded-lg bg-[#111827] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Add
+        Address</button>
+  </div>
 
 
-                <!-- Total -->
-                <div class="mt-6 border-t border-b py-2">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-medium text-gray-900">Subtotal</p>
-                        <p class="font-semibold text-gray-900">₹<%let total=cart.reduce((accumulator, item)=> {
+
+  <div class="mt-10 bg-gray-50 px-4 pt-8 lg:mt-0">
+    <p class="text-xl font-medium">Payment Details</p>
+    <p class="text-gray-400">Complete your order by providing your payment details.</p>
+    <div class="">
+      <label for="paymentMode" class="mt-4 mb-2 block text-lg font-medium">Payment mode</label>
+      <div class="relative">
+        <div>
+          <input type="radio" value="UPI" class=" rounded-md  py-3  text-sm   focus:z-10 " name="paymentMode">
+          <span>UPI/OTHER</span>
+        </div>
+
+        <div class="flex justify-between">
+          <div>
+            <input type="radio" value="Wallet" class=" rounded-md  py-3  text-sm   focus:z-10 " name="paymentMode">
+            <span>Wallet</span>
+          </div>
+          <p > Wallet Balance : <span id="walletBalance"><%=wallet%></span>
+          </p>
+        </div>
+        <div>
+          <input type="radio" value="COD" class=" rounded-md  py-3  text-sm   focus:z-10 " name="paymentMode" checked>
+          <span>COD</span>
+        </div>
+      </div>
+
+
+      <!-- Total -->
+      <div class="mt-6 border-t border-b py-2">
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-gray-900">Subtotal</p>
+          <p class="font-semibold text-gray-900">₹<%let total=cart.reduce((accumulator, item)=> {
                                 let product = products.find(product =>{return product._id.equals(item.productId)
                                 } );
                                 return accumulator + product.price * item.quantity;
                                 }, 0);
                                 %><%=total%>
-                        </p>
-                        <input type="hidden" name="total" value="<%=sum%>">
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-medium text-gray-900">OFFER</p>
-                        <!-- if any offer is applied -->
-                        <p class="font-semibold text-gray-900">
-                            <%=offer%>
-                        </p>
-                    </div>
-                </div>
-                <div class="mt-6 flex items-center justify-between">
-                    <p class="text-sm font-medium text-gray-900">Total</p>
-                    <p class="text-2xl font-semibold text-gray-900">
-                        <%=sum%>
-                    </p>
-                </div>
-            </div>
-            <button type="submit" class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place
-                Order</button>
+          </p>
+          <input type="hidden" name="total" value="<%=sum%>">
         </div>
-    </div>
-    <input type="hidden" name="offer" id="offer" value="<%=offer%>">
-    </form>
-
-    <!-- toast -->
-    <div id="toast" class="fixed bottom-0 right-0 m-5 p-5 bg-black text-white rounded-lg shadow-lg hidden">
-        <div id="progressBar"
-            class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3 overflow-hidden  transition-all duration-15000 ease-linear">
-            <div class="h-full bg-red-700" style="width: 0%;"></div>
+        <div class="flex items-center justify-between">
+          <p class="text-sm font-medium text-gray-900">OFFER</p>
+          <!-- if any offer is applied -->
+          <p class="font-semibold text-gray-900">
+            <%=offer%>
+          </p>
         </div>
-        <p id="toastMessage" class="mt-2">Error message</p>
+      </div>
+      <div class="mt-6 flex items-center justify-between">
+        <p class="text-sm font-medium text-gray-900">Total</p>
+        <p class="text-2xl font-semibold text-gray-900" id="total">
+          <%=sum%>
+        </p>
+      </div>
     </div>
+    <button type="submit" class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place
+      Order</button>
+  </div>
+</div>
+<input type="hidden" name="offer" id="offer" value="<%=offer%>">
+</form>
 
-    </div>
+<!-- toast -->
+<div id="toast" class="fixed bottom-0 right-0 m-5 p-5 z-50 bg-black text-white rounded-lg shadow-lg hidden">
+  <div id="progressBar" class="h-1.5 w-full bg-blue-gray-50 rounded-sm -translate-y-3 overflow-hidden  transition-all duration-15000 ease-linear">
+    <div class="h-full bg-red-700" style="width: 0%;"></div>
+  </div>
+  <p id="toastMessage" class="mt-2">Error message</p>
+</div>
 
-
-    <!-- function for toast -->
-    <script>
-
-
-        function showToast(errorMessage) {
-
-            // Get the toast, toastMessage, and progressBar elements
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            const progressBar = document.getElementById('progressBar').firstElementChild;
-
-            // Update the message and show the toast
-            toastMessage.textContent = errorMessage;
-            toast.classList.remove('hidden');
-
-            // Update the width of the progress bar every 0.15 seconds for 5 seconds
-            let width = 0;
-            const intervalId = setInterval(() => {
-                width += 1;
-                progressBar.style.width = `${width}%`;
-
-                // After 15 seconds, hide the toast and clear the interval
-                if (width >= 100) {
-                    toast.classList.add('hidden');
-                    clearInterval(intervalId);
-                    // Reset the width of the progress bar for the next toast message
-                    progressBar.style.width = '0%';
-                }
-            }, 50); // 50 milliseconds * 100 iterations = 5 seconds
-        }
+</div>
 
 
-    </script>
-    <!-- handle the submission of data -->
-    <script>
+<!-- function for toast -->
+<script>
+  function showToast(errorMessage) {
 
-        const innerSubmitButton = document.getElementById('addAddressBtn');
+    // Get the toast, toastMessage, and progressBar elements
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    const progressBar = document.getElementById('progressBar').firstElementChild;
 
+    // Update the message and show the toast
+    toastMessage.textContent = errorMessage;
+    toast.classList.remove('hidden');
 
+    // Update the width of the progress bar every 0.15 seconds for 5 seconds
+    let width = 0;
+    const intervalId = setInterval(() => {
+      width += 1;
+      progressBar.style.width = `${width}%`;
 
-        innerSubmitButton.addEventListener('click', function (e) {
-            const formdata = document.getElementById('addAddress')
-            e.preventDefault(); // Prevent the inner form from submitting immediately
-            const tag = formdata.tag.value
-
-            const addressLine1 = formdata.addressLine1.value
-
-            const city = formdata.city.value
-
-            const pin = formdata.pin.value
-
-            fetch('/addAddress', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ tag, addressLine1, city, pin }),
-            }).then(response => window.location.reload())
-
-
-        });
-        const editSubmitButton = document.getElementById('editAddressBtn');
-        editSubmitButton.addEventListener('click', function (e) {
-
-            e.preventDefault(); // Prevent the inner form from submitting immediately
-            const formdata = document.getElementById('editAddress')
-            e.preventDefault(); // Prevent the inner form from submitting immediately
-            const tag = formdata.tag.value
-            const addrId = formdata.addrId.value
-            const addressLine1 = formdata.addressLine1.value
-
-            const city = formdata.city.value
-
-            const pin = formdata.pin.value
-
-            fetch('/editAddress', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ tag, addressLine1, addrId, city, pin }),
-            }).then(response => window.location.reload())
+      // After 15 seconds, hide the toast and clear the interval
+      if (width >= 100) {
+        toast.classList.add('hidden');
+        clearInterval(intervalId);
+        // Reset the width of the progress bar for the next toast message
+        progressBar.style.width = '0%';
+      }
+    }, 50); // 50 milliseconds * 100 iterations = 5 seconds
+  }
+</script>
+<!-- handle the submission of data -->
+<script>
+  const innerSubmitButton = document.getElementById('addAddressBtn');
 
 
-        });
+
+  innerSubmitButton.addEventListener('click', function(e) {
+    const formdata = document.getElementById('addAddress')
+    e.preventDefault(); // Prevent the inner form from submitting immediately
+    const tag = formdata.tag.value
+
+    const addressLine1 = formdata.addressLine1.value
+
+    const city = formdata.city.value
+
+    let pin = formdata.pin.value
+    const pattern = /^\d{6}$/;
+
+    if (!pattern.test(pin)) {
+      pin = null
+    }
+    if (!tag || !pin || !addressLine1 || !city) {
+      return showToast("Please Check all the fields")
+    }
+
+    fetch('/addAddress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tag,
+        addressLine1,
+        city,
+        pin
+      }),
+    }).then(response => window.location.reload())
 
 
-    </script>
+  });
+  const editSubmitButton = document.getElementById('editAddressBtn');
+  editSubmitButton.addEventListener('click', function(e) {
+
+    e.preventDefault(); // Prevent the inner form from submitting immediately
+    const formdata = document.getElementById('editAddress')
+    e.preventDefault(); // Prevent the inner form from submitting immediately
+    const tag = formdata.tag.value
+    const addrId = formdata.addrId.value
+    const addressLine1 = formdata.addressLine1.value
+
+    const city = formdata.city.value
+
+    const pin = formdata.pin.value
+
+    fetch('/editAddress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        tag,
+        addressLine1,
+        addrId,
+        city,
+        pin
+      }),
+    }).then(response => window.location.reload())
 
 
-    <!-- Payment Integration -->
+  });
+</script>
 
-    <!--Payment Mode  -->
-    <script>
-        const form = document.getElementById('checkoutForm')
-        form.addEventListener('submit', function (event) {
-            event.preventDefault()
-            const address = document.querySelector('input[name="address"]:checked')
-            if (!address) {
-                showToast("Please select an address")
-                return
+
+<!-- Payment Integration -->
+
+<!--Payment Mode  -->
+<script>
+  const form = document.getElementById('checkoutForm')
+  form.addEventListener('submit', function(event) {
+    event.preventDefault()
+    const address = document.querySelector('input[name="address"]:checked')
+    if (!address) {
+      showToast("Please select an address")
+      return
+    }
+    paymentMode = form.paymentMode.value
+    if (paymentMode == 'UPI') {
+      fetch('/genOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: '<%=Number(sum.substring(1))*100%>'
+          }),
+        }).then(response => response.json())
+        .then(data => {
+          id = data.orderId
+          const address = document.querySelector('input[name="address"]:checked').value
+          const offer = document.getElementById('offer').value
+          let options = {
+            "key": "rzp_test_DwVvUwZ6KYYMCR", // Enter the Key ID generated from the Dashboard
+            "amount": '<%=Number(sum.substring(1))*100%>', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "OFFIQ", //your business name
+            "description": "Test Transaction",
+            "image": "https://cdn.razorpay.com/logos/MkXOdj1zs2GhLl_original.png",
+            "order_id": id,
+            "callback_url": "/order",
+            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
+              "name": "Gaurav Kumar", //your customer's name
+              "email": "gaurav.kumar@example.com",
+              "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
+            },
+            "notes": {
+              "address": address,
+              "offer": offer
+            },
+            "theme": {
+              "color": "#455163"
             }
-            paymentMode = form.paymentMode.value
-            if (paymentMode == 'UPI') {
-                fetch('/genOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ amount: '<%=Number(sum.substring(1))*100%>' }),
-                }).then(response => response.json())
-                    .then(data => {
-                        id = data.orderId
-                        const address = document.querySelector('input[name="address"]:checked').value
-                        const offer = document.getElementById('offer').value
-                        let options = {
-                            "key": "rzp_test_DwVvUwZ6KYYMCR", // Enter the Key ID generated from the Dashboard
-                            "amount": '<%=Number(sum.substring(1))*100%>', // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                            "currency": "INR",
-                            "name": "OFFIQ", //your business name
-                            "description": "Test Transaction",
-                            "image": "https://cdn.razorpay.com/logos/MkXOdj1zs2GhLl_original.png",
-                            "order_id": id,
-                            "callback_url": "/order",
-                            "prefill": { //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-                                "name": "Gaurav Kumar", //your customer's name
-                                "email": "gaurav.kumar@example.com",
-                                "contact": "9000090000" //Provide the customer's phone number for better conversion rates 
-                            },
-                            "notes": {
-                                "address": address,
-                                "offer": offer
-                            },
-                            "theme": {
-                                "color": "#455163"
-                            }
-                        };
-                        let rzp1 = new Razorpay(options);
-                        rzp1.open();
-                        e.preventDefault();
-                    })
-
-            } else {
-                form.submit()
-            }
+          };
+          let rzp1 = new Razorpay(options);
+          rzp1.open();
+          e.preventDefault();
         })
-    </script>
-    <!-- <script>
+
+    } else if (paymentMode == 'Wallet') {
+        const wallet=Number(document.getElementById('walletBalance').innerText)
+        const total=Number(document.getElementById('total').innerText.substring(1))
+        console.log(wallet,total);
+        if (wallet-total<0) {
+            return  showToast("Not enough balance In Wallet")
+        }
+    } else {
+      form.submit()
+    }
+  })
+</script>
+<!-- <script>
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
         }
     </script> -->
 
-    <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 
-    </body>
+</body>
 
-    </html>
+</html>

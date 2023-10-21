@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('./config/auth')
-const passport = require('passport')
+const passport = require('passport') 
 const express = require('express');
 const connectDB = require('./config/dbConnect')
 const session = require('express-session');
@@ -31,7 +31,7 @@ app.use(session({
 
 //database connection 
 connectDB().then(() => {
-    console.log("DatBAse connected");
+    console.log("DatBAse connected"); 
 }).catch((err) => {
     console.log(`Error in connection :${err}`);
 })
@@ -57,3 +57,4 @@ app.listen(port, () => {
     console.log(`Server started on http://localhost:${port}`);
 });
 
+ 

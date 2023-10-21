@@ -95,7 +95,6 @@ const productController = {
     try {
       const cId = req.params.id
       const products = await Products.find({ category: cId });
-      console.log(products);
       if(products.length<1){
        return res.redirect('/notfound')
       }

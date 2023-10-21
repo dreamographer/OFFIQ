@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-router.use(express.json()); 
+router.use(express.json());
 const path = require('path');
 const crypto = require('crypto');  //encription module
 
@@ -66,7 +66,7 @@ async function generatePdf(oId, uId) {
             amount: order.items[i].price * 100,
         })
     });
-   
+
     let path = 'test.pdf'
     makePdf(invoice, order.invoice)
 }
@@ -125,7 +125,7 @@ const orderController = {
                 }
             }
             const wallet = await Wallet.findOne({ user: userId })
-            return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance ,errorMessage:''});
+            return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
         } catch (error) {
             console.log(error);
         }
@@ -276,9 +276,9 @@ const orderController = {
             const user = await User.findOne({ _id: userId });
             const oId = req.params.oId
             const order = await Order.findOne({ _id: oId });
-            if(!order){
-               return res.redirect('/notfound')
-              }
+            if (!order) {
+                return res.redirect('/notfound')
+            }
 
             let products = []
 

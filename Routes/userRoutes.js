@@ -42,8 +42,6 @@ router.get('/myAccout',userAuth,userController.userProfile)
 
 //all Product page
 router.all('/allProducts',productController.allProducts)
-// add filteter
-// router.post('/filter',productController.filterResult)
 // products Page
 router.get('/products/:id',productController.products)
 //Category Page
