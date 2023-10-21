@@ -68,12 +68,12 @@ async function verifyOTP(email, otp) {
 async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
   try {
     const deleted = await User.deleteMany({ verified: false })
-    if (deleted) {
+    if (deleted.deletedCount>0) {
       console.log("user deleted");
     }
     return
   } catch (error) {
-    console.error(err);
+    console.error(error );
   }
 
 }
@@ -162,9 +162,8 @@ const userController = {
     setTimeout(() => {
       deleteUnverifiedDocs()
     }, 1000 * 60 * 10);
-
     return res.render('signup');
-  },
+  }, 
 
 
   //user signUp
@@ -181,8 +180,10 @@ const userController = {
         try {
           let { otp, expirationTime } = generateOTP();
           data.otp = encrypt(otp, key)
-          data.otpExpires = expirationTime
-          const user = await User.create({data}, { new: true }) //inserting the data
+          data.otpExpires = expirationTime 
+          console.log(data);
+          const user = await User.create(data) //inserting the data
+          console.log(user);
           const wallet = await Wallet.create({ user: user._id }, { new: true }) //creating wallet
           const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
