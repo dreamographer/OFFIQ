@@ -14,6 +14,7 @@ const productController = {
   //ALL products 
   allProducts: async (req, res) => {
     try {
+      res.header('Cache-Control', 'public, max-age=3600');
       let pageNo =Number(req.body.page)??parseInt(req.query.pageNo)??1
       let size = 10
       let query = {}

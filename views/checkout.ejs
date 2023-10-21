@@ -206,7 +206,7 @@
         </p>
       </div>
     </div>
-    <button type="submit" class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white">Place
+    <button type="submit" class="mt-4 mb-8 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white" <% if (products.length<1) {%> disabled <%} %>>Place
       Order</button>
   </div>
 </div>
@@ -392,6 +392,17 @@
     }
   })
 </script>
+<script>
+    if (window.history && window.history.pushState) {
+      window.history.pushState('no-back', null, '');
+      window.onpopstate = function (event) {
+        if (event.state === 'no-back') {
+          history.go(1);
+        }
+      };
+    }
+  </script>
+  
 <!-- <script>
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
