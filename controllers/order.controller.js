@@ -276,6 +276,9 @@ const orderController = {
             const user = await User.findOne({ _id: userId });
             const oId = req.params.oId
             const order = await Order.findOne({ _id: oId });
+            if(!order){
+               return res.redirect('/notfound')
+              }
 
             let products = []
 

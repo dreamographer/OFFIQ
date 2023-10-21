@@ -95,6 +95,10 @@ const productController = {
     try {
       const cId = req.params.id
       const products = await Products.find({ category: cId });
+      console.log(products);
+      if(products.length<1){
+       return res.redirect('/notfound')
+      }
       let category = await Category.find({ _id: cId });
 
       return res.render('products', { products: products, category: category });
@@ -107,6 +111,10 @@ const productController = {
     const cId = req.params.id
 
     const products = await Products.find({ subCategory: cId });
+
+    if(products.length<1){
+     return res.redirect('/notfound')
+    }
     const category = await Category.findOne({
       'subcategory._id': cId
     }, { subcategory: 1 });
@@ -158,6 +166,9 @@ const productController = {
       const ID = req.params.id;
       const user = req.session.user
       const product = await Products.findOne({ '_id': ID });
+      if(!product){
+       return res.redirect('/notfound')
+      }
       return res.render('productView', { product: product, user: user });
     } catch (error) {
       console.log(error);
