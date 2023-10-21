@@ -29,12 +29,10 @@ passport.use(new GoogleStrategy({
           profileUrl: profileUrl,
           verified: true
         });
-        newUser.save()
+        await newUser.save()
           .then(async () => {
-            console.log(newUser._id);
             const wallet = await Wallet.create({ user: newUser._id }, { new: true }) //creating wallet
             console.log(wallet);
-            console.log("User data stored in MongoDB");
             return done(null, newUser);
           })
           .catch((error) => {
