@@ -12,7 +12,7 @@ const couponController = {
       } else {
         err = ''
       }
-      return res.render('/admin/couponManagement', { coupons: coupons, errorMessage: err })
+      return res.render('admin/couponManagement', { coupons: coupons, errorMessage: err })
 
     } catch (error) {
       console.log(error);

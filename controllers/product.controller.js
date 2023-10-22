@@ -83,7 +83,7 @@ const productController = {
         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
 
       }
-      return res.render('/client/allProducts', { pageData: data, sortBy, price })
+      return res.render('client/allProducts', { pageData: data, sortBy, price })
 
 
     } catch (error) {
@@ -104,7 +104,7 @@ const productController = {
       }
       let category = await Category.find({ _id: cId, listed: true });
 
-      return res.render('/client/products', { products: products, category: category });
+      return res.render('client/products', { products: products, category: category });
     } catch (error) {
       console.log(error);
     }
@@ -126,7 +126,7 @@ const productController = {
     }, { subcategory: 1 });
     let subcategory = category.subcategory.find(sub => sub._id.equals(cId));
     subcategory = subcategory.subName;
-    return res.render('/client/category', { products, subcategory });
+    return res.render('client/category', { products, subcategory });
   },
 
   // search for products
@@ -180,7 +180,7 @@ const productController = {
       if (!product) {
         return res.redirect('/notfound')
       }
-      return res.render('/client/productView', { product: product, user: user });
+      return res.render('client/productView', { product: product, user: user });
     } catch (error) {
       console.log(error);
     }
@@ -199,7 +199,7 @@ const productController = {
       } else {
         err = ''
       }
-      return res.render('/admin/categoryManagement', { Category: category, errorMessage: err })
+      return res.render('admin/categoryManagement', { Category: category, errorMessage: err })
     }
     catch (error) {
       console.log(error);
@@ -222,7 +222,7 @@ const productController = {
 
       if (existingCategory.length > 0) {
         // Category with the same name already exists
-        return res.render('/admin/categoryManagement', { Category: categories, errorMessage: 'Category with this name already exists.' })
+        return res.render('admin/categoryManagement', { Category: categories, errorMessage: 'Category with this name already exists.' })
 
       }
       let subcategory = {}
@@ -283,7 +283,7 @@ const productController = {
       let imagePaths
       if (existingCategory.length > 0) {
         // Category with the same name already exists
-        return res.render('/admin/categoryManagement', { Category: categories, errorMessage: 'Category with this name already exists.' })
+        return res.render('admin/categoryManagement', { Category: categories, errorMessage: 'Category with this name already exists.' })
 
       }
       let subName = updatedData.subName //extracting subcategory data to make it one object
@@ -406,7 +406,7 @@ const productController = {
       } else {
         err = ''
       }
-      res.render('/admin/productManagement', { products: products, category: category, err: err })
+      res.render('admin/productManagement', { products: products, category: category, err: err })
     }
     catch (err) {
       console.log(err);
@@ -462,7 +462,7 @@ const productController = {
       } else {
         err = ''
       }
-      return res.render('/admin/editProduct', { product: product, category: category, err: err })
+      return res.render('admin/editProduct', { product: product, category: category, err: err })
     }
     catch (error) {
       console.log(error);

@@ -135,7 +135,7 @@ const adminController = {
       ]);
       const Monthprofit = monthProfit[0] ? monthProfit[0].totalSales : 0
 
-      res.render('/admin/admin', { totalDaySale, totalMonthSale, Monthprofit })
+      res.render('admin/admin', { totalDaySale, totalMonthSale, Monthprofit })
     } catch (err) {
       console.error(err);
       res.status(500).send('Error fetching user data');
@@ -387,7 +387,7 @@ const adminController = {
     try {
       const users = await User.find({}, { _id: 1, fullname: 1, email: 1, phone: 1, blocked: 1 }); // Fetch fdata
       // Render the admin EJS template with users data
-      res.render('/admin/userManagement', { userData: users })
+      res.render('admin/userManagement', { userData: users })
     } catch (err) {
       console.error(err);
       res.status(500).send('Error fetching user data');
@@ -411,7 +411,7 @@ const adminController = {
   },
   // report Management
   Report: async (req, res) => {
-    res.render('/admin/Report')
+    res.render('admin/Report')
   },
 
   // gernerate pdf report

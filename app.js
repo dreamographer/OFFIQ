@@ -51,7 +51,7 @@ app.use('/admin', adminRouter)
 
 // 404 error page
 app.use((req, res) => {
-    res.status(404).render('/client/errorPage');
+    res.status(404).render('client/errorPage');
 });
 app.listen(port, () => {
     console.log(`Server started on http://localhost:${port}`);

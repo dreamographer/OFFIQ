@@ -112,7 +112,7 @@ const userController = {
 
   // forogot password page
   forgotPage: (req, res) => {
-    return res.render('/client/forgotPassword')
+    return res.render('client/forgotPassword')
   },
 
   // otp for forgot password
@@ -134,7 +134,7 @@ const userController = {
 
         const send = await sendOTP(user.fullname, email, otp)
 
-        return res.render('/client/otpVerify', { email: email, need: need, error: '', minutes: 1, seconds: 10 })
+        return res.render('client/otpVerify', { email: email, need: need, error: '', minutes: 1, seconds: 10 })
       }
 
     } catch (err) {
@@ -162,7 +162,7 @@ const userController = {
     setTimeout(() => {
       deleteUnverifiedDocs()
     }, 1000 * 60 * 10);
-    return res.render('/client/signup');
+    return res.render('client/signup');
   },
 
 
@@ -185,7 +185,7 @@ const userController = {
           const wallet = await Wallet.create({ user: user._id }) //creating wallet
           const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
-          return res.render('/client/otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
+          return res.render('client/otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
 
         } catch (err) {
           console.log(err);
@@ -211,15 +211,15 @@ const userController = {
           return res.redirect('/');
         }
         else {
-          return res.render('/client/newPassword', { email });
+          return res.render('client/newPassword', { email });
         }
       }
       else {
         const { minutes, seconds } = req.body;
         if (need == "userSignIN") {
-          return res.render('/client/otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
+          return res.render('client/otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
         } else {
-          return res.render('/client/otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
+          return res.render('client/otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
 
         }
 
@@ -239,7 +239,7 @@ const userController = {
       sendOTP("Resend", email, otp)
       otp = encrypt(otp, key)
       const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
-      return res.render('/client/otpVerify', { email: email, need: need, error: 'New OTP send', minutes: 1, seconds: 10 })
+      return res.render('client/otpVerify', { email: email, need: need, error: 'New OTP send', minutes: 1, seconds: 10 })
     } catch (error) {
       console.error(error);
     }
@@ -254,16 +254,16 @@ const userController = {
       else if (req.session.err) {
         req.session.err = false;
         // Pass an error message to the login view
-        return res.render('/client/login', { errorMessage: 'Incorrect email or password' });
+        return res.render('client/login', { errorMessage: 'Incorrect email or password' });
       } else if (req.session.exist) {
         req.session.exist = false;
-        return res.render('/client/login', { errorMessage: 'Email already registered , Please login' });
+        return res.render('client/login', { errorMessage: 'Email already registered , Please login' });
 
       } else if (req.session.block) {
-        return res.render('/client/login', { errorMessage: 'User account has been blocked by the admin' });
+        return res.render('client/login', { errorMessage: 'User account has been blocked by the admin' });
       }
       else {
-        return res.render('/client/login', { errorMessage: '' });
+        return res.render('client/login', { errorMessage: '' });
       }
 
     } catch (error) {
@@ -275,7 +275,7 @@ const userController = {
   home: async (req, res) => {
     let category = await Category.find({ listed: true });
 
-    return res.render('/client/home', { category: category });
+    return res.render('client/home', { category: category });
   },
 
   //home page search route 
@@ -413,7 +413,7 @@ const userController = {
         wallet = await Wallet.create({ user: userId })
       }
       const balance = wallet.balance
-      return res.render('/client/user', { order: order, products: products, user: user, balance })
+      return res.render('client/user', { order: order, products: products, user: user, balance })
 
     } catch (error) {
       console.log(error.message);

@@ -43,7 +43,7 @@ const cartController = {
         req.app.locals.data = null
       }
 
-      return res.render('/client/cart', { cart: cart, products: products, msg: msg });
+      return res.render('client/cart', { cart: cart, products: products, msg: msg });
     } catch (error) {
       console.log(error);
     }

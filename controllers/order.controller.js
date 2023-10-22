@@ -125,7 +125,7 @@ const orderController = {
                 }
             }
             const wallet = await Wallet.findOne({ user: userId })
-            return res.render('/client/checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
+            return res.render('client/checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
         } catch (error) {
             console.log(error);
         }
@@ -258,7 +258,7 @@ const orderController = {
                 }
             }
 
-            return res.render('/admin/orderManagement', { order: order, products: products })
+            return res.render('admin/orderManagement', { order: order, products: products })
 
         } catch (error) {
             console.log(error);
@@ -304,7 +304,7 @@ const orderController = {
                     console.error(`Error fetching product: ${error}`);
                 }
             }
-            res.render('/client/orderPage', { order: order, products: products, user: user, msg: msg })
+            res.render('client/orderPage', { order: order, products: products, user: user, msg: msg })
 
         } catch (error) {
             console.log(error);
@@ -369,7 +369,7 @@ const orderController = {
                     }
                 }
             }
-            return res.render('/admin/orderManagement', { order: order, products: products })
+            return res.render('admin/orderManagement', { order: order, products: products })
 
         } catch (error) {
             console.log(error);
@@ -405,7 +405,7 @@ const orderController = {
                     }
                 }
             }
-            res.render('/admin/orderPageAdmin', { order: order[0], products: products })
+            res.render('admin/orderPageAdmin', { order: order[0], products: products })
 
         } catch (error) {
             console.log(error);
