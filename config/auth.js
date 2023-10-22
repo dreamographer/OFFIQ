@@ -31,8 +31,7 @@ passport.use(new GoogleStrategy({
         });
         await newUser.save()
           .then(async () => {
-            const wallet = await Wallet.create({ user: newUser._id }, { new: true }) //creating wallet
-            console.log(wallet);
+            const wallet = await Wallet.create({ user: newUser._id }) //creating wallet
             return done(null, newUser);
           })
           .catch((error) => {

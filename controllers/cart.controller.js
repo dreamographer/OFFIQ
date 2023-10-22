@@ -25,7 +25,8 @@ const cartController={
 
       for (const prod of cart) {
         try {
-          const item = await Products.findById(prod.productId);
+          const pId=prod.productId
+          const item = await Products.findOne({_id:pId,listed:true });
           if (item) {
             products.push(item);
           } else {
@@ -58,7 +59,7 @@ const cartController={
         return res.status(401).json({ message: 'User not authenticated' });
       }
       const updatedProduct = await Products.findOne(
-        { _id: productId, quantity: { $gte: quantity } },
+        { _id: productId, quantity: { $gte: quantity } ,listed:true },
         // { $inc: { quantity: -quantity } }, update the quantity
         { new: true }
       );

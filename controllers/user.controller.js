@@ -181,10 +181,8 @@ const userController = {
           let { otp, expirationTime } = generateOTP();
           data.otp = encrypt(otp, key)
           data.otpExpires = expirationTime 
-          console.log(data);
           const user = await User.create(data) //inserting the data
-          console.log(user);
-          const wallet = await Wallet.create({ user: user._id }, { new: true }) //creating wallet
+          const wallet = await Wallet.create({ user: user._id }) //creating wallet
           const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
           return res.render('otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
@@ -275,7 +273,7 @@ const userController = {
 
   //rendering the home page
   home: async (req, res) => {
-    let category = await Category.find({});
+    let category = await Category.find({listed:true});
 
     return res.render('home', { category: category });
   },
@@ -415,7 +413,7 @@ const userController = {
       let wallet = await Wallet.findOne({ user: userId })
 
       if (!wallet) {
-        wallet = await Wallet.create({ user: userId }, { new: true })
+        wallet = await Wallet.create({ user: userId })
       }
       const balance = wallet.balance
       return res.render('user', { order: order, products: products, user: user, balance })

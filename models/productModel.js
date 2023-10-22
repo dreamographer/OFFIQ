@@ -40,6 +40,11 @@ const productSchema = new Schema({
   offers: {
     type: String,
     required: false
+  },
+  listed:{
+    type:Boolean,
+    require:true,
+    default:true
   }
 }, {
   timestamps: true

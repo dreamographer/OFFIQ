@@ -1,5 +1,5 @@
 require('dotenv').config();
-const path=require('path'); 
+const path = require('path');
 //keys
 const algorithm = 'aes-256-cbc';
 const key = process.env.ENCRIPTION_KEY;
@@ -64,7 +64,7 @@ const adminController = {
             $expr: {
               $eq: [{ $month: "$createdAt" }, currentMonth]
             },
-            status: "confirmed" // Optionally, you can filter by order status
+            status: { $ne: 'cancelled' } // Optionally, you can filter by order status
           }
         },
         {
@@ -95,7 +95,7 @@ const adminController = {
                 { $eq: [{ $month: "$createdAt" }, currentMonth] }
               ]
             },
-            status: "confirmed"
+            status: { $ne: 'cancelled' }
           }
         },
         {
@@ -120,7 +120,7 @@ const adminController = {
             $expr: {
               $eq: [{ $month: "$createdAt" }, currentMonth]
             },
-            status: "confirmed"
+            status: { $ne: 'cancelled' }
           }
         },
         {
@@ -469,7 +469,7 @@ const adminController = {
       delete data.subName;
       const category = await Category.create(data);//adding the data
       if (category) {
-   
+
         return res.redirect('/admin/categoryManagement');
       }
     } catch (error) {
@@ -520,7 +520,7 @@ const adminController = {
       if (req.files) {
 
         imagePaths = req.files.map((file) => file.path.substring(6));//removing public/from adderees
-      
+
         //removing public/from adderees
 
       }
@@ -605,10 +605,9 @@ const adminController = {
   //delete category
   deleteCategory: async (req, res) => {
     try {
-  
       const categoryId = req.params.id;
-      const category = await Category.deleteOne({ _id: categoryId });
-      const products = await Products.deleteMany({ category: categoryId })
+      const category = await Category.updateOne({ _id: categoryId },{$set:{listed:false}});
+      const products = await Products.updateMany({ category: categoryId },{$set:{quantity:0,listed:false }});
       if (!category || !products) {
         return res.status(404).json({ error: 'category not found' });
       }
@@ -664,7 +663,7 @@ const adminController = {
       data.images = imagePaths;
       const product = await Products.create(data);
       if (product) {
-        
+
         return res.redirect('/admin/productManagement');
       }
     } catch (error) {
@@ -677,7 +676,7 @@ const adminController = {
     try {
       const pId = req.params.pid
       const category = await Category.find({});
-      const products = await Products.find({ _id: pId })
+      const products = await Products.find({ _id: pId})
       const product = products[0]
       let err
 
@@ -738,7 +737,7 @@ const adminController = {
 
 
       if (product) {
-    
+
         return res.redirect('/admin/productManagement');
       }
     } catch (error) {
@@ -750,10 +749,10 @@ const adminController = {
   // delete the products
   deleteProduct: async (req, res) => {
     try {
-   
+
       const productId = req.params.id;
 
-      const result = await Products.deleteOne({ _id: productId });
+      const result = await Products.updateOne({ _id: productId },{$set:{quantity:0,listed:false }});
       if (!result) {
         return res.status(404).json({ error: 'Product not found' });
       }
@@ -862,7 +861,7 @@ const adminController = {
     try {
       const coupons = await Coupon.find();
       if (req.app.locals.data) {
-    
+
         err = req.app.locals.data
         req.app.locals.data = null
       } else {
@@ -942,7 +941,7 @@ const adminController = {
     try {
       const id = req.params.id;
       const deletedCoupon = await Coupon.deleteOne({ "_id": id })
-     
+
       return res.redirect('back')
     } catch (error) {
       console.log(error);
@@ -956,8 +955,8 @@ const adminController = {
 
   // gernerate pdf report
   pdfReport: async (req, res) => {
-    let result=await Order.find({status:'confirmed'},{items:0,invoice:0,offer:0,shippingAddress:0,updatedAt:0})
-    makePdf(result,path.join(__dirname,`../public/Report/SalesData.pdf`))
+    let result = await Order.find({ status: 'confirmed' }, { items: 0, invoice: 0, offer: 0, shippingAddress: 0, updatedAt: 0 })
+    makePdf(result, path.join(__dirname, `../public/Report/SalesData.pdf`))
     setTimeout(() => {
       return res.redirect('/Report/SalesData.pdf')
     }, 1000);
@@ -977,20 +976,20 @@ const adminController = {
       // Add other headers as needed
     ];
 
-    let result=await Order.find({status:'confirmed'},{items:0,invoice:0,offer:0,shippingAddress:0,updatedAt:0})
-   
+    let result = await Order.find({ status: 'confirmed' }, { items: 0, invoice: 0, offer: 0, shippingAddress: 0, updatedAt: 0 })
+
     // Add Data Rows
     result.forEach(document => {
       worksheet.addRow(document);
     });
 
     // Write to File
-    
-    workbook.xlsx.writeFile(path.join(__dirname,`../public/Report/SalesData.xlsx`));
-    setTimeout(()=>{
+
+    workbook.xlsx.writeFile(path.join(__dirname, `../public/Report/SalesData.xlsx`));
+    setTimeout(() => {
 
       return res.redirect('/Report/SalesData.xlsx')
-    },1000)
+    }, 1000)
   },
   //logout for the admin
   logout: (req, res) => {

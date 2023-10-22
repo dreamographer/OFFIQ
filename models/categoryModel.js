@@ -28,6 +28,11 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true
   }],
+  listed:{
+    type:Boolean,
+    required:true,
+    default:true
+  },
   subcategory: [subcategorySchema], // Array of subcategory objects
 });
 

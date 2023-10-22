@@ -98,11 +98,11 @@ const productController = {
       if(!ObjectId.isValid(cId)){
         return res.redirect('/notfound')
       }
-      const products = await Products.find({ category: cId });
+      const products = await Products.find({ category: cId,listed:true  });
       if(products.length<1){
        return res.redirect('/notfound')
       }
-      let category = await Category.find({ _id: cId });
+      let category = await Category.find({ _id: cId ,listed:true});
 
       return res.render('products', { products: products, category: category });
     } catch (error) {
@@ -115,13 +115,14 @@ const productController = {
     if(!ObjectId.isValid(cId)){
       return res.redirect('/notfound')
     }
-    const products = await Products.find({ subCategory: cId });
+    const products = await Products.find({ subCategory: cId ,listed:true });
 
     if(products.length<1){
      return res.redirect('/notfound')
     }
     const category = await Category.findOne({
-      'subcategory._id': cId
+      'subcategory._id': cId,
+      listed:true
     }, { subcategory: 1 });
     let subcategory = category.subcategory.find(sub => sub._id.equals(cId));
     subcategory = subcategory.subName;
@@ -139,11 +140,13 @@ const productController = {
         {
           $project: {
             'name': 1,
+            'listed':1
           }
         },
         {
           $match: {
-            'name': { $regex: regex }
+            'name': { $regex: regex },
+           'listed':true 
           }
 
         },
@@ -173,7 +176,7 @@ const productController = {
         return res.redirect('/notfound')
       }
       const user = req.session.user
-      const product = await Products.findOne({ '_id': ID });
+      const product = await Products.findOne({ '_id': ID,listed:true  });
       if(!product){
        return res.redirect('/notfound')
       }
