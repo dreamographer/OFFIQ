@@ -1,0 +1,185 @@
+<%-include('/admin/adminHeader')%>
+<link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-thin-rounded/css/uicons-thin-rounded.css'>
+<div class="flex w-screen h-full overflow-x-hidden ">
+
+  <!-- navigation div -->
+  <div class="p-2 bg-white absolute z-20 h-screen transition-all ease-linear duration-300 md:relative w-60 flex-col hidden md:flex" id="sideNav">
+    <nav>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/dashboard">
+        <i class="fas fa-home mr-2"></i></i>Dashboard
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/userMangement">
+        <i class="fas fa-users mr-2"></i>User Management
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/categoryManagement">
+        <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="#">
+        <i class="fas fa-store mr-2"></i>Product Management
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/orderManagement">
+        <i class="fas fa-exchange-alt mr-2"></i>Order Management
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/couponManagement">
+        <i class="fa-sharp fas fa-regular fa-tag"></i> Coupon Mangement
+      </a>
+      <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white" href="/admin/Report">
+        <i class="fas fa-file-alt mr-2"></i> Report
+      </a>
+      <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white " href="/logout">
+        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+      </a>
+    </nav>
+  </div>
+  <!-- BOdy part -->
+  <div class="w-full">
+
+    <div class=" w-full flex flex-col items-center gap-5 justify-center p-5">
+      <h1 class="font-black text-4xl">Report</h1>
+      <div class="flex text-center  items-center gap-5">
+        <div>
+          <input type="radio" name="filter" id="month" onchange="updateChart('MONTHLY')" checked><label for="month">Monthly</label>
+        </div>
+        <div>
+          <input type="radio" name="filter" id="year" onchange="updateChart('YERALY')"><label for="year">Yearly</label>
+        </div>
+        <div>
+          <a href="/admin/getPdf"><i class="fi fi-tr-file-download"></i>PDF</a> <a href="/admin/getExcel"><i class="fi fi-tr-file-download"></i>EXCEL</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="flex  gap-10 justify-center items-center">
+      <div>
+
+        <div>
+          <h1 class="text-center font-semibold p-5">Total Sales</h1>
+          <div style="width: 400px;" class="bg-white rounded-2xl p-5"><canvas id="sales"></canvas></div>
+        </div>
+        <div>
+          <h1 class="text-center font-semibold p-5">Total Profit </h1>
+          <div style="width: 400px;" class="bg-white rounded-2xl p-5"><canvas id="Profit"></canvas></div>
+        </div>
+      </div>
+      <div>
+
+        <h1 class="text-center font-semibold p-5">Sales By Category</h1>
+        <div style="width: 300px;" class="bg-white rounded-2xl p-5"><canvas id="Category"></canvas></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- chart js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+  let myChart;
+  let ProfitChart;
+  let categoryChart
+
+  function updateChart(filter) {
+    // Fetch new data based on the selected FILTER
+    fetch('/admin/getData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          filter: filter
+        })
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        salesChart(data, data.filter);
+      })
+  }
+
+  async function salesChart(data, filter) { //function for generating the chart
+    if (myChart) {
+      myChart.destroy();
+    }
+    myChart = new Chart(
+      document.getElementById('sales'), {
+        type: 'line',
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        data: {
+          labels: data.saleData.map(row => row.month ?? row.year),
+          datasets: [{
+            barPercentage: 1,
+            barThickness: 90,
+            label: `${filter} `,
+            data: data.saleData.map(row => row.count),
+          }]
+        }
+      }
+    );
+
+    if (ProfitChart) {
+      ProfitChart.destroy();
+    }
+
+    ProfitChart = new Chart(
+      document.getElementById('Profit'), {
+        type: 'line',
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        data: {
+          labels: data.profitData.map(row => row.month ?? row.year),
+          datasets: [{
+            barPercentage: 1,
+            barThickness: 90,
+            label: `${filter} `,
+            data: data.profitData.map(row => row.totalSales),
+          }]
+        }
+      }
+    );
+
+    if (categoryChart) {
+      categoryChart.destroy();
+    }
+
+    categoryChart = new Chart(
+      document.getElementById('Category'), {
+        type: 'pie',
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        data: {
+          labels: data.categoryData.map(row => row.category),
+          datasets: [{
+            barPercentage: 1,
+            barThickness: 90,
+            label: `${filter} `,
+            data: data.categoryData.map(row => row.itemCount),
+          }]
+        }
+      }
+    );
+  }
+  window.onload = updateChart('MONTHLY')
+</script>
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const sideNav = document.getElementById('sideNav');
+  menuBtn.addEventListener('click', () => {
+    sideNav.classList.toggle('hidden');
+  });
+</script>
+<script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

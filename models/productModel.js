@@ -41,14 +41,14 @@ const productSchema = new Schema({
     type: String,
     required: false
   },
-  listed:{
-    type:Boolean,
-    require:true,
-    default:true
+  listed: {
+    type: Boolean,
+    require: true,
+    default: true
   }
 }, {
   timestamps: true
 });
 
 productSchema.plugin(mongoosePaginate);
-module.exports = mongoose.model('Products', productSchema,'products');
+module.exports = mongoose.model('Products', productSchema, 'products');

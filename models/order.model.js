@@ -11,13 +11,13 @@ const cartItemSchema = new mongoose.Schema({
         required: true,
         min: 1, // Ensure quantity is at least 1
     },
-    price:{
+    price: {
         type: Number,
         required: true,
     },
-    category:{
-        type:String,
-        required:true
+    category: {
+        type: String,
+        required: true
     }
 });
 const addressSchema = new mongoose.Schema({
@@ -57,14 +57,14 @@ const orderSchema = new Schema({
         type: String,
         // required: true
     },
-    offer:{
+    offer: {
         type: String,
     },
     shippingAddress: addressSchema,
     paymentMode: {
         type: String,
         required: true
-    }, 
+    },
 }, {
     timestamps: true
 });

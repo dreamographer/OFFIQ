@@ -93,7 +93,7 @@ const orderController = {
     },
 
     //checkout page
-    checkOut: async (req, res) => { 
+    checkOut: async (req, res) => {
         try {
             const sum = req.body.sum
             let offer = req.body.offer ?? ''
@@ -125,7 +125,7 @@ const orderController = {
                 }
             }
             const wallet = await Wallet.findOne({ user: userId })
-            return res.render('checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
+            return res.render('/client/checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
         } catch (error) {
             console.log(error);
         }
@@ -258,7 +258,7 @@ const orderController = {
                 }
             }
 
-            return res.render('orderManagement', { order: order, products: products })
+            return res.render('/admin/orderManagement', { order: order, products: products })
 
         } catch (error) {
             console.log(error);
@@ -275,9 +275,9 @@ const orderController = {
             const userId = req.session.user._id;
             const user = await User.findOne({ _id: userId });
             const oId = req.params.oId
-            if(!ObjectId.isValid(oId)){
+            if (!ObjectId.isValid(oId)) {
                 return res.redirect('/notfound')
-              }
+            }
             const order = await Order.findOne({ _id: oId });
             if (!order) {
                 return res.redirect('/notfound')
@@ -304,7 +304,7 @@ const orderController = {
                     console.error(`Error fetching product: ${error}`);
                 }
             }
-            res.render('orderPage', { order: order, products: products, user: user, msg: msg })
+            res.render('/client/orderPage', { order: order, products: products, user: user, msg: msg })
 
         } catch (error) {
             console.log(error);
@@ -338,7 +338,102 @@ const orderController = {
         } catch (error) {
             console.log(error);
         }
-    }
+    },
+
+    // admin side
+
+    // order management
+    orderManagement: async (req, res) => {
+        try {
+            const order = await Order.find({});
+
+            let products = []
+            for (const ord of order) {
+                for (const prod of ord.items) {
+                    try {
+                        const item = await Products.findById(prod.productId);
+
+                        if (item) {
+                            // Check if product already exists in the array
+                            const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+                            // If product does not exist in the array, push it
+                            if (!productExists) {
+                                products.push(item);
+                            }
+                        } else {
+                            console.log(`Product not found for ID: ${prod.productId}`);
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching product: ${error}`);
+                    }
+                }
+            }
+            return res.render('/admin/orderManagement', { order: order, products: products })
+
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    // oderpage
+    orderPage: async (req, res) => {
+        try {
+
+            const oId = req.params.oId
+            const order = await Order.find({ _id: oId });
+
+            let products = []
+            for (const ord of order) {
+                for (const prod of ord.items) {
+                    try {
+                        const item = await Products.findById(prod.productId);
+
+                        if (item) {
+                            // Check if product already exists in the array
+                            const productExists = products.some(product => product._id.toString() === item._id.toString());
+
+                            // If product does not exist in the array, push it
+                            if (!productExists) {
+                                products.push(item);
+                            }
+                        } else {
+                            console.log(`Product not found for ID: ${prod.productId}`);
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching product: ${error}`);
+                    }
+                }
+            }
+            res.render('/admin/orderPageAdmin', { order: order[0], products: products })
+
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    //updata status
+    updateStatus: async (req, res) => {
+        try {
+            const oId = req.body.oId
+            const status = req.body.status
+            const order = await Order.findById(oId);
+            for (const item of order.items) {
+                const productId = item.productId;
+                const quantity = item.quantity;
+                // Find the corresponding product and update its quantity
+                await Products.findByIdAndUpdate(
+                    productId,
+                    { $inc: { quantity: quantity } },
+                );
+            }
+            order.status = status
+            order.save()
+            return res.status(200).json("updated")
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
 
 module.exports = orderController

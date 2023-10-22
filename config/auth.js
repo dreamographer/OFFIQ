@@ -11,7 +11,7 @@ passport.use(new GoogleStrategy({
   async function (accessToken, refreshToken, profile, done) {
     // Retrieve user data from the profile object
     const email = profile._json.email
-    const User = await user.findOne({ email },{addresses:0,cart:0,wishlist:0}); //data from the DB
+    const User = await user.findOne({ email }, { addresses: 0, cart: 0, wishlist: 0 }); //data from the DB
     if (User) {
       if (User.blocked) {
         const user = "blocked"
@@ -19,6 +19,7 @@ passport.use(new GoogleStrategy({
       } else {
         return done(null, User);
       }
+
     } else {
       const fullName = profile._json.name;
       const profileUrl = profile._json.picture;

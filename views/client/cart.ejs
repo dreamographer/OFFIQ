@@ -17,8 +17,8 @@
         </thead>
         <tbody>
           <% if (products.length<1) {%>
-          <tr class="text-center" >
-            <td colspan="5" rowspan="5" class="w-full" >
+          <tr class="text-center">
+            <td colspan="5" rowspan="5" class="w-full">
               <div class="flex-col flex w-full justify-center items-center">
                 <img src="/images/empty-cart.png" alt="empty cart" class="w-64">
                 Cart is empty
@@ -141,7 +141,7 @@
             <input type="text" name="sum" value="₹<%=sum%>" id="total" class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly onmousedown="return false;" onselectstart="return false;">
 
           </div>
-          <button type="submit"  <% if (products.length<1) {%> disabled<% } %> class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring">
+          <button type="submit" <% if (products.length<1) {%> disabled<% } %> class="group w-full text-center rounded-md relative inline-block overflow-hidden border border-green-600 px-8 py-3 focus:outline-none focus:ring">
             <span class="absolute inset-y-0 left-0 w-[2px] bg-green-600 transition-all group-hover:w-full group-active:bg-green-600"></span>
 
             <span class="relative text-sm font-medium text-green-600 transition-colors group-hover:text-white">

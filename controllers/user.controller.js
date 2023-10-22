@@ -68,12 +68,12 @@ async function verifyOTP(email, otp) {
 async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
   try {
     const deleted = await User.deleteMany({ verified: false })
-    if (deleted.deletedCount>0) {
+    if (deleted.deletedCount > 0) {
       console.log("user deleted");
     }
     return
   } catch (error) {
-    console.error(error );
+    console.error(error);
   }
 
 }
@@ -112,7 +112,7 @@ const userController = {
 
   // forogot password page
   forgotPage: (req, res) => {
-    return res.render('forgotPassword')
+    return res.render('/client/forgotPassword')
   },
 
   // otp for forgot password
@@ -133,8 +133,8 @@ const userController = {
         const need = "forgotPassword"
 
         const send = await sendOTP(user.fullname, email, otp)
-        
-        return res.render('otpVerify', { email: email, need: need, error: '', minutes: 1, seconds: 10 })
+
+        return res.render('/client/otpVerify', { email: email, need: need, error: '', minutes: 1, seconds: 10 })
       }
 
     } catch (err) {
@@ -150,7 +150,7 @@ const userController = {
       const { email, password } = req.body
       const hashPassword = encrypt(password, key)
       const update = await User.updateOne({ email: email }, { $set: { password: hashPassword } }) //updateing the data
-    
+
       return res.redirect('/')
     } catch (error) {
       console.log(error);
@@ -162,8 +162,8 @@ const userController = {
     setTimeout(() => {
       deleteUnverifiedDocs()
     }, 1000 * 60 * 10);
-    return res.render('signup');
-  }, 
+    return res.render('/client/signup');
+  },
 
 
   //user signUp
@@ -180,12 +180,12 @@ const userController = {
         try {
           let { otp, expirationTime } = generateOTP();
           data.otp = encrypt(otp, key)
-          data.otpExpires = expirationTime 
+          data.otpExpires = expirationTime
           const user = await User.create(data) //inserting the data
           const wallet = await Wallet.create({ user: user._id }) //creating wallet
           const send = await sendOTP(user.fullname, user.email, otp)
           const need = "userSignIN"
-          return res.render('otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
+          return res.render('/client/otpVerify', { email: user.email, need: need, error: '', minutes: 1, seconds: 10 })
 
         } catch (err) {
           console.log(err);
@@ -211,15 +211,15 @@ const userController = {
           return res.redirect('/');
         }
         else {
-          return res.render('newPassword', { email });
+          return res.render('/client/newPassword', { email });
         }
       }
       else {
         const { minutes, seconds } = req.body;
         if (need == "userSignIN") {
-          return res.render('otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
+          return res.render('/client/otpVerify', { email: email, need: "userSignIN", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
         } else {
-          return res.render('otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
+          return res.render('/client/otpVerify', { email: email, need: "forgotPassword", error: 'WRONG OTP', minutes: minutes, seconds: seconds })
 
         }
 
@@ -227,9 +227,9 @@ const userController = {
     } catch (error) {
       console.log(error);
     }
-  }, 
+  },
 
-// resend OTP
+  // resend OTP
   resend: async (req, res) => {
     // const tenMinutesAgo = new Date(Date.now() - 0); // 600000 milliseconds is 10 minutes
     try {
@@ -239,7 +239,7 @@ const userController = {
       sendOTP("Resend", email, otp)
       otp = encrypt(otp, key)
       const user = await User.updateOne({ email }, { $set: { otp: otp, otpExpires: expirationTime } }) //inserting the data
-      return res.render('otpVerify', { email: email, need: need, error: 'New OTP send', minutes: 1, seconds: 10 })
+      return res.render('/client/otpVerify', { email: email, need: need, error: 'New OTP send', minutes: 1, seconds: 10 })
     } catch (error) {
       console.error(error);
     }
@@ -254,16 +254,16 @@ const userController = {
       else if (req.session.err) {
         req.session.err = false;
         // Pass an error message to the login view
-        return res.render('login', { errorMessage: 'Incorrect email or password' });
+        return res.render('/client/login', { errorMessage: 'Incorrect email or password' });
       } else if (req.session.exist) {
         req.session.exist = false;
-        return res.render('login', { errorMessage: 'Email already registered , Please login' });
+        return res.render('/client/login', { errorMessage: 'Email already registered , Please login' });
 
       } else if (req.session.block) {
-        return res.render('login', { errorMessage: 'User account has been blocked by the admin' });
+        return res.render('/client/login', { errorMessage: 'User account has been blocked by the admin' });
       }
       else {
-        return res.render('login', { errorMessage: '' });
+        return res.render('/client/login', { errorMessage: '' });
       }
 
     } catch (error) {
@@ -273,9 +273,9 @@ const userController = {
 
   //rendering the home page
   home: async (req, res) => {
-    let category = await Category.find({listed:true});
+    let category = await Category.find({ listed: true });
 
-    return res.render('home', { category: category });
+    return res.render('/client/home', { category: category });
   },
 
   //home page search route 
@@ -303,7 +303,7 @@ const userController = {
     }
 
   },
- 
+
 
   // add new address
   addAddress: async (req, res) => {
@@ -344,9 +344,6 @@ const userController = {
       tag = tag.toUpperCase()
       const userId = req.session.user._id;
       const user = await User.findById(userId)
-      // if (user.addresses.some(item => item.tag === tag)) {
-      //   return res.send('Tag already exist please enter a new tag')
-      // }
       if (user.googleAuth) { //for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
         const addrIndex = gUser.addresses.findIndex((item) => item._id == addrId);  //finding the index of the array if address be updated
@@ -416,7 +413,7 @@ const userController = {
         wallet = await Wallet.create({ user: userId })
       }
       const balance = wallet.balance
-      return res.render('user', { order: order, products: products, user: user, balance })
+      return res.render('/client/user', { order: order, products: products, user: user, balance })
 
     } catch (error) {
       console.log(error.message);

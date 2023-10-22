@@ -5,20 +5,20 @@ const passport = require('passport')
 router.get('/auth/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/auth/google/callback', 
+router.get('/auth/google/callback',
     passport.authenticate('google', {
         failureRedirect: '/login'
     }),
     function (req, res) {
-        const user=req.user
-        if (user==="blocked") {
+        const user = req.user
+        if (user === "blocked") {
             req.session.block = true;
             res.redirect('/');
-        }else{
-        req.session.user = user
-        console.log(user.fullname + ' logged in');
-        // Successful authentication, redirect home.
-        res.redirect('/');
+        } else {
+            req.session.user = user
+            console.log(user.fullname + ' logged in');
+            // Successful authentication, redirect home.
+            res.redirect('/');
         }
     });
 

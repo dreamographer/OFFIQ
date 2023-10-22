@@ -10,8 +10,8 @@ const googelUser = require('../models/emailUserModel');//schema for google auth 
 const Products = require('../models/productModel'); //products schema
 const Coupon = require('../models/couponModel');//coupon schema
 
-const cartController={
-     // user cart
+const cartController = {
+  // user cart
   cart: async (req, res) => {
     try {
       let msg = ''
@@ -25,8 +25,8 @@ const cartController={
 
       for (const prod of cart) {
         try {
-          const pId=prod.productId
-          const item = await Products.findOne({_id:pId,listed:true });
+          const pId = prod.productId
+          const item = await Products.findOne({ _id: pId, listed: true });
           if (item) {
             products.push(item);
           } else {
@@ -43,7 +43,7 @@ const cartController={
         req.app.locals.data = null
       }
 
-      return res.render('cart', { cart: cart, products: products, msg: msg });
+      return res.render('/client/cart', { cart: cart, products: products, msg: msg });
     } catch (error) {
       console.log(error);
     }
@@ -52,14 +52,14 @@ const cartController={
   // add to cart
   addToCart: async (req, res) => {
     try {
-      const productId = req.body.productId; 
-      const quantity = req.body.quantity??1;
+      const productId = req.body.productId;
+      const quantity = req.body.quantity ?? 1;
       const userId = req.session.user._id;
       if (!userId) {
         return res.status(401).json({ message: 'User not authenticated' });
       }
       const updatedProduct = await Products.findOne(
-        { _id: productId, quantity: { $gte: quantity } ,listed:true },
+        { _id: productId, quantity: { $gte: quantity }, listed: true },
         // { $inc: { quantity: -quantity } }, update the quantity
         { new: true }
       );
@@ -180,16 +180,16 @@ const cartController={
   // add product to wishlist
   addToFavorite: async (req, res) => {
     try {
-      const productId = req.body.productId; 
+      const productId = req.body.productId;
       const userId = req.session.user._id;
-      const user=await User.findById(userId)
-      const exixt=user.wishlist.some((prod)=>prod.productId==productId)
+      const user = await User.findById(userId)
+      const exixt = user.wishlist.some((prod) => prod.productId == productId)
       if (exixt) {
-        return res.json({message:"Its Already There"})
+        return res.json({ message: "Its Already There" })
       }
-      user.wishlist.push({productId})
+      user.wishlist.push({ productId })
       user.save()
-      return res.status(200).json({message:"Wishlisted"})
+      return res.status(200).json({ message: "Wishlisted" })
     } catch (error) {
       console.log(error);
     }
@@ -197,4 +197,4 @@ const cartController={
 
 
 }
-module.exports=cartController
+module.exports = cartController

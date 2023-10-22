@@ -1,7 +1,7 @@
 const fs = require("fs");
 const PDFDocument = require("pdfkit");
 
-const makePdf=function createInvoice(invoice, path) {
+const makePdf = function createInvoice(invoice, path) {
   let doc = new PDFDocument({ size: "A4", margin: 50 });
 
   generateHeader(doc);
@@ -16,11 +16,11 @@ const makePdf=function createInvoice(invoice, path) {
 // data,x-axis,y-axix,options
 function generateHeader(doc) {
   doc
-    .image("public/invoice/offiq blacklogo.png", 35, 20, { width: 80 },{ align: "left" })
+    .image("public/invoice/offiq blacklogo.png", 35, 20, { width: 80 }, { align: "left" })
     .fillColor("#444444")
     .fontSize(20)
     .font('public/Fonts/Poppins-Bold.ttf')
-    .text("OFFIQ.shop",0, 57,{ align: "center" })
+    .text("OFFIQ.shop", 0, 57, { align: "center" })
     .fontSize(10)
     .text("OFFIQ.shop", 200, 50, { align: "right" })
     .text("Dotspace Business Park", 200, 65, { align: "right" })
@@ -31,14 +31,14 @@ function generateHeader(doc) {
 
 // FOoter of the PDF
 function generateFooter(doc) {
-	doc.fontSize(
-		10,
-	).text(
-		'Thank You shop with us again',
-		50,
-		750,
-		{ align: 'center', width: 500 },
-	);
+  doc.fontSize(
+    10,
+  ).text(
+    'Thank You shop with us again',
+    50,
+    750,
+    { align: 'center', width: 500 },
+  );
 }
 
 function generateCustomerInformation(doc, invoice) {
@@ -100,15 +100,15 @@ function generateInvoiceTable(doc, invoice) {
   );
   generateHr(doc, invoiceTableTop + 20);
   doc.font("public/Fonts/Poppins-Medium.ttf");
-  let subtotal=0
+  let subtotal = 0
   for (i = 0; i < invoice.items.length; i++) {
     const item = invoice.items[i];
-    subtotal+=item.amount
+    subtotal += item.amount
     const position = invoiceTableTop + (i + 1) * 30;
     generateTableRow( //data of the  table
       doc,
       position,
-      i+1,
+      i + 1,
       item.item,
       formatCurrency(item.amount / item.quantity),
       item.quantity,
@@ -169,7 +169,7 @@ function generateTableRow(
   doc
     .fontSize(10)
     .text(slno, 50, y)
-    .text(name, 150, y, { width: cellWidth,height:20 }) // Set a maximum width for the name cell
+    .text(name, 150, y, { width: cellWidth, height: 20 }) // Set a maximum width for the name cell
     .text(unitCost, 150 + cellWidth, y, { width: cellWidth, align: "right" })
     .text(quantity, 150 + 2 * cellWidth, y, { width: cellWidth, align: "right" })
     .text(Total, 150 + 3 * cellWidth, y, { width: cellWidth, align: "right" });
@@ -198,5 +198,5 @@ function formatDate(date) { //function for formating the date
 }
 
 
-module.exports=makePdf //creating the pdf
+module.exports = makePdf //creating the pdf
 

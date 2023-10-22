@@ -10,15 +10,17 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage,fileFilter: (req, file, cb) => {
-  // Custom file type validation function
-  const allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error('Invalid file type. Only JPEG, PNG, and JPG files are allowed.'));
+const upload = multer({
+  storage: storage, fileFilter: (req, file, cb) => {
+    // Custom file type validation function
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only JPEG, PNG, and JPG files are allowed.'));
+    }
   }
-} });
+});
 
 let uploadArray = upload.array('productImage');
 

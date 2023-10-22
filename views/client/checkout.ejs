@@ -168,7 +168,7 @@
             <input type="radio" value="Wallet" class=" rounded-md  py-3  text-sm   focus:z-10 " name="paymentMode">
             <span>Wallet</span>
           </div>
-          <p > Wallet Balance : <span id="walletBalance"><%=wallet%></span>
+          <p> Wallet Balance : <span id="walletBalance"><%=wallet%></span>
           </p>
         </div>
         <div>
@@ -381,28 +381,28 @@
         })
 
     } else if (paymentMode == 'Wallet') {
-        const wallet=Number(document.getElementById('walletBalance').innerText)
-        const total=Number(document.getElementById('total').innerText.substring(1))
-        console.log(wallet,total);
-        if (wallet-total<0) {
-            return  showToast("Not enough balance In Wallet")
-        }
+      const wallet = Number(document.getElementById('walletBalance').innerText)
+      const total = Number(document.getElementById('total').innerText.substring(1))
+      console.log(wallet, total);
+      if (wallet - total < 0) {
+        return showToast("Not enough balance In Wallet")
+      }
     } else {
       form.submit()
     }
   })
 </script>
 <script>
-    if (window.history && window.history.pushState) {
-      window.history.pushState('no-back', null, '');
-      window.onpopstate = function (event) {
-        if (event.state === 'no-back') {
-          history.go(1);
-        }
-      };
-    }
-  </script>
-  
+  if (window.history && window.history.pushState) {
+    window.history.pushState('no-back', null, '');
+    window.onpopstate = function(event) {
+      if (event.state === 'no-back') {
+        history.go(1);
+      }
+    };
+  }
+</script>
+
 <!-- <script>
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);

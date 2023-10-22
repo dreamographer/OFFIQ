@@ -1,23 +1,23 @@
 const mongoose = require('mongoose');
 const wishlistSchema = new mongoose.Schema({
     productId: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Product', // Reference to the Product model
-      required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product', // Reference to the Product model
+        required: true,
     }
-  });
+});
 const cartItemSchema = new mongoose.Schema({
     productId: {
-      type: mongoose.Schema.Types.ObjectId, 
-      ref: 'Product', // Reference to the Product model
-      required: true,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product', // Reference to the Product model
+        required: true,
     },
     quantity: {
-      type: Number,
-      required: true,
-      min: 1, // Ensure quantity is at least 1
+        type: Number,
+        required: true,
+        min: 1, // Ensure quantity is at least 1
     },
-  });
+});
 const addressSchema = new mongoose.Schema({
     addressLine1: {
         type: String,
@@ -76,7 +76,7 @@ const userSchema = new mongoose.Schema({
         type: String,
     },
     addresses: [addressSchema], // Array of embedded address objects
-    cart:[cartItemSchema],
-    wishlist:[wishlistSchema],
-},{ timestamps: true });
-module.exports = mongoose.model('emailUser', userSchema,'user') 
+    cart: [cartItemSchema],
+    wishlist: [wishlistSchema],
+}, { timestamps: true });
+module.exports = mongoose.model('emailUser', userSchema, 'user') 

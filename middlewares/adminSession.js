@@ -4,6 +4,6 @@ module.exports = function sessionMangement(req, res, next) {
         next();
     } else {
         res.redirect('/admin');
-        
+
     }
 }
