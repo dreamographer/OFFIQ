@@ -67,6 +67,7 @@
         </div>
       </div>
     </div>
+    <%let subtotal=0 %>
     <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
       <% products.forEach((product,i)=> { %>
       <div class="flex flex-col rounded-lg bg-white sm:flex-row">
@@ -85,13 +86,21 @@
           </p>
         </div>
       </div>
+      <% subtotal=subtotal+(order.items[i].price*order.items[i].quantity) %>
+
       <% }); %>
     </div>
     <div class="border-t-2 mt-5 mb-5  p-4">
-      <p class="text-xl font-bold">
-        Grand total : ₹<%= order.total %>
-      </p>
-    </div>
+        <p class="text-xl font-bold">
+          SUB TOTAL : <%= subtotal %>
+        </p>
+        <p class="text-xl font-bold">
+          Coupon Discount : <%= order.offer %>
+        </p>
+        <p class="text-xl font-bold">
+          GRAND TOTAL : ₹<%= order.total %>
+        </p>
+      </div>
 
   </div>
 </div>

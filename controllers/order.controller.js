@@ -4,6 +4,7 @@ const router = express.Router();
 router.use(express.json());
 const path = require('path');
 const crypto = require('crypto');  //encription module
+const ObjectId = require('mongoose').Types.ObjectId;
 
 //modals
 const User = require('../models/user.models'); //user schema
@@ -377,7 +378,7 @@ const orderController = {
     },
 
     // oderpage
-    orderPage: async (req, res) => {
+    orderPageAdmin: async (req, res) => {
         try {
 
             const oId = req.params.oId

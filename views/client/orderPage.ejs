@@ -2,320 +2,333 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/dist/output.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,200&family=Poppins:wght@100;400;700;800;900&display=swap"
-        rel="stylesheet">
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/dist/output.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,200&family=Poppins:wght@100;400;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
-    <title>Mycart</title>
+  <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-solid-straight/css/uicons-solid-straight.css'>
+  <title>Mycart</title>
 </head>
 
 <body class="font-[Montserrat]  text-gray-900">
-    <!-- header -->
-    <header id="header" class="w-full fixed top-0 z-40 backdrop-filter  backdrop-blur-sm h-20 md:h-28  shadow-sm ">
-        <!-- nav bar -->
-        <nav class="justify-between items-center w-full hidden md:flex  ">
+  <!-- header -->
+  <header id="header" class="w-full fixed top-0 z-40 backdrop-filter  backdrop-blur-sm h-20 md:h-28  shadow-sm ">
+    <!-- nav bar -->
+    <nav class="justify-between items-center w-full hidden md:flex  ">
 
-            <!-- logo -->
-            <a href="/">
-                <div class="flex  items-center">
-                    <img src="/images/offiq blacklogo.png" alt="Logo" class=" md:translate-x-0  w-28 h-18 ">
-                </div>
-            </a>
-
-            <div class="h-20 flex items-center">
-                <ol class="flex space-x-4 ">
-                    <li class="flex">All category <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 15.5C11.7374 15.5005 11.4772 15.449 11.2346 15.3486C10.9919 15.2482 10.7715 15.1009 10.586 14.915L5.29297 9.621L6.70697 8.207L12 13.5L17.293 8.207L18.707 9.621L13.414 14.914C13.2285 15.1 13.0081 15.2476 12.7655 15.3482C12.5228 15.4487 12.2626 15.5003 12 15.5Z"
-                                fill="#374957" />
-                        </svg>
-                    </li>
-                    <li>Home</li>
-                    <li>My cart</li>
-                    <li>Contact US</li>
-                </ol>
-            </div>
-            <div class="flex  text-center mx-6 gap-5">
-                <a href="/cart">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_259_1654)">
-                            <path
-                                d="M24 3H4.242L4.2 2.649C4.11405 1.91942 3.76338 1.24673 3.21449 0.758478C2.6656 0.270223 1.95663 0.000341793 1.222 0L0 0V2H1.222C1.46693 2.00003 1.70334 2.08996 1.88637 2.25272C2.06941 2.41547 2.18634 2.63975 2.215 2.883L3.8 16.351C3.88595 17.0806 4.23662 17.7533 4.78551 18.2415C5.3344 18.7298 6.04337 18.9997 6.778 19H20V17H6.778C6.53291 16.9999 6.29638 16.9099 6.11333 16.7469C5.93027 16.5839 5.81343 16.3594 5.785 16.116L5.654 15H21.836L24 3ZM20.164 13H5.419L4.478 5H21.607L20.164 13Z"
-                                fill="#374957" />
-                            <path
-                                d="M7 24.0006C8.10456 24.0006 8.99999 23.1052 8.99999 22.0006C8.99999 20.896 8.10456 20.0006 7 20.0006C5.89543 20.0006 5 20.896 5 22.0006C5 23.1052 5.89543 24.0006 7 24.0006Z"
-                                fill="#374957" />
-                            <path
-                                d="M17 24.0006C18.1046 24.0006 19 23.1052 19 22.0006C19 20.896 18.1046 20.0006 17 20.0006C15.8954 20.0006 15 20.896 15 22.0006C15 23.1052 15.8954 24.0006 17 24.0006Z"
-                                fill="#374957" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_259_1654">
-                                <rect width="24" height="24" fill="white" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                </a>
-                <a href="/myAccout">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_259_3183)">
-                            <path
-                                d="M23 16.0003C22.7348 16.0003 22.4804 16.1057 22.2929 16.2932C22.1053 16.4807 22 16.7351 22 17.0003V19.0003C22 19.7959 21.6839 20.559 21.1213 21.1216C20.5587 21.6842 19.7956 22.0003 19 22.0003H17C16.7348 22.0003 16.4804 22.1056 16.2929 22.2932C16.1054 22.4807 16 22.7351 16 23.0003C16 23.2655 16.1054 23.5199 16.2929 23.7074C16.4804 23.8949 16.7348 24.0003 17 24.0003H19C20.3256 23.9987 21.5964 23.4714 22.5338 22.5341C23.4711 21.5967 23.9984 20.3259 24 19.0003V17.0003C24 16.7351 23.8946 16.4807 23.7071 16.2932C23.5196 16.1057 23.2652 16.0003 23 16.0003Z"
-                                fill="#374957" />
-                            <path
-                                d="M1 8C1.26522 8 1.51957 7.89464 1.70711 7.70711C1.89464 7.51957 2 7.26522 2 7V5C2 4.20435 2.31607 3.44129 2.87868 2.87868C3.44129 2.31607 4.20435 2 5 2H7C7.26522 2 7.51957 1.89464 7.70711 1.70711C7.89464 1.51957 8 1.26522 8 1C8 0.734784 7.89464 0.48043 7.70711 0.292893C7.51957 0.105357 7.26522 0 7 0L5 0C3.67441 0.00158786 2.40356 0.528882 1.46622 1.46622C0.528882 2.40356 0.00158786 3.67441 0 5L0 7C0 7.26522 0.105357 7.51957 0.292893 7.70711C0.48043 7.89464 0.734784 8 1 8Z"
-                                fill="#374957" />
-                            <path
-                                d="M7 22.0003H5C4.20435 22.0003 3.44129 21.6842 2.87868 21.1216C2.31607 20.559 2 19.7959 2 19.0003V17.0003C2 16.7351 1.89464 16.4807 1.70711 16.2932C1.51957 16.1057 1.26522 16.0003 1 16.0003C0.734784 16.0003 0.48043 16.1057 0.292893 16.2932C0.105357 16.4807 0 16.7351 0 17.0003L0 19.0003C0.00158786 20.3259 0.528882 21.5967 1.46622 22.5341C2.40356 23.4714 3.67441 23.9987 5 24.0003H7C7.26522 24.0003 7.51957 23.8949 7.70711 23.7074C7.89464 23.5199 8 23.2655 8 23.0003C8 22.7351 7.89464 22.4807 7.70711 22.2932C7.51957 22.1056 7.26522 22.0003 7 22.0003Z"
-                                fill="#374957" />
-                            <path
-                                d="M19 0H17C16.7348 0 16.4804 0.105357 16.2929 0.292893C16.1054 0.48043 16 0.734784 16 1C16 1.26522 16.1054 1.51957 16.2929 1.70711C16.4804 1.89464 16.7348 2 17 2H19C19.7956 2 20.5587 2.31607 21.1213 2.87868C21.6839 3.44129 22 4.20435 22 5V7C22 7.26522 22.1053 7.51957 22.2929 7.70711C22.4804 7.89464 22.7348 8 23 8C23.2652 8 23.5196 7.89464 23.7071 7.70711C23.8946 7.51957 24 7.26522 24 7V5C23.9984 3.67441 23.4711 2.40356 22.5338 1.46622C21.5964 0.528882 20.3256 0.00158786 19 0V0Z"
-                                fill="#374957" />
-                            <path
-                                d="M12 10.9999C12.7911 10.9999 13.5645 10.7653 14.2223 10.3258C14.8801 9.88629 15.3928 9.26158 15.6955 8.53067C15.9983 7.79977 16.0775 6.9955 15.9231 6.21958C15.7688 5.44366 15.3878 4.73092 14.8284 4.17151C14.269 3.6121 13.5563 3.23114 12.7804 3.0768C12.0044 2.92246 11.2002 3.00167 10.4693 3.30442C9.73836 3.60717 9.11365 4.11986 8.67412 4.77766C8.2346 5.43546 8 6.20882 8 6.99994C8 8.06081 8.42143 9.07822 9.17157 9.82837C9.92172 10.5785 10.9391 10.9999 12 10.9999ZM12 4.99994C12.3956 4.99994 12.7822 5.11724 13.1111 5.337C13.44 5.55676 13.6964 5.86912 13.8478 6.23457C13.9991 6.60003 14.0387 7.00216 13.9616 7.39012C13.8844 7.77808 13.6939 8.13445 13.4142 8.41415C13.1345 8.69386 12.7781 8.88434 12.3902 8.96151C12.0022 9.03868 11.6001 8.99908 11.2346 8.8477C10.8692 8.69632 10.5568 8.43998 10.3371 8.11108C10.1173 7.78218 10 7.3955 10 6.99994C10 6.46951 10.2107 5.9608 10.5858 5.58573C10.9609 5.21065 11.4696 4.99994 12 4.99994Z"
-                                fill="#374957" />
-                            <path
-                                d="M18 20.0003C18.2652 20.0003 18.5196 19.8949 18.7071 19.7074C18.8946 19.5199 19 19.2655 19 19.0003C18.9984 17.4095 18.3658 15.8843 17.2409 14.7594C16.116 13.6345 14.5908 13.0019 13 13.0003H11C9.40919 13.0019 7.88399 13.6345 6.75911 14.7594C5.63424 15.8843 5.00159 17.4095 5 19.0003C5 19.2655 5.10536 19.5199 5.29289 19.7074C5.48043 19.8949 5.73478 20.0003 6 20.0003C6.26522 20.0003 6.51957 19.8949 6.70711 19.7074C6.89464 19.5199 7 19.2655 7 19.0003C7 17.9394 7.42143 16.922 8.17157 16.1719C8.92172 15.4217 9.93913 15.0003 11 15.0003H13C14.0609 15.0003 15.0783 15.4217 15.8284 16.1719C16.5786 16.922 17 17.9394 17 19.0003C17 19.2655 17.1054 19.5199 17.2929 19.7074C17.4804 19.8949 17.7348 20.0003 18 20.0003Z"
-                                fill="#374957" />
-                        </g>
-                        <defs>
-                            <clipPath id="clip0_259_3183">
-                                <rect width="24" height="24" fill="white" />
-                            </clipPath>
-                        </defs>
-                    </svg>
-                </a>
-
-            </div>
-        </nav>
-        <div class="md:hidden">
-            <button id="toggle-menu" class="flex items-center px-4 pt-5">
-                <i class="fa fa-bars text-2xl"></i>
-            </button>
-            <div class="flex">
-                <img src="/images/offiq blacklogo.png" alt="Logo" class="md:w-20 mx-auto -translate-y-10 w-20 h-18 ">
-
-                <svg width="24" class="mr-5 -mt-5" height="24" viewBox="0 0 24 24" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_259_3183)">
-                        <path
-                            d="M23 16.0003C22.7348 16.0003 22.4804 16.1057 22.2929 16.2932C22.1053 16.4807 22 16.7351 22 17.0003V19.0003C22 19.7959 21.6839 20.559 21.1213 21.1216C20.5587 21.6842 19.7956 22.0003 19 22.0003H17C16.7348 22.0003 16.4804 22.1056 16.2929 22.2932C16.1054 22.4807 16 22.7351 16 23.0003C16 23.2655 16.1054 23.5199 16.2929 23.7074C16.4804 23.8949 16.7348 24.0003 17 24.0003H19C20.3256 23.9987 21.5964 23.4714 22.5338 22.5341C23.4711 21.5967 23.9984 20.3259 24 19.0003V17.0003C24 16.7351 23.8946 16.4807 23.7071 16.2932C23.5196 16.1057 23.2652 16.0003 23 16.0003Z"
-                            fill="#374957" />
-                        <path
-                            d="M1 8C1.26522 8 1.51957 7.89464 1.70711 7.70711C1.89464 7.51957 2 7.26522 2 7V5C2 4.20435 2.31607 3.44129 2.87868 2.87868C3.44129 2.31607 4.20435 2 5 2H7C7.26522 2 7.51957 1.89464 7.70711 1.70711C7.89464 1.51957 8 1.26522 8 1C8 0.734784 7.89464 0.48043 7.70711 0.292893C7.51957 0.105357 7.26522 0 7 0L5 0C3.67441 0.00158786 2.40356 0.528882 1.46622 1.46622C0.528882 2.40356 0.00158786 3.67441 0 5L0 7C0 7.26522 0.105357 7.51957 0.292893 7.70711C0.48043 7.89464 0.734784 8 1 8Z"
-                            fill="#374957" />
-                        <path
-                            d="M7 22.0003H5C4.20435 22.0003 3.44129 21.6842 2.87868 21.1216C2.31607 20.559 2 19.7959 2 19.0003V17.0003C2 16.7351 1.89464 16.4807 1.70711 16.2932C1.51957 16.1057 1.26522 16.0003 1 16.0003C0.734784 16.0003 0.48043 16.1057 0.292893 16.2932C0.105357 16.4807 0 16.7351 0 17.0003L0 19.0003C0.00158786 20.3259 0.528882 21.5967 1.46622 22.5341C2.40356 23.4714 3.67441 23.9987 5 24.0003H7C7.26522 24.0003 7.51957 23.8949 7.70711 23.7074C7.89464 23.5199 8 23.2655 8 23.0003C8 22.7351 7.89464 22.4807 7.70711 22.2932C7.51957 22.1056 7.26522 22.0003 7 22.0003Z"
-                            fill="#374957" />
-                        <path
-                            d="M19 0H17C16.7348 0 16.4804 0.105357 16.2929 0.292893C16.1054 0.48043 16 0.734784 16 1C16 1.26522 16.1054 1.51957 16.2929 1.70711C16.4804 1.89464 16.7348 2 17 2H19C19.7956 2 20.5587 2.31607 21.1213 2.87868C21.6839 3.44129 22 4.20435 22 5V7C22 7.26522 22.1053 7.51957 22.2929 7.70711C22.4804 7.89464 22.7348 8 23 8C23.2652 8 23.5196 7.89464 23.7071 7.70711C23.8946 7.51957 24 7.26522 24 7V5C23.9984 3.67441 23.4711 2.40356 22.5338 1.46622C21.5964 0.528882 20.3256 0.00158786 19 0V0Z"
-                            fill="#374957" />
-                        <path
-                            d="M12 10.9999C12.7911 10.9999 13.5645 10.7653 14.2223 10.3258C14.8801 9.88629 15.3928 9.26158 15.6955 8.53067C15.9983 7.79977 16.0775 6.9955 15.9231 6.21958C15.7688 5.44366 15.3878 4.73092 14.8284 4.17151C14.269 3.6121 13.5563 3.23114 12.7804 3.0768C12.0044 2.92246 11.2002 3.00167 10.4693 3.30442C9.73836 3.60717 9.11365 4.11986 8.67412 4.77766C8.2346 5.43546 8 6.20882 8 6.99994C8 8.06081 8.42143 9.07822 9.17157 9.82837C9.92172 10.5785 10.9391 10.9999 12 10.9999ZM12 4.99994C12.3956 4.99994 12.7822 5.11724 13.1111 5.337C13.44 5.55676 13.6964 5.86912 13.8478 6.23457C13.9991 6.60003 14.0387 7.00216 13.9616 7.39012C13.8844 7.77808 13.6939 8.13445 13.4142 8.41415C13.1345 8.69386 12.7781 8.88434 12.3902 8.96151C12.0022 9.03868 11.6001 8.99908 11.2346 8.8477C10.8692 8.69632 10.5568 8.43998 10.3371 8.11108C10.1173 7.78218 10 7.3955 10 6.99994C10 6.46951 10.2107 5.9608 10.5858 5.58573C10.9609 5.21065 11.4696 4.99994 12 4.99994Z"
-                            fill="#374957" />
-                        <path
-                            d="M18 20.0003C18.2652 20.0003 18.5196 19.8949 18.7071 19.7074C18.8946 19.5199 19 19.2655 19 19.0003C18.9984 17.4095 18.3658 15.8843 17.2409 14.7594C16.116 13.6345 14.5908 13.0019 13 13.0003H11C9.40919 13.0019 7.88399 13.6345 6.75911 14.7594C5.63424 15.8843 5.00159 17.4095 5 19.0003C5 19.2655 5.10536 19.5199 5.29289 19.7074C5.48043 19.8949 5.73478 20.0003 6 20.0003C6.26522 20.0003 6.51957 19.8949 6.70711 19.7074C6.89464 19.5199 7 19.2655 7 19.0003C7 17.9394 7.42143 16.922 8.17157 16.1719C8.92172 15.4217 9.93913 15.0003 11 15.0003H13C14.0609 15.0003 15.0783 15.4217 15.8284 16.1719C16.5786 16.922 17 17.9394 17 19.0003C17 19.2655 17.1054 19.5199 17.2929 19.7074C17.4804 19.8949 17.7348 20.0003 18 20.0003Z"
-                            fill="#374957" />
-                    </g>
-                    <defs>
-                        <clipPath id="clip0_259_3183">
-                            <rect width="24" height="24" fill="white" />
-                        </clipPath>
-                    </defs>
-                </svg>
-
-            </div>
-            <div id="mobile-menu" class="hidden ">
-                <!-- Your mobile menu items here -->
-                <ul class="text-gray-600 pl-3 -translate-y-10 z-50 bg-white relative">
-                    <li class="py-2">Home</li>
-                    <a href="/cart">
-                        <li class="py-2">My cart</li>
-                    </a>
-                    <li class="py-2">Contact Us</li>
-                    <li class="py-2">Contact Us</li>
-                </ul>
-            </div>
-
+      <!-- logo -->
+      <a href="/">
+        <div class="flex  items-center">
+          <img src="/images/offiq blacklogo.png" alt="Logo" class=" md:translate-x-0  w-28 h-18 ">
         </div>
-    </header>
-    <div class="mt-28 p-3 overflow-hidden">
-        <% if (msg) { %>
-            <div id="animate"
-                class="text-center text-2xl  flex-col flex items-center   h-screen text-green-500 w-screen font-semibold mt-5 mb-5 transition-all ">
-                <lottie-player src="/images/animation_lnbwm9ui.json" background="transparent" speed="1"
-                    class="w-96 absolute h-96 " autoplay></lottie-player>
+      </a>
 
-                <p id="msg" class="transition-opacity ">
-                    <%=msg %>
-                </p>
-            </div>
-            <% } %>
-                <div class="w-full overflow-auto">
-                    <div class="border-b-2 mt-5 mb-5  p-4">
-                        <div class="md:flex justify-between">
-                            <h2 class="sm:text-2xl text-xl mb-2 font-bold ">ORDER #<%= order._id %>
-                            </h2>
-                            <p class="font-medium">Date:<%let options={ weekday: 'short' , year: 'numeric' ,
+      <div class="h-20 flex items-center">
+        <ol class="flex space-x-4 ">
+          <li class="flex">All category <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15.5C11.7374 15.5005 11.4772 15.449 11.2346 15.3486C10.9919 15.2482 10.7715 15.1009 10.586 14.915L5.29297 9.621L6.70697 8.207L12 13.5L17.293 8.207L18.707 9.621L13.414 14.914C13.2285 15.1 13.0081 15.2476 12.7655 15.3482C12.5228 15.4487 12.2626 15.5003 12 15.5Z" fill="#374957" />
+            </svg>
+          </li>
+          <li>Home</li>
+          <li>My cart</li>
+          <li>Contact US</li>
+        </ol>
+      </div>
+      <div class="flex  text-center mx-6 gap-5">
+        <a href="/cart">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_259_1654)">
+              <path d="M24 3H4.242L4.2 2.649C4.11405 1.91942 3.76338 1.24673 3.21449 0.758478C2.6656 0.270223 1.95663 0.000341793 1.222 0L0 0V2H1.222C1.46693 2.00003 1.70334 2.08996 1.88637 2.25272C2.06941 2.41547 2.18634 2.63975 2.215 2.883L3.8 16.351C3.88595 17.0806 4.23662 17.7533 4.78551 18.2415C5.3344 18.7298 6.04337 18.9997 6.778 19H20V17H6.778C6.53291 16.9999 6.29638 16.9099 6.11333 16.7469C5.93027 16.5839 5.81343 16.3594 5.785 16.116L5.654 15H21.836L24 3ZM20.164 13H5.419L4.478 5H21.607L20.164 13Z" fill="#374957" />
+              <path d="M7 24.0006C8.10456 24.0006 8.99999 23.1052 8.99999 22.0006C8.99999 20.896 8.10456 20.0006 7 20.0006C5.89543 20.0006 5 20.896 5 22.0006C5 23.1052 5.89543 24.0006 7 24.0006Z" fill="#374957" />
+              <path d="M17 24.0006C18.1046 24.0006 19 23.1052 19 22.0006C19 20.896 18.1046 20.0006 17 20.0006C15.8954 20.0006 15 20.896 15 22.0006C15 23.1052 15.8954 24.0006 17 24.0006Z" fill="#374957" />
+            </g>
+            <defs>
+              <clipPath id="clip0_259_1654">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+        <a href="/myAccout">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_259_3183)">
+              <path d="M23 16.0003C22.7348 16.0003 22.4804 16.1057 22.2929 16.2932C22.1053 16.4807 22 16.7351 22 17.0003V19.0003C22 19.7959 21.6839 20.559 21.1213 21.1216C20.5587 21.6842 19.7956 22.0003 19 22.0003H17C16.7348 22.0003 16.4804 22.1056 16.2929 22.2932C16.1054 22.4807 16 22.7351 16 23.0003C16 23.2655 16.1054 23.5199 16.2929 23.7074C16.4804 23.8949 16.7348 24.0003 17 24.0003H19C20.3256 23.9987 21.5964 23.4714 22.5338 22.5341C23.4711 21.5967 23.9984 20.3259 24 19.0003V17.0003C24 16.7351 23.8946 16.4807 23.7071 16.2932C23.5196 16.1057 23.2652 16.0003 23 16.0003Z" fill="#374957" />
+              <path d="M1 8C1.26522 8 1.51957 7.89464 1.70711 7.70711C1.89464 7.51957 2 7.26522 2 7V5C2 4.20435 2.31607 3.44129 2.87868 2.87868C3.44129 2.31607 4.20435 2 5 2H7C7.26522 2 7.51957 1.89464 7.70711 1.70711C7.89464 1.51957 8 1.26522 8 1C8 0.734784 7.89464 0.48043 7.70711 0.292893C7.51957 0.105357 7.26522 0 7 0L5 0C3.67441 0.00158786 2.40356 0.528882 1.46622 1.46622C0.528882 2.40356 0.00158786 3.67441 0 5L0 7C0 7.26522 0.105357 7.51957 0.292893 7.70711C0.48043 7.89464 0.734784 8 1 8Z" fill="#374957" />
+              <path d="M7 22.0003H5C4.20435 22.0003 3.44129 21.6842 2.87868 21.1216C2.31607 20.559 2 19.7959 2 19.0003V17.0003C2 16.7351 1.89464 16.4807 1.70711 16.2932C1.51957 16.1057 1.26522 16.0003 1 16.0003C0.734784 16.0003 0.48043 16.1057 0.292893 16.2932C0.105357 16.4807 0 16.7351 0 17.0003L0 19.0003C0.00158786 20.3259 0.528882 21.5967 1.46622 22.5341C2.40356 23.4714 3.67441 23.9987 5 24.0003H7C7.26522 24.0003 7.51957 23.8949 7.70711 23.7074C7.89464 23.5199 8 23.2655 8 23.0003C8 22.7351 7.89464 22.4807 7.70711 22.2932C7.51957 22.1056 7.26522 22.0003 7 22.0003Z" fill="#374957" />
+              <path d="M19 0H17C16.7348 0 16.4804 0.105357 16.2929 0.292893C16.1054 0.48043 16 0.734784 16 1C16 1.26522 16.1054 1.51957 16.2929 1.70711C16.4804 1.89464 16.7348 2 17 2H19C19.7956 2 20.5587 2.31607 21.1213 2.87868C21.6839 3.44129 22 4.20435 22 5V7C22 7.26522 22.1053 7.51957 22.2929 7.70711C22.4804 7.89464 22.7348 8 23 8C23.2652 8 23.5196 7.89464 23.7071 7.70711C23.8946 7.51957 24 7.26522 24 7V5C23.9984 3.67441 23.4711 2.40356 22.5338 1.46622C21.5964 0.528882 20.3256 0.00158786 19 0V0Z" fill="#374957" />
+              <path d="M12 10.9999C12.7911 10.9999 13.5645 10.7653 14.2223 10.3258C14.8801 9.88629 15.3928 9.26158 15.6955 8.53067C15.9983 7.79977 16.0775 6.9955 15.9231 6.21958C15.7688 5.44366 15.3878 4.73092 14.8284 4.17151C14.269 3.6121 13.5563 3.23114 12.7804 3.0768C12.0044 2.92246 11.2002 3.00167 10.4693 3.30442C9.73836 3.60717 9.11365 4.11986 8.67412 4.77766C8.2346 5.43546 8 6.20882 8 6.99994C8 8.06081 8.42143 9.07822 9.17157 9.82837C9.92172 10.5785 10.9391 10.9999 12 10.9999ZM12 4.99994C12.3956 4.99994 12.7822 5.11724 13.1111 5.337C13.44 5.55676 13.6964 5.86912 13.8478 6.23457C13.9991 6.60003 14.0387 7.00216 13.9616 7.39012C13.8844 7.77808 13.6939 8.13445 13.4142 8.41415C13.1345 8.69386 12.7781 8.88434 12.3902 8.96151C12.0022 9.03868 11.6001 8.99908 11.2346 8.8477C10.8692 8.69632 10.5568 8.43998 10.3371 8.11108C10.1173 7.78218 10 7.3955 10 6.99994C10 6.46951 10.2107 5.9608 10.5858 5.58573C10.9609 5.21065 11.4696 4.99994 12 4.99994Z" fill="#374957" />
+              <path d="M18 20.0003C18.2652 20.0003 18.5196 19.8949 18.7071 19.7074C18.8946 19.5199 19 19.2655 19 19.0003C18.9984 17.4095 18.3658 15.8843 17.2409 14.7594C16.116 13.6345 14.5908 13.0019 13 13.0003H11C9.40919 13.0019 7.88399 13.6345 6.75911 14.7594C5.63424 15.8843 5.00159 17.4095 5 19.0003C5 19.2655 5.10536 19.5199 5.29289 19.7074C5.48043 19.8949 5.73478 20.0003 6 20.0003C6.26522 20.0003 6.51957 19.8949 6.70711 19.7074C6.89464 19.5199 7 19.2655 7 19.0003C7 17.9394 7.42143 16.922 8.17157 16.1719C8.92172 15.4217 9.93913 15.0003 11 15.0003H13C14.0609 15.0003 15.0783 15.4217 15.8284 16.1719C16.5786 16.922 17 17.9394 17 19.0003C17 19.2655 17.1054 19.5199 17.2929 19.7074C17.4804 19.8949 17.7348 20.0003 18 20.0003Z" fill="#374957" />
+            </g>
+            <defs>
+              <clipPath id="clip0_259_3183">
+                <rect width="24" height="24" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+
+      </div>
+    </nav>
+    <div class="md:hidden">
+      <button id="toggle-menu" class="flex items-center px-4 pt-5">
+        <i class="fa fa-bars text-2xl"></i>
+      </button>
+      <div class="flex">
+        <img src="/images/offiq blacklogo.png" alt="Logo" class="md:w-20 mx-auto -translate-y-10 w-20 h-18 ">
+
+        <svg width="24" class="mr-5 -mt-5" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0_259_3183)">
+            <path d="M23 16.0003C22.7348 16.0003 22.4804 16.1057 22.2929 16.2932C22.1053 16.4807 22 16.7351 22 17.0003V19.0003C22 19.7959 21.6839 20.559 21.1213 21.1216C20.5587 21.6842 19.7956 22.0003 19 22.0003H17C16.7348 22.0003 16.4804 22.1056 16.2929 22.2932C16.1054 22.4807 16 22.7351 16 23.0003C16 23.2655 16.1054 23.5199 16.2929 23.7074C16.4804 23.8949 16.7348 24.0003 17 24.0003H19C20.3256 23.9987 21.5964 23.4714 22.5338 22.5341C23.4711 21.5967 23.9984 20.3259 24 19.0003V17.0003C24 16.7351 23.8946 16.4807 23.7071 16.2932C23.5196 16.1057 23.2652 16.0003 23 16.0003Z" fill="#374957" />
+            <path d="M1 8C1.26522 8 1.51957 7.89464 1.70711 7.70711C1.89464 7.51957 2 7.26522 2 7V5C2 4.20435 2.31607 3.44129 2.87868 2.87868C3.44129 2.31607 4.20435 2 5 2H7C7.26522 2 7.51957 1.89464 7.70711 1.70711C7.89464 1.51957 8 1.26522 8 1C8 0.734784 7.89464 0.48043 7.70711 0.292893C7.51957 0.105357 7.26522 0 7 0L5 0C3.67441 0.00158786 2.40356 0.528882 1.46622 1.46622C0.528882 2.40356 0.00158786 3.67441 0 5L0 7C0 7.26522 0.105357 7.51957 0.292893 7.70711C0.48043 7.89464 0.734784 8 1 8Z" fill="#374957" />
+            <path d="M7 22.0003H5C4.20435 22.0003 3.44129 21.6842 2.87868 21.1216C2.31607 20.559 2 19.7959 2 19.0003V17.0003C2 16.7351 1.89464 16.4807 1.70711 16.2932C1.51957 16.1057 1.26522 16.0003 1 16.0003C0.734784 16.0003 0.48043 16.1057 0.292893 16.2932C0.105357 16.4807 0 16.7351 0 17.0003L0 19.0003C0.00158786 20.3259 0.528882 21.5967 1.46622 22.5341C2.40356 23.4714 3.67441 23.9987 5 24.0003H7C7.26522 24.0003 7.51957 23.8949 7.70711 23.7074C7.89464 23.5199 8 23.2655 8 23.0003C8 22.7351 7.89464 22.4807 7.70711 22.2932C7.51957 22.1056 7.26522 22.0003 7 22.0003Z" fill="#374957" />
+            <path d="M19 0H17C16.7348 0 16.4804 0.105357 16.2929 0.292893C16.1054 0.48043 16 0.734784 16 1C16 1.26522 16.1054 1.51957 16.2929 1.70711C16.4804 1.89464 16.7348 2 17 2H19C19.7956 2 20.5587 2.31607 21.1213 2.87868C21.6839 3.44129 22 4.20435 22 5V7C22 7.26522 22.1053 7.51957 22.2929 7.70711C22.4804 7.89464 22.7348 8 23 8C23.2652 8 23.5196 7.89464 23.7071 7.70711C23.8946 7.51957 24 7.26522 24 7V5C23.9984 3.67441 23.4711 2.40356 22.5338 1.46622C21.5964 0.528882 20.3256 0.00158786 19 0V0Z" fill="#374957" />
+            <path d="M12 10.9999C12.7911 10.9999 13.5645 10.7653 14.2223 10.3258C14.8801 9.88629 15.3928 9.26158 15.6955 8.53067C15.9983 7.79977 16.0775 6.9955 15.9231 6.21958C15.7688 5.44366 15.3878 4.73092 14.8284 4.17151C14.269 3.6121 13.5563 3.23114 12.7804 3.0768C12.0044 2.92246 11.2002 3.00167 10.4693 3.30442C9.73836 3.60717 9.11365 4.11986 8.67412 4.77766C8.2346 5.43546 8 6.20882 8 6.99994C8 8.06081 8.42143 9.07822 9.17157 9.82837C9.92172 10.5785 10.9391 10.9999 12 10.9999ZM12 4.99994C12.3956 4.99994 12.7822 5.11724 13.1111 5.337C13.44 5.55676 13.6964 5.86912 13.8478 6.23457C13.9991 6.60003 14.0387 7.00216 13.9616 7.39012C13.8844 7.77808 13.6939 8.13445 13.4142 8.41415C13.1345 8.69386 12.7781 8.88434 12.3902 8.96151C12.0022 9.03868 11.6001 8.99908 11.2346 8.8477C10.8692 8.69632 10.5568 8.43998 10.3371 8.11108C10.1173 7.78218 10 7.3955 10 6.99994C10 6.46951 10.2107 5.9608 10.5858 5.58573C10.9609 5.21065 11.4696 4.99994 12 4.99994Z" fill="#374957" />
+            <path d="M18 20.0003C18.2652 20.0003 18.5196 19.8949 18.7071 19.7074C18.8946 19.5199 19 19.2655 19 19.0003C18.9984 17.4095 18.3658 15.8843 17.2409 14.7594C16.116 13.6345 14.5908 13.0019 13 13.0003H11C9.40919 13.0019 7.88399 13.6345 6.75911 14.7594C5.63424 15.8843 5.00159 17.4095 5 19.0003C5 19.2655 5.10536 19.5199 5.29289 19.7074C5.48043 19.8949 5.73478 20.0003 6 20.0003C6.26522 20.0003 6.51957 19.8949 6.70711 19.7074C6.89464 19.5199 7 19.2655 7 19.0003C7 17.9394 7.42143 16.922 8.17157 16.1719C8.92172 15.4217 9.93913 15.0003 11 15.0003H13C14.0609 15.0003 15.0783 15.4217 15.8284 16.1719C16.5786 16.922 17 17.9394 17 19.0003C17 19.2655 17.1054 19.5199 17.2929 19.7074C17.4804 19.8949 17.7348 20.0003 18 20.0003Z" fill="#374957" />
+          </g>
+          <defs>
+            <clipPath id="clip0_259_3183">
+              <rect width="24" height="24" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+
+      </div>
+      <div id="mobile-menu" class="hidden ">
+        <!-- Your mobile menu items here -->
+        <ul class="text-gray-600 pl-3 -translate-y-10 z-50 bg-white relative">
+          <li class="py-2">Home</li>
+          <a href="/cart">
+            <li class="py-2">My cart</li>
+          </a>
+          <li class="py-2">Contact Us</li>
+          <li class="py-2">Contact Us</li>
+        </ul>
+      </div>
+
+    </div>
+  </header>
+  <div class="mt-28 p-3 overflow-hidden">
+    <% if (msg) { %>
+    <div id="animate" class="text-center text-2xl  flex-col flex items-center   h-screen text-green-500 w-screen font-semibold mt-5 mb-5 transition-all ">
+      <lottie-player src="/images/animation_lnbwm9ui.json" background="transparent" speed="1" class="w-96 absolute h-96 " autoplay></lottie-player>
+
+      <p id="msg" class="transition-opacity ">
+        <%=msg %>
+      </p>
+    </div>
+    <% } %>
+    <div class="w-full overflow-auto">
+      <div class="border-b-2 mt-5 mb-5  p-4">
+        <div class="md:flex justify-between">
+          <h2 class="sm:text-2xl text-xl mb-2 font-bold ">ORDER #<%= order._id %>
+          </h2>
+          <p class="font-medium">Date:<%let options={ weekday: 'short' , year: 'numeric' ,
                                     month: 'short' , day: 'numeric' }; %>
-                                    <%= order.createdAt.toLocaleDateString("en-US", options) %>
-                            </p>
-                        </div>
-                        <div>
-                            <p>
-                                Order Status : <% if (order.status=='delivered' ) { %>
-                                    <span
-                                        class="text-sm text-green-600 font-light px-6 py-4 whitespace-nowrap">DELIVERED</span>
-                                    <% }else if (order.status=='cancelled' ) { %>
-                                        <span
-                                            class="text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCELLED</span>
+            <%= order.createdAt.toLocaleDateString("en-US", options) %>
+          </p>
+        </div>
+        <div>
+          <p>
+            Order Status : <% if (order.status=='delivered' ) { %>
+            <span class="text-sm text-green-600 font-light px-6 py-4 whitespace-nowrap">DELIVERED</span>
+            <% }else if (order.status=='cancelled' ) { %>
+            <span class="text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCELLED</span>
 
-                                        <% }else if (order.status=='pending' ){ %>
-                                            <span
-                                                class="text-sm text-yellow-600 font-light px-6 py-4 whitespace-nowrap">PENDING</span>
+            <% }else if (order.status=='pending' ){ %>
+            <span class="text-sm text-yellow-600 font-light px-6 py-4 whitespace-nowrap">PENDING</span>
 
-                                            <% } else if (order.status=='confirmed' ){ %>
-                                                <span
-                                                    class="text-sm text-orange-600 font-light px-6 py-4 whitespace-nowrap">CONFIRMED</span>
+            <% } else if (order.status=='confirmed' ){ %>
+            <span class="text-sm text-orange-600 font-light px-6 py-4 whitespace-nowrap">CONFIRMED</span>
 
-                                                <% } %>
-                            </p>
-                            <p>
-                                Payment Mode : <%= order.paymentMode %>
-                            </p>
-                            <p>
-                                Payment ID : <%= order.paymentId %>
-                            </p>
-                            <div class="flex justify-between ">
-                                <p class="flex">
-                                    Shipping Address : &nbsp <span>
-                                        <%= order.shippingAddress.addressLine1 %> <br>
-                                            <%= order.shippingAddress.city %> <br>
-                                                <%= order.shippingAddress.pin %> <br>
-                                    </span>
-                                </p>
-                                <div>
+            <% } %>
+          </p>
+          <p>
+            Payment Mode : <%= order.paymentMode %>
+          </p>
+          <p>
+            Payment ID : <%= order.paymentId %>
+          </p>
+          <div class="flex justify-between ">
+            <p class="flex">
+              Shipping Address : &nbsp <span>
+                <%= order.shippingAddress.addressLine1 %> <br>
+                <%= order.shippingAddress.city %> <br>
+                <%= order.shippingAddress.pin %> <br>
+              </span>
+            </p>
+            <div>
 
-                                    <a href="<%= order.invoice.substring(25) %>" target="_blank"><i class="fa-regular fas fa-xl fa-file-arrow-down"></i> DOWNLOAD INVOICE</a>
+              <a href="<%= order.invoice.substring(25) %>" target="_blank"><i class="fa-regular fas fa-xl fa-file-arrow-down"></i> DOWNLOAD INVOICE</a>
 
-                                    <p class="text-xl font-semibold">
-                                        <% if (order.status!='cancelled' && order.status!='delivered' ) { %>
-                                            <button data-oid="<%= order._id %>"
-                                                class="btn  text-red-700  px-6 py-4 whitespace-nowrap">CANCEL
-                                                ORDER
-                                            </button>
-                                            <% } else{%>
-                                                <button data-oid="<%= order._id %>"
-                                                    class="btn  text-red-700  px-6 py-4 whitespace-nowrap">
-                                                </button>
-                                                <% } %>
-                                    </p>
+              <p class="text-xl font-semibold">
+                <% if (order.status!='cancelled' && order.status!='delivered' ) { %>
+                <button data-oid="<%= order._id %>" id="btn" data-modal="openModal" class="modal text-red-700  px-6 py-4 whitespace-nowrap">CANCEL
+                  ORDER
+                </button>
+                <% } else{%>
+                <button data-oid="<%= order._id %>" id="btn" class="modal text-red-700  px-6 py-4 whitespace-nowrap">
+                </button>
+                <% } %>
+              </p>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <% let subtotal=0 %>
-                        <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-                            <% products.forEach((product,i)=> { %>
-                                <div class="flex  rounded-lg bg-white ">
-                                    <img class="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                                        src="<%=product.images[0]%>" alt="" />
-                                    <div class="flex w-full flex-col px-4 py-4">
-                                        <span class="font-semibold">
-                                            <%=product.name %>
-                                        </span>
-                                        <span class="float-right text-gray-400">
-                                            quantity : <%=order.items[i].quantity %>
-                                        </span>
-                                        <p class="text-lg font-semibold">Total : ₹
-                                            <%=order.items[i].price %>
-                                        </p>
-                                    </div>
-                                </div>
-                                <% subtotal=subtotal+(order.items[i].price*order.items[i].quantity) %>
-                                    <% }); %>
-                        </div>
-                        <div class="border-t-2 mt-5 mb-5  p-4">
-                            <p class="text-xl font-bold">
-                                SUB TOTAL : <%= subtotal %>
-                            </p>
-                            <p class="text-xl font-bold">
-                                Coupon Discount : <%= order.offer %>
-                            </p>
-                            <p class="text-xl font-bold">
-                                GRAND TOTAL : ₹<%= order.total %>
-                            </p>
-                        </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% let subtotal=0 %>
+      <div class="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
+        <% products.forEach((product,i)=> { %>
+        <div class="flex  rounded-lg bg-white ">
+          <img class="m-2 h-24 w-28 rounded-md border object-cover object-center" src="<%=product.images[0]%>" alt="" />
+          <div class="flex w-full flex-col px-4 py-4">
+            <span class="font-semibold">
+              <%=product.name %>
+            </span>
+            <span class="float-right text-gray-400">
+              quantity : <%=order.items[i].quantity %>
+            </span>
+            <p class="text-lg font-semibold">Total : ₹
+              <%=order.items[i].price %>
+            </p>
+          </div>
+        </div>
+        <% subtotal=subtotal+(order.items[i].price*order.items[i].quantity) %>
+        <% }); %>
+      </div>
+      <div class="border-t-2 mt-5 mb-5  p-4">
+        <p class="text-xl font-bold">
+          SUB TOTAL : <%= subtotal %>
+        </p>
+        <p class="text-xl font-bold">
+          Coupon Discount : <%= order.offer %>
+        </p>
+        <p class="text-xl font-bold">
+          GRAND TOTAL : ₹<%= order.total %>
+        </p>
+      </div>
 
-                </div>
     </div>
 
-    <!-- updation of status -->
-    <script>
-        const btn = document.querySelectorAll('.btn')
-        btn.forEach(item => {
-            item.addEventListener('click', () => {
-                const status = "cancelled"
-                const oid = item.dataset.oid;
-                fetch('/cancelOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ status: status, oId: oid }),
-                }).then(response => {
-                 
-                    return window.location.reload()
-                })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
+    <!-- CONFIRMATION moDAL -->
 
+    <div id="confirmation" class="hidden fixed z-10 inset-0 overflow-y-auto">
+      <div class="flex items-center justify-center h-screen pt-4 px-4 pb-20 text-center">
+        <div class="fixed inset-0 transition-opacity">
+          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <h3 class="text-xl leading-6 font-medium text-gray-900">
+              Confirmation
+            </h3>
+            <div class="mt-2">
+              <p class="text-sm text-gray-500">
+                Do you want Cancell this order?
+              </p>
+            </div>
+          </div>
+          <div class="bg-white px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button id="allow" type="button" class="modal w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-500 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+              YES
+            </button>
+            <button id="deny" type="button" class="modal mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+              NO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  </div>
+
+  <script>
+    const modal = document.getElementById("confirmation");
+    const modalbtn = document.querySelectorAll('.modal')
+    const oId=document.getElementById('btn').dataset.oid
+    modalbtn.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        if (e.target.id === "btn") {
+          modal.classList.remove("hidden");
+        } else if (e.target.id === "allow") {
+          const status = "cancelled"
+          fetch('/cancelOrder', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                status: status,
+                oId: oId
+              }),
+            }).then(response => {
+
+              return window.location.reload()
             })
-
-        });
-
-    </script>
-
-    <script>
-        const animate = document.getElementById('animate')
-        const msg = document.getElementById('msg')
-        const header = document.getElementById('header')
-        window.onload = msg.classList.add('opacity-0')
-
-        window.onload = header.classList.toggle('hidden')
-        setTimeout(() => {
-            animate.classList.add('opacity-0')
-            msg.classList.add('opacity-0')
-        }, 6000)
-
-        setTimeout(() => {
-            msg.classList.remove('opacity-0')
-            msg.classList.add('opacity-100')
-
-        }, 4000)
-        setTimeout(() => {
-            animate.classList.add('hidden')
-            header.classList.toggle('hidden')
-        }, 6500)
-
-    </script>
-
-    <script>
-        if (window.history.replaceState) {
-            window.history.replaceState(null, null, window.location.href);
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+        } else if (e.target.id === "deny") {
+          modal.classList.add("hidden");
         }
-    </script>
-    <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+
+      })
+    })
+  </script>
+  <!-- updation of status -->
+  <!-- <script>
+    const btn = document.querySelectorAll('.btn')
+    btn.forEach(item => {
+      item.addEventListener('click', () => {
+
+
+      })
+
+    });
+  </script> -->
+
+  <script>
+    try {
+      const animate = document.getElementById('animate')
+    const msg = document.getElementById('msg')
+    const header = document.getElementById('header')
+    window.onload = msg.classList.add('opacity-0')
+
+    window.onload = header.classList.toggle('hidden')
+    setTimeout(() => {
+      animate.classList.add('opacity-0')
+      msg.classList.add('opacity-0')
+    }, 6000)
+
+    setTimeout(() => {
+      msg.classList.remove('opacity-0')
+      msg.classList.add('opacity-100')
+
+    }, 4000)
+    setTimeout(() => {
+      animate.classList.add('hidden')
+      header.classList.toggle('hidden')
+    }, 6500)
+    } catch (error) {
+      
+    }
+    
+  </script>
+
+  <script>
+    if (window.history.replaceState) {
+      window.history.replaceState(null, null, window.location.href);
+    }
+  </script>
+  <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
 
 </body>
 

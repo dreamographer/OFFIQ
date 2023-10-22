@@ -3,28 +3,31 @@
 <div class="flex-1 flex ">
 
   <!-- navigation div -->
-  <div class="p-2 bg-white absolute z-20 h-screen transition-all ease-linear duration-300 md:relative w-60 flex-col hidden md:flex" id="sideNav">
+  <div class="p-2 bg-white absolute z-20 transition-all ease-linear duration-300 md:relative w-60 flex-col hidden md:flex" id="sideNav">
     <nav>
-      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin">
+      <a class="block text-gray-500 py-2.5 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin">
         <i class="fas fa-home mr-2"></i>Dashboard
       </a>
-      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/userMangement">
+      <a class="block text-gray-500 py-2.5 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/userMangement">
         <i class="fas fa-users mr-2"></i>User Management
       </a>
-      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/categoryManagement">
+      <a class="block text-gray-500 py-2.5 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/categoryManagement">
         <i class="fa-solid fa-boxes-stacked mr-2"></i>Category Management
       </a>
-      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/productManagement">
+      <a class="block text-gray-500 py-2.5 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/productManagement">
 
         <i class="fas fa-store mr-2"></i>Product Management
       </a>
-      <a class="block py-2.5 px-4 my-4 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white" href="/admin/orderManagement">
+      <a class="block py-2.5 px-4 my-3 rounded transition duration-200 bg-gradient-to-r from-cyan-400 to-[#076AE1] text-white" href="/admin/orderManagement">
         <i class="fas fa-exchange-alt mr-2"></i>Order Management
       </a>
-      <a class="block text-gray-500 py-2.5 px-4 my-4 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="#">
+      <a class="block text-gray-500 py-2.5 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/couponManagement">
+        <i class="fa-sharp fas fa-regular fa-tag"></i> Coupon Mangement
+      </a>
+      <a class="block text-gray-500 py-2 px-4 my-3 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-400 hover:to-[#076AE1] hover:text-white" href="/admin/report">
         <i class="fas fa-file-alt mr-2"></i>Report
       </a>
-      <a class="block text-gray-500 py-2.5 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto" href="/admin/logout">
+      <a class="block text-gray-500 py-2 px-4 my-2 rounded transition duration-200 hover:bg-gradient-to-r hover:from-cyan-600 hover:to-[#076AE1] hover:text-white mt-auto" href="/admin/logout">
         <i class="fas fa-sign-out-alt mr-2"></i>Logout
       </a>
     </nav>
@@ -47,14 +50,14 @@
 
       </div>
 
-      <div class="overflow-x-hidden  lg:mx-0.5">
+      <div class="overflow-x-hidden lg:mx-0.5 flex justify-center">
         <!-- initialization of alphine values -->
-        <div x-data="{ editModel : false ,addModel:false}" class="py-2 inline-block  sm:px-6 lg:px-8">
-          <div class=" h-auto w- overflow-auto">
+        <div x-data="{ editModel : false ,addModel:false}" class="py-2  inline-block  sm:px-6 lg:px-8">
+          <div class="w-screen sm:w-full ">
 
-            <div class="w-[23rem] md:w-[33rem] sm:w-[40rem] lg:w-[70rem] overflow-auto">
+            <div class="w-[23rem] md:w-[33rem] sm:w-[40rem] lg:w-[60rem] h-[50vh] overflow-auto">
               <!-- Order Table -->
-              <table class="min-w-full text-center table-fixed " id="myTable">
+              <table class=" text-center table-fixed " id="myTable">
                 <thead class="bg-gray-200 border-b">
                   <tr>
 
@@ -67,9 +70,7 @@
                     <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                       Payment Id
                     </th>
-                    <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                      Items
-                    </th>
+
                     <th scope="col" class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                       Total amount
                     </th>
@@ -84,33 +85,26 @@
                   <% order.forEach((order,i)=> { %>
                   <tr class="bg-white border-b clickable-row cursor-pointer transition duration-300 ease-in-out hover:bg-gray-100" data-href="orderPage/<%= order._id %>">
 
-                    <td class=" text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                    <td class=" text-sm overflow-hidden text-gray-900 font-light px-2 max-w-sm py-4 whitespace-nowrap">
                       <%= order._id %>
                     </td>
-                    <td class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                    <td class="text-sm overflow-hidden text-gray-900 font-light px-2 max-w-sm py-4 whitespace-nowrap">
                       <%= order.userId %>
                     </td>
-                    <td class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                    <td class="text-sm overflow-hidden text-gray-900 font-light px-2 max-w-sm py-4 whitespace-nowrap">
                       <%= order.paymentId %>
                     </td>
-
-                    <td class="text-sm text-gray-900 font-light max-w-sm overflow-hidden px-6 py-4 whitespace-nowrap">
-                      <% order.items.forEach(item=> {%>
-                      <% let product=products.find(prod=> prod._id.equals(item.productId))%>
-                      <%=product.name%> x <%=item.quantity %> <br>
-                      <% }); %>
-                    </td>
-                    <td class="text-sm overflow-hidden text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                    <td class="text-sm overflow-hidden text-gray-900 font-light px-2 max-w-sm py-4 whitespace-nowrap">
                       ₹<%= order.total %>
                     </td>
 
 
 
-                    <td class="text-sm text-gray-900 font-light px-6 max-w-sm py-4 whitespace-nowrap">
+                    <td class="text-sm text-gray-900 font-light px-2 max-w-sm py-4 whitespace-nowrap">
                       <% if (order.status=='delivered' ) { %>
-                      <span class="text-sm text-green-600 font-light px-6 py-4 whitespace-nowrap">DELIVERED</span>
+                      <span class="text-sm text-green-600 font-light px-2 py-4 whitespace-nowrap">DELIVERED</span>
                       <% }else if (order.status=='cancelled' ) {%>
-                      <span class="text-sm text-red-700 font-light px-6 py-4 whitespace-nowrap">CANCELLED</span>
+                      <span class="text-sm text-red-700 font-light px-2 py-4 whitespace-nowrap">CANCELLED</span>
 
                       <% }else{ %>
                       <select name="status" class="status text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap" id="">

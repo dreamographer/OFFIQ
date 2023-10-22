@@ -84,7 +84,7 @@ try {
   router.get('/orderManagement', adminSession, orderController.orderManagement)
 
   // order Page 
-  router.get('/orderPage/:oId', adminSession, orderController.orderPage)
+  router.get('/orderPage/:oId', adminSession, orderController.orderPageAdmin)
 
   // update status
   router.post('/updateStatus', adminSession, orderController.updateStatus)
