@@ -50,7 +50,7 @@ app.use('/', authRouter)
 app.use('/admin', adminRouter)
 
 // 404 error page
-app.use((req, res) => {
+app.use((req, res) => { 
     res.status(404).render('client/errorPage');
 });
 app.listen(port, () => {

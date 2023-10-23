@@ -420,6 +420,62 @@ const userController = {
     }
   },
 
+  wishlist:async(req,res)=>{
+    try {
+      let msg = ''
+      const userId = req.session.user._id;
+      if (!userId) {
+        return res.redirect('/')
+      }
+      const user = await User.findOne({ _id: userId }, { wishlist: 1 });
+      const wishlist = user.wishlist;
+      const products = [];
+
+      for (const prod of wishlist) {
+        try {
+          const pId = prod.productId
+          const item = await Products.findOne({ _id: pId, listed: true });
+          if (item) {
+            products.push(item);
+          } else {
+            // Handle the case where a product with the given ID is not found
+            console.log(`Product not found for ID: ${prod.productId}`);
+          }
+        } catch (error) {
+          // Handle any errors that occur during product fetching
+          console.error(`Error fetching product: ${error}`);
+        }
+      }
+      if (req.app.locals.data) {
+        msg = req.app.locals.data
+        req.app.locals.data = null
+      }
+
+      return res.render('client/wishlist', {products: products, msg: msg });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // remove product from wishlist
+  removeProductWishlist:async(req,res)=>{
+    try {
+      const userId = req.session.user._id;
+      const pId = req.params.id
+      const status = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { wishlist: { productId: pId } } }
+      );
+
+
+      if (status) {
+        return res.status(200).redirect('/wishlist')
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  },
+
   //logout the user
   logout: (req, res) => {
     if (req.session.user) {

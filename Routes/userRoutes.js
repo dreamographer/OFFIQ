@@ -36,7 +36,10 @@ router.post('/addAddress', userAuth, userController.addAddress)
 router.post('/editAddress', userAuth, userController.editAddress)
 // user profile
 router.get('/myAccout', userAuth, userController.userProfile)
-
+// Wishlist
+router.get('/wishlist',userAuth,userController.wishlist)
+// remove from wishlist
+router.get('/removeProductWishlist/:id', userAuth, userController.removeProductWishlist)
 
 // Routes for the product Controlls
 
