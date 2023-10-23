@@ -15,7 +15,11 @@ const productController = {
   allProducts: async (req, res) => {
     try {
       res.header('Cache-Control', 'public, max-age=3600');
-      let pageNo = Number(req.body.page) ?? parseInt(req.query.pageNo) ?? 1
+      let pageNo = Number(req.body.page)
+      if(isNaN(pageNo)){
+        pageNo=1
+       
+      }
       let size = 10
       let query = {}
       // let category = req.body.category
@@ -83,9 +87,10 @@ const productController = {
         data = await Products.paginate(query, { offset: query1.skip, limit: query1.limit, sort: { 'createdAt': 1 } })
 
       }
+     
       return res.render('client/allProducts', { pageData: data, sortBy, price })
 
-
+ 
     } catch (error) {
       console.log(error);
     }
