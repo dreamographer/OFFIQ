@@ -18,7 +18,7 @@ router.use(express.json())
 
 const validateCategoryImage = validateImage('categoryImage');
 const validateProductImage = validateImage('productImage');
-
+const validateBannerImage=validateImage('bannerImage')
 try {
   //admin login
   router.post('/login', adminController.adminLogin);
@@ -39,6 +39,13 @@ try {
   router.put('/update-block-status/:userId', adminSession, adminController.updateBlock)
 
 
+  // BAnner Routes
+// add Banner 
+  router.post('/addBanner',adminSession,validateBannerImage,adminController.addBanner)
+// remove banner
+  router.post('/removeBannerImage',adminSession,adminController.removeBannerImage)
+
+
   // Product  Controllers
 
   //category managemetn 
@@ -47,7 +54,7 @@ try {
   //add category
   router.post('/addCategory', adminSession, validateCategoryImage, productController.addCategory)
 
-  //update category
+  //update category 
   router.post('/updateCategory', adminSession, validateCategoryImage, productController.updateCategory)
 
   // deleteCategory image
