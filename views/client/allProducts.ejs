@@ -1,7 +1,7 @@
 <%- include('header') %>
 <main class="min-h-screen flex w-screen overflow-x-hidden bg-gray-100">
   <form action="/allProducts" method="post">
-    <div class="mt-28 bg-white w-[18%] h-screen flex-col p-5 hidden md:flex fixed " id="sideNav">
+    <div class="md:mt-28 mt-20 bg-white md:w-[18%] h-screen hidden flex-col p-5 w-1/2 md:flex fixed z-50 " id="sideNav">
       <p class="font-bold text-2xl">Filter By</p>
       <!-- <div>
                 <p class="font-medium mt-4 mb-3">Category</p>
@@ -64,7 +64,8 @@
       </div>
 
     </div>
-    <div class="mt-28 ml-[19%] w-5/6 flex flex-col items-center overflow-hidden ">
+    <p class="mt-28 md:hidden ml-5 font-bold" id="filter">Add Filter</p>
+    <div class="mt-10 md:ml-[19%] mx-auto w-5/6 flex flex-col items-center overflow-hidden ">
       <!-- search -->
       <div class="justify-center w-screen flex  mt-5 mb-5">
         <div class="relative ">
@@ -83,7 +84,7 @@
         </ul>
       </div>
       <!-- items -->
-      <div class="flex flex-wrap gap-3 overflow-hidden">
+      <div class="flex justify-center flex-wrap gap-3 overflow-hidden">
         <% pageData.docs.forEach(product=> { %>
         <!-- item Card -->
         <a href="/productpage/<%=product._id %>">
@@ -380,6 +381,14 @@
 
   toggleButton.addEventListener('click', () => {
     mobileMenu.classList.toggle('hidden');
+  });
+</script>
+<script>
+  const filterButton = document.getElementById('filter');
+  const filterMenu = document.getElementById('sideNav');
+
+  filterButton.addEventListener('click', () => {
+    filterMenu.classList.toggle('hidden');
   });
 </script>
 <script>
