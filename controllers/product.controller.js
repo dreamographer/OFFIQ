@@ -326,8 +326,8 @@ const productController = {
           if (imagePaths && imagePaths.length > 0) {
             updateObject.$push = { image: { $each: imagePaths } };
           }
-          result = await Category.findOneAndUpdate(
-            { _id: id },
+          result = await Category.findByIdAndUpdate(
+            id,
             updateObject,
             {
               new: true, // To return the updated document
@@ -335,6 +335,7 @@ const productController = {
             }
           );
         } else {
+          
           subcategory = { subName: subName, subDescription: subDescription }//add oly one data
           updatedData.subcategory = subcategory;
           let updateObject = {
@@ -344,8 +345,8 @@ const productController = {
           if (imagePaths && imagePaths.length > 0) {
             updateObject.$push = { image: { $each: imagePaths } };
           }
-          result = await Category.findOneAndUpdate(
-            { _id: id },
+          result = await Category.findByIdAndUpdate(
+            id ,
             updateObject,
             {
               new: true, // To return the updated document
@@ -363,8 +364,8 @@ const productController = {
         if (imagePaths && imagePaths.length > 0) {
           updateObject.$push = { image: { $each: imagePaths } };
         }
-        result = await Category.findOneAndUpdate(
-          { _id: id },
+        result = await Category.findByIdAndUpdate(
+          id ,
           updateObject,
           {
             new: true, // To return the updated document

@@ -35,7 +35,7 @@ router.post('/addAddress', userAuth, userController.addAddress)
 //Edit address
 router.post('/editAddress', userAuth, userController.editAddress)
 // user profile
-router.get('/myAccout', userAuth, userController.userProfile)
+router.get('/myAccount', userAuth, userController.userProfile)
 // Wishlist
 router.get('/wishlist',userAuth,userController.wishlist)
 // remove from wishlist

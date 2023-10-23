@@ -11,6 +11,7 @@ const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const Wallet = require('../models/WalletModel')//Wallet schma
+const Banner=require('../models/banner.model');//banner Schema
 
 //keys
 const algorithm = 'aes-256-cbc';
@@ -274,8 +275,8 @@ const userController = {
   //rendering the home page
   home: async (req, res) => {
     let category = await Category.find({ listed: true });
-
-    return res.render('client/home', { category: category });
+    const banner=await Banner.find({})
+    return res.render('client/home', { category: category,banner:banner });
   },
 
   //home page search route 

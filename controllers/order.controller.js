@@ -217,8 +217,8 @@ const orderController = {
 
             await Promise.all(promises)
 
-            let updatedCart = await User.findOneAndUpdate(
-                { _id: userId },
+            let updatedCart = await User.findByIdAndUpdate(
+               userId,
                 { $set: { cart: [] } }, //update the cart
                 { new: true }
             );
