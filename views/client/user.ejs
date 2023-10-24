@@ -143,7 +143,7 @@
       Address</button>
   </div>
   <h4 class=" text-lg font-bold m-5 text-center">MY ORDERS</h4>
-  <div class="w-full overflow-x-hidden h-80 overflow-y-scroll ">
+  <div class="w-full md:overflow-x-hidden overflow-x-auto h-80 overflow-y-scroll ">
     <table class="min-w-full  table-fixed " id="myTable">
       <thead class="bg-gray-200 border-b">
         <tr>
@@ -277,6 +277,15 @@
 
     })
 
+  });
+</script>
+
+<script>
+  const toggleButton = document.getElementById('toggle-menu');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  toggleButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
   });
 </script>
 <script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>

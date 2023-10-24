@@ -1,5 +1,5 @@
 <%- include('header') %>
-<main class="min-h-screen  w-screen overflow-x-hidden bg-gray-100 mt-28">
+<main class="min-h-screen  w-screen overflow-x-hidden bg-gray-100 mt-20">
   <div class="w-screen flex justify-center gap-4 text-center  mt-5">
     <h1 class="font-black text-[60px]">MY Wishlist</h1>
     <i class="fi fi-rs-heart text-[40px] mt-6 font-thin"></i>
@@ -11,7 +11,7 @@
         <p>Product Name</p>
       </div>
       <div class=" w-[15%]">
-        <p >Unit Price</p>
+        <p>Unit Price</p>
       </div>
       <div>Stock Status</div>
       <div class="w-[10%]">Action</div>
@@ -21,9 +21,9 @@
     <% if (products.length<1) {%>
     <tr class="text-center">
       <td colspan="5" rowspan="5" class="w-full">
-        <div class="flex-col flex w-full justify-center items-center">
-          <img src="/images/empty-cart.png" alt="empty cart" class="w-64">
-          Cart is empty
+        <div class="flex-col flex mt-10 w-full justify-center items-center">
+          <img src="/images/empty-wishlist..webp" alt="empty cart" class="w-80">
+
         </div>
       </td>
     </tr>
@@ -47,10 +47,10 @@
         <%} %>
       </div>
       <div class="flex flex-col w-[10%]">
-          <button value="<%=product._id%>" class="addToCart font-semibold hover:text-green-500 text-gray-500 text-sm">Add To Cart<i class="fi fi-ts-cart-shopping-fast"></i></i></button>
+        <button value="<%=product._id%>" class="addToCart font-semibold hover:text-green-500 text-gray-500 text-sm">Add To Cart<i class="fi fi-ts-cart-shopping-fast"></i></i></button>
         <a href="/removeProductWishlist/<%=product._id%>" class="font-semibold hover:text-red-500 text-gray-500 text-xs">Remove</a>
-      
-    </div>
+
+      </div>
     </div>
     <% }) %>
 
@@ -125,35 +125,48 @@
 </script>
 <!-- add to cart -->
 <script>
-    const addToCart = document.querySelectorAll('.addToCart')
-    addToCart.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault()
-        const productId = btn.value
-        fetch('/addToCart', {
-            method: 'POST',
-            redirect: 'follow',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              productId
-            })
+  const addToCart = document.querySelectorAll('.addToCart')
+  addToCart.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault()
+      const productId = btn.value
+      fetch('/addToCart', {
+          method: 'POST',
+          redirect: 'follow',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            productId
           })
-          .then(res => {
-            if (res.redirected) {
-              const redirectURL = res.url;
-              return window.location.href = redirectURL;
-            } else {
-  
-              return res.json()
-            }
-          })
-          .then(data => {
-            return showToast(data.message)
-          })
-          .catch(err => console.log(err))
-  
-      })
+        })
+        .then(res => {
+          if (res.redirected) {
+            const redirectURL = res.url;
+            return window.location.href = redirectURL;
+          } else {
+
+            return res.json()
+          }
+        })
+        .then(data => {
+          return showToast(data.message)
+        })
+        .catch(err => console.log(err))
+
     })
-  </script>
+  })
+</script>
+
+<script>
+  const toggleButton = document.getElementById('toggle-menu');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  toggleButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+</script>
+<script src="https://kit.fontawesome.com/2129bb9b13.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
