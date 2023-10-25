@@ -189,7 +189,7 @@
                                 }, 0);
                                 %><%=total%>
           </p>
-          <input type="hidden" name="total" value="<%=sum%>">
+          <input type="hidden" name="total" id="total" value="">
         </div>
         <div class="flex items-center justify-between">
           <p class="text-sm font-medium text-gray-900">OFFER</p>
@@ -201,8 +201,8 @@
       </div>
       <div class="mt-6 flex items-center justify-between">
         <p class="text-sm font-medium text-gray-900">Total</p>
-        <p class="text-2xl font-semibold text-gray-900" id="total">
-          <%=sum%>
+        <p class="text-2xl font-semibold text-gray-900" id="totalDisplay">
+          
         </p>
       </div>
     </div>
@@ -223,6 +223,12 @@
 
 </div>
 
+<script>
+  window.onload=function(){
+    document.getElementById('totalDisplay').innerText='<%=sum%>'
+
+  }
+</script>
 
 <!-- function for toast -->
 <script>
@@ -338,6 +344,7 @@
   const form = document.getElementById('checkoutForm')
   form.addEventListener('submit', function(event) {
     event.preventDefault()
+    form.total.value='<%=sum%>'
     const address = document.querySelector('input[name="address"]:checked')
     if (!address) {
       showToast("Please select an address")
@@ -387,7 +394,7 @@
 
     } else if (paymentMode == 'Wallet') {
       const wallet = Number(document.getElementById('walletBalance').innerText)
-      const total = Number(document.getElementById('total').innerText.substring(1))
+      const total = Number('<%=sum%>'.substring(1))
       console.log(wallet, total);
       if (wallet - total < 0) {
         return showToast("Not enough balance In Wallet")
