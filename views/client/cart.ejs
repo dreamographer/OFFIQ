@@ -134,7 +134,8 @@
         <div class="border-t mt-8">
           <div class="flex font-semibold justify-between py-6 text-sm uppercase">
             <span class="w-1/2">Discount</span>
-            <input type="text" name="offer" value="-₹0" id="offer" class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly onmousedown="return false;" onselectstart="return false;">
+            <input type="hidden" value="null" name="offer" id="coupon">
+            <input type="text" value="-₹0" id="offer" class="text-right w-20 bg-transparent focus:border-0 cursor-default" readonly onmousedown="return false;" onselectstart="return false;">
             <span></span>
           </div>
 
@@ -252,7 +253,10 @@
     let totalElement = document.getElementById('total')
     let applyBtn = document.getElementById('applayBtn')
     let offer = document.getElementById('offer')
+    let coupon=document.getElementById('coupon')
+        
     function removeCoupon() {
+      coupon.value='null'
     offer.value = `-₹0`
     totalElement.value = `₹${originalValue}`
     applyBtn.disabled = false
@@ -261,9 +265,11 @@
 
     <!-- applay promocode -->
     <script>
-      function PromoMatched(type, value) {
+      function PromoMatched(type, value,id) {
         let applyBtn = document.getElementById('applayBtn')
         let offer = document.getElementById('offer')
+        let coupon=document.getElementById('coupon')
+        coupon.value=id
         applyBtn.disabled = true
         let totalElement = document.getElementById('total')
         let total = document.getElementById('total').value.substring(1)
@@ -303,7 +309,7 @@
               if (data.error) {
                 err.innerHTML = `${data.error}`
               } else {
-                PromoMatched(data.type, data.value)
+                PromoMatched(data.type, data.value,data.id)
                 err.innerHTML = ""
               }
             })

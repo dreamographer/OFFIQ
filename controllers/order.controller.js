@@ -12,6 +12,7 @@ const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const Wallet = require('../models/WalletModel')//Wallet schma
+const Coupon = require('../models/couponModel');//coupon schema
 
 // helpers
 const makePdf = require('../helpers/PdfGenerator') //pdf Generation
@@ -96,7 +97,6 @@ const orderController = {
     //checkout page
     checkOut: async (req, res) => {
         try {
-            const sum = req.body.sum
             let offer = req.body.offer ?? ''
             const userId = req.session.user._id;
             if (!userId) {
@@ -105,6 +105,7 @@ const orderController = {
             const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1, wallet: 1 });
             const addresses = user.addresses
             const cart = user.cart;
+            let coupon
 
             const products = [];
             for (const prod of cart) {
@@ -125,7 +126,23 @@ const orderController = {
                     console.error(`Error fetching product: ${error}`);
                 }
             }
+            let sum = cart.reduce((accumulator, item)=> {
+                let product = products.find(product =>{return product._id.equals(item.productId) } );
+                return accumulator + product.price * item.quantity;
+                }, 0);
+            if (offer!='null') {
+                coupon = await Coupon.findOne({ _id: offer })
+                if (coupon.discountType == 'Percentage') {
+                    sum = sum - (sum * coupon.discountValue / 100)
+                    offer=`-${coupon.discountValue}%`
+                  } else {
+                    sum -= coupon.discountValue
+                    offer=`-₹${coupon.discountValue}`
+                  }
+            }
+            sum=`₹${sum}`
             const wallet = await Wallet.findOne({ user: userId })
+
             return res.render('client/checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
         } catch (error) {
             console.log(error);

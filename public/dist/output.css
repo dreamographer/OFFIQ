@@ -1245,10 +1245,6 @@ video {
   width: 400px;
 }
 
-.w-\[50px\] {
-  width: 50px;
-}
-
 .w-auto {
   width: auto;
 }
@@ -1274,14 +1270,6 @@ video {
 
 .w-screen {
   width: 100vw;
-}
-
-.w-\[1000px\] {
-  width: 1000px;
-}
-
-.w-\[\] {
-  width: ;
 }
 
 .min-w-\[22rem\] {
