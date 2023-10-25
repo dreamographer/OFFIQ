@@ -50,7 +50,7 @@ router.post('/productSearch', productController.productSearch)
 //product view page
 router.get('/productpage/:id', productController.productPage)
 // Wishlist
-router.get('/wishlist',userAuth,userController.wishlist)
+router.get('/wishlist', userAuth, userController.wishlist)
 // remove from wishlist
 router.get('/removeProductWishlist/:id', userAuth, userController.removeProductWishlist)
 // add to favorite

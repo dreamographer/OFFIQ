@@ -33,10 +33,10 @@
             <td class="py-6 px-6 border-b flex justify-center">
               <div class="flex w-32 ">
                 <a href="/productpage/<%=product._id %>" class="md:w-32 w-[300px] ">
-                <div >
-                  <img class="" src="<%=product.images[0]%>" alt="prod image">
-                </div>
-              </a>
+                  <div>
+                    <img class="" src="<%=product.images[0]%>" alt="prod image">
+                  </div>
+                </a>
                 <div class="flex flex-col justify-between  flex-grow">
                   <span class="font-bold text-sm text-ellipsis overflow-hidden h-11 w-11 item">
                     <%=product.name %>
@@ -256,8 +256,8 @@
     let coupon=document.getElementById('coupon')
     let err = document.getElementById('promoError')
     function removeCoupon() {
-      err.innerHTML=''
-      coupon.value='null'
+    err.innerHTML=''
+    coupon.value='null'
     offer.value = `-₹0`
     totalElement.value = `₹${originalValue}`
     applyBtn.disabled = false
@@ -266,11 +266,11 @@
 
     <!-- applay promocode -->
     <script>
-      function PromoMatched(type, value,id) {
+      function PromoMatched(type, value, id) {
         let applyBtn = document.getElementById('applayBtn')
         let offer = document.getElementById('offer')
-        let coupon=document.getElementById('coupon')
-        coupon.value=id
+        let coupon = document.getElementById('coupon')
+        coupon.value = id
         applyBtn.disabled = true
         let totalElement = document.getElementById('total')
         let total = document.getElementById('total').value.substring(1)
@@ -310,7 +310,7 @@
               if (data.error) {
                 err.innerHTML = `${data.error}`
               } else {
-                PromoMatched(data.type, data.value,data.id)
+                PromoMatched(data.type, data.value, data.id)
                 err.innerHTML = "Coupon Applied"
               }
             })

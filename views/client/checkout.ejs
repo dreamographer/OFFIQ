@@ -202,7 +202,7 @@
       <div class="mt-6 flex items-center justify-between">
         <p class="text-sm font-medium text-gray-900">Total</p>
         <p class="text-2xl font-semibold text-gray-900" id="totalDisplay">
-          
+
         </p>
       </div>
     </div>
@@ -224,8 +224,8 @@
 </div>
 
 <script>
-  window.onload=function(){
-    document.getElementById('totalDisplay').innerText='<%=sum%>'
+  window.onload = function() {
+    document.getElementById('totalDisplay').innerText = '<%=sum%>'
 
   }
 </script>
@@ -294,10 +294,10 @@
           pin
         }),
       }).then(response => {
-        if(response.redirected){
+        if (response.redirected) {
           return window.location.reload()
-        }else{
-         return response.json()
+        } else {
+          return response.json()
         }
       })
       .then((data) => {
@@ -344,7 +344,7 @@
   const form = document.getElementById('checkoutForm')
   form.addEventListener('submit', function(event) {
     event.preventDefault()
-    form.total.value='<%=sum%>'
+    form.total.value = '<%=sum%>'
     const address = document.querySelector('input[name="address"]:checked')
     if (!address) {
       showToast("Please select an address")

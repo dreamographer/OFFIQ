@@ -16,7 +16,7 @@ const cartController = {
     try {
       let msg = ''
       const userId = req.session.user._id;
-      if (!userId) { 
+      if (!userId) {
         return res.redirect('/')
       }
       const user = await User.findOne({ _id: userId }, { cart: 1 });
@@ -165,7 +165,7 @@ const cartController = {
         if (total < coupon.minimumPurchase) {
           return res.send({ error: `Minimum purchase value is ${coupon.minimumPurchase}` })
         }
-        return res.send({ type: coupon.discountType, value: coupon.discountValue ,id:coupon._id})
+        return res.send({ type: coupon.discountType, value: coupon.discountValue, id: coupon._id })
       } else {
         return res.send({ error: 'Invalid Code' })
       }

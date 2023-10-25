@@ -126,21 +126,21 @@ const orderController = {
                     console.error(`Error fetching product: ${error}`);
                 }
             }
-            let sum = cart.reduce((accumulator, item)=> {
-                let product = products.find(product =>{return product._id.equals(item.productId) } );
+            let sum = cart.reduce((accumulator, item) => {
+                let product = products.find(product => { return product._id.equals(item.productId) });
                 return accumulator + product.price * item.quantity;
-                }, 0);
-            if (offer!='null') {
+            }, 0);
+            if (offer != 'null') {
                 coupon = await Coupon.findOne({ _id: offer })
                 if (coupon.discountType == 'Percentage') {
                     sum = sum - (sum * coupon.discountValue / 100)
-                    offer=`-${coupon.discountValue}%`
-                  } else {
+                    offer = `-${coupon.discountValue}%`
+                } else {
                     sum -= coupon.discountValue
-                    offer=`-₹${coupon.discountValue}`
-                  }
+                    offer = `-₹${coupon.discountValue}`
+                }
             }
-            sum=`₹${sum}`
+            sum = `₹${sum}`
             const wallet = await Wallet.findOne({ user: userId })
 
             return res.render('client/checkout', { cart: cart, products: products, address: addresses, sum: sum, offer: offer, wallet: wallet.balance, errorMessage: '' });
@@ -235,7 +235,7 @@ const orderController = {
             await Promise.all(promises)
 
             let updatedCart = await User.findByIdAndUpdate(
-               userId,
+                userId,
                 { $set: { cart: [] } }, //update the cart
                 { new: true }
             );

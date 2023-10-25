@@ -11,7 +11,7 @@ const Products = require('../models/productModel'); //products schema
 const Category = require('../models/categoryModel'); //category schema
 const Order = require('../models/order.model'); //order schema
 const Wallet = require('../models/WalletModel')//Wallet schma
-const Banner=require('../models/banner.model');//banner Schema
+const Banner = require('../models/banner.model');//banner Schema
 
 //keys
 const algorithm = 'aes-256-cbc';
@@ -83,7 +83,7 @@ async function deleteUnverifiedDocs() {// 600000 milliseconds is 10 minutes
 const userController = {
   //login of the user
   userLogin: async (req, res) => {
-    deleteUnverifiedDocs()
+    await deleteUnverifiedDocs()
     const { email, password } = req.body;//data given by the user
     try {
       const user = await User.findOne({ email }, { addresses: 0, cart: 0, wishlist: 0 });
@@ -275,8 +275,8 @@ const userController = {
   //rendering the home page
   home: async (req, res) => {
     let category = await Category.find({ listed: true });
-    const banner=await Banner.find({})
-    return res.render('client/home', { category: category,banner:banner });
+    const banner = await Banner.find({})
+    return res.render('client/home', { category: category, banner: banner });
   },
 
   //home page search route 
@@ -421,7 +421,7 @@ const userController = {
     }
   },
 
-  wishlist:async(req,res)=>{
+  wishlist: async (req, res) => {
     try {
       let msg = ''
       const userId = req.session.user._id;
@@ -452,27 +452,27 @@ const userController = {
         req.app.locals.data = null
       }
 
-      return res.render('client/wishlist', {products: products, msg: msg });
+      return res.render('client/wishlist', { products: products, msg: msg });
     } catch (error) {
       console.log(error);
     }
   },
-  
+
   // add product to wishlist
   addToFavorite: async (req, res) => {
     try {
       const productId = req.body.productId;
       const userId = req.session.user._id;
       let user = await User.findById(userId)
-      if(user.googleAuth){
-        user=await googelUser.findById(userId)
+      if (user.googleAuth) {
+        user = await googelUser.findById(userId)
       }
       const exixt = user.wishlist.some((prod) => prod.productId == productId)
       if (exixt) {
         return res.json({ message: "Its Already There" })
       }
       user.wishlist.push({ productId })
-      
+
       await user.save()
       console.log(user);
       return res.status(200).json({ message: "Wishlisted" })
@@ -481,7 +481,7 @@ const userController = {
     }
   },
   // remove product from wishlist
-  removeProductWishlist:async(req,res)=>{
+  removeProductWishlist: async (req, res) => {
     try {
       const userId = req.session.user._id;
       const pId = req.params.id

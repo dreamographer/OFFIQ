@@ -10,7 +10,7 @@ const crypto = require('crypto');  //encription module
 const User = require('../models/user.models'); //user scheme
 const Admin = require('../models/admin.models'); //admin schema
 const Order = require('../models/order.model'); //order schema
-const Banner=require('../models/banner.model');//banner Schema
+const Banner = require('../models/banner.model');//banner Schema
 
 // excel dependencies
 const ExcelJS = require('exceljs');
@@ -136,10 +136,10 @@ const adminController = {
       ]);
       const Monthprofit = monthProfit[0] ? monthProfit[0].totalSales : 0
       // Banner
-      let banner=await Banner.find({})
-  
-      
-      res.render('admin/admin', { totalDaySale, totalMonthSale, Monthprofit ,banner})
+      let banner = await Banner.find({})
+
+
+      res.render('admin/admin', { totalDaySale, totalMonthSale, Monthprofit, banner })
     } catch (err) {
       console.error(err);
       res.status(500).send('Error fetching user data');
@@ -411,16 +411,16 @@ const adminController = {
     }
 
   },
-  
+
   // add banner imgae
-  addBanner:async(req,res)=>{
+  addBanner: async (req, res) => {
     const imageUrl = req.files.map((file) => file.path.substring(6));
-    const banner=await Banner.create({imageUrl:imageUrl})
-    return res.redirect('/admin/') 
+    const banner = await Banner.create({ imageUrl: imageUrl })
+    return res.redirect('/admin/')
   },
 
   // remove banner image
-  removeBannerImage:async(req,res)=>{
+  removeBannerImage: async (req, res) => {
     try {
       const imageUrl = req.body.imageName
       const bId = req.body.bId
