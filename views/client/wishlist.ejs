@@ -1,8 +1,8 @@
 <%- include('header') %>
 <main class="min-h-screen  w-screen overflow-x-hidden bg-gray-100 mt-20">
   <div class="w-screen flex justify-center gap-4 text-center  mt-5">
-    <h1 class="font-black text-[60px]">MY Wishlist</h1>
-    <i class="fi fi-rs-heart text-[40px] mt-6 font-thin"></i>
+    <h1 class="font-black text-[60px]">MY Wishlist<i class="fi fi-rs-heart text-[40px] mt-6 font-thin"></i></h1>
+
   </div>
   <!-- table -->
   <div class="w-screen p-9 text-center">
@@ -31,12 +31,14 @@
     <% products.forEach((product,i)=> { %>
 
     <div class="w-full h-20 pt-2 flex items-center justify-around border-b-2 pb-3 ">
-      <div class="flex w-[20%] gap-2 items-center">
-        <div class="md:w-[50px] w-[50px] ">
-          <img class="" src="<%=product.images[0]%>" alt="prod image">
+      <a href="/productpage/<%=product._id %>" class="w-[20%]">
+        <div class="flex w-full  gap-2 items-center">
+          <div class="md:w-[50px] md:flex hidden">
+            <img class="" src="<%=product.images[0]%>" alt="prod image">
+          </div>
+          <p class="h-11 overflow-hidden"> <%=product.name%> </p>
         </div>
-        <p> <%=product.name%> </p>
-      </div>
+      </a>
       <div class="w-[15%]">
         <p>₹<%= product.price %></p>
       </div>

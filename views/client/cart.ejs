@@ -32,9 +32,11 @@
           <tr class="hover:bg-gray-100 items-center text-center">
             <td class="py-6 px-6 border-b flex justify-center">
               <div class="flex w-32 ">
-                <div class="md:w-32 w-[300px] ">
+                <a href="/productpage/<%=product._id %>" class="md:w-32 w-[300px] ">
+                <div >
                   <img class="" src="<%=product.images[0]%>" alt="prod image">
                 </div>
+              </a>
                 <div class="flex flex-col justify-between  flex-grow">
                   <span class="font-bold text-sm text-ellipsis overflow-hidden h-11 w-11 item">
                     <%=product.name %>

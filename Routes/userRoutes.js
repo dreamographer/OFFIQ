@@ -36,10 +36,6 @@ router.post('/addAddress', userAuth, userController.addAddress)
 router.post('/editAddress', userAuth, userController.editAddress)
 // user profile
 router.get('/myAccount', userAuth, userController.userProfile)
-// Wishlist
-router.get('/wishlist',userAuth,userController.wishlist)
-// remove from wishlist
-router.get('/removeProductWishlist/:id', userAuth, userController.removeProductWishlist)
 
 // Routes for the product Controlls
 
@@ -53,6 +49,12 @@ router.get('/category/:id', productController.category)
 router.post('/productSearch', productController.productSearch)
 //product view page
 router.get('/productpage/:id', productController.productPage)
+// Wishlist
+router.get('/wishlist',userAuth,userController.wishlist)
+// remove from wishlist
+router.get('/removeProductWishlist/:id', userAuth, userController.removeProductWishlist)
+// add to favorite
+router.post('/addToFavorite', userAuth, userController.addToFavorite)
 
 
 // Routes for the Cart Controlls
@@ -70,8 +72,6 @@ router.post('/applyPromo', userAuth, cartController.applyPromo)
 router.post('/genOrder', userAuth, orderController.GenerateOrder)
 //checkout
 router.post('/checkout', userAuth, orderController.checkOut)
-// add to favorite
-router.post('/addToFavorite', userAuth, cartController.addToFavorite)
 
 
 // Routes for order Controlls

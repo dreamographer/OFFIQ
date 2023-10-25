@@ -177,23 +177,6 @@ const cartController = {
     }
   },
 
-  // add product to wishlist
-  addToFavorite: async (req, res) => {
-    try {
-      const productId = req.body.productId;
-      const userId = req.session.user._id;
-      const user = await User.findById(userId)
-      const exixt = user.wishlist.some((prod) => prod.productId == productId)
-      if (exixt) {
-        return res.json({ message: "Its Already There" })
-      }
-      user.wishlist.push({ productId })
-      user.save()
-      return res.status(200).json({ message: "Wishlisted" })
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
 
 }

@@ -319,7 +319,7 @@ const userController = {
       const user = await User.findById(userId)
 
       if (user.addresses.some(item => item.tag === tag)) {
-        return res.send('Tag already exist please enter a new tag')
+        return res.json('Tag already exist please enter a new tag')
       }
       if (user.googleAuth) {//for googlE aUTH USERS
         const gUser = await googelUser.findById(userId);
@@ -453,6 +453,29 @@ const userController = {
       }
 
       return res.render('client/wishlist', {products: products, msg: msg });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  
+  // add product to wishlist
+  addToFavorite: async (req, res) => {
+    try {
+      const productId = req.body.productId;
+      const userId = req.session.user._id;
+      let user = await User.findById(userId)
+      if(user.googleAuth){
+        user=await googelUser.findById(userId)
+      }
+      const exixt = user.wishlist.some((prod) => prod.productId == productId)
+      if (exixt) {
+        return res.json({ message: "Its Already There" })
+      }
+      user.wishlist.push({ productId })
+      
+      await user.save()
+      console.log(user);
+      return res.status(200).json({ message: "Wishlisted" })
     } catch (error) {
       console.log(error);
     }

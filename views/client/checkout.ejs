@@ -146,8 +146,8 @@
 
 
 
-      <button @click="addModel = !addModel" type="button" class="middle none mt-3 center mr-4 rounded-lg bg-[#111827] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Add
-        Address</button>
+      <button @click="addModel = !addModel" type="button" class="middle none mt-3 center mr-4 rounded-lg bg-[#111827] py-3 px-6 font-sans text-xs font-bold uppercase text-white shadow-md shadow-blue-500/20 transition-all hover:shadow-lg hover:shadow-blue-500/40 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">
+        Add Address</button>
   </div>
 
 
@@ -257,8 +257,6 @@
 <script>
   const innerSubmitButton = document.getElementById('addAddressBtn');
 
-
-
   innerSubmitButton.addEventListener('click', function(e) {
     const formdata = document.getElementById('addAddress')
     e.preventDefault(); // Prevent the inner form from submitting immediately
@@ -279,18 +277,26 @@
     }
 
     fetch('/addAddress', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        tag,
-        addressLine1,
-        city,
-        pin
-      }),
-    }).then(response => window.location.reload())
-
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tag,
+          addressLine1,
+          city,
+          pin
+        }),
+      }).then(response => {
+        if(response.redirected){
+          return window.location.reload()
+        }else{
+         return response.json()
+        }
+      })
+      .then((data) => {
+        return showToast(data)
+      })
 
   });
   const editSubmitButton = document.getElementById('editAddressBtn');
@@ -298,7 +304,6 @@
 
     e.preventDefault(); // Prevent the inner form from submitting immediately
     const formdata = document.getElementById('editAddress')
-    e.preventDefault(); // Prevent the inner form from submitting immediately
     const tag = formdata.tag.value
     const addrId = formdata.addrId.value
     const addressLine1 = formdata.addressLine1.value
@@ -392,7 +397,7 @@
     }
   })
 </script>
-<script>
+<!-- <script>
   if (window.history && window.history.pushState) {
     window.history.pushState('no-back', null, '');
     window.onpopstate = function(event) {
@@ -401,7 +406,7 @@
       }
     };
   }
-</script>
+</script> -->
 
 <!-- <script>
         if (window.history.replaceState) {
