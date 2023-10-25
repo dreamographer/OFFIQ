@@ -54,7 +54,7 @@
             </p>
             <div>
 
-              <a href="<%= order.invoice.substring(25) %>" target="_blank"><i class="fa-regular fas fa-xl fa-file-arrow-down"></i> DOWNLOAD INVOICE</a>
+              <a href="/<%= order.invoice.substring(32) %>" target="_blank"><i class="fa-regular fas fa-xl fa-file-arrow-down"></i> DOWNLOAD INVOICE</a>
 
               <p class="text-xl font-semibold">
                 <% if (order.status!='cancelled' && order.status!='delivered' ) { %>
