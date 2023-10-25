@@ -119,7 +119,7 @@ function generateHr(doc, y) { //function for drawing the line
 }
 
 function formatCurrency(cents) { //currenxct formating
-    return "₹" + (cents / 100).toFixed(2);
+    return "₹" + (cents).toFixed(2);
 }
 
 function formatDate(date) { //function for formating the date
