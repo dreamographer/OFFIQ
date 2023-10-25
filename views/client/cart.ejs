@@ -254,8 +254,9 @@
     let applyBtn = document.getElementById('applayBtn')
     let offer = document.getElementById('offer')
     let coupon=document.getElementById('coupon')
-        
+    let err = document.getElementById('promoError')
     function removeCoupon() {
+      err.innerHTML=''
       coupon.value='null'
     offer.value = `-₹0`
     totalElement.value = `₹${originalValue}`
@@ -310,7 +311,7 @@
                 err.innerHTML = `${data.error}`
               } else {
                 PromoMatched(data.type, data.value,data.id)
-                err.innerHTML = ""
+                err.innerHTML = "Coupon Applied"
               }
             })
             .catch((error) => {
