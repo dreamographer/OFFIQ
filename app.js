@@ -33,7 +33,7 @@ app.use(session({
 connectDB().then(() => {
     console.log("DatBAse connected"); 
 }).catch((err) => {
-    console.log(`Error in connection :${err}`);
+    console.log(`Error in connection :${process.env.DB_CONNECT}`);
 })
 
 //Disable caching  
