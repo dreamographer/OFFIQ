@@ -9,6 +9,7 @@ const sessionMangement = require('../middlewares/session')
 
 // ROUtes for user Controlls
 //User sign IN
+
 router.post('/login', sessionMangement, userController.userLogin);
 //user signUP
 router.get('/signup', sessionMangement, userController.signUp);
@@ -77,7 +78,7 @@ router.post('/checkout', userAuth, orderController.checkOut)
 // Routes for order Controlls
 // order
 router.post('/order', userAuth, orderController.order)
-// Order Page
+// Order Page 
 router.get('/orderPage/:oId', userAuth, orderController.orderPage)
 // cancel order
 router.post('/cancelOrder', userAuth, orderController.cancelOrder)

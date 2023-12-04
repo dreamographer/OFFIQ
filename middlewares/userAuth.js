@@ -7,7 +7,6 @@ module.exports = async function userAuth(req, res, next) {
             req.session.user = null
             res.redirect('/login');
         } else {
-
             next(); // User is authenticated, continue to the next middleware or route
         }
     } else {

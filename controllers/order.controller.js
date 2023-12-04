@@ -196,7 +196,6 @@ const orderController = {
                 paymentId = crypto.randomBytes(3).toString('hex')
             }
             const user = await User.findOne({ _id: userId }, { cart: 1, addresses: 1 });
-            // Assuming items is an array of objects with productId and quantity properties
 
             // Use Promise.all to fetch prices for all products concurrently
             const pricePromises = user.cart.map(async (item) => {

@@ -264,9 +264,10 @@
 
 <!-- image zoom -->
 <script>
-  const imageContainer = document.querySelector('.magnify-continer');
-  const image = document.querySelector('.magnify-image');
+  const imageContainer = document.querySelector('.magnify-continer'); //container of the image
+  const image = document.querySelector('.magnify-image'); //image to be zoomed
 
+  // tracking the mouse movement
   imageContainer.addEventListener('mousemove', (e) => {
     const mouseX = e.clientX - imageContainer.getBoundingClientRect().left;
     const mouseY = e.clientY - imageContainer.getBoundingClientRect().top;
@@ -274,12 +275,12 @@
     const offsetX = (mouseX / imageContainer.offsetWidth) * 100;
     const offsetY = (mouseY / imageContainer.offsetHeight) * 100;
 
-    image.style.transformOrigin = `${offsetX}% ${offsetY}%`;
+    image.style.transformOrigin = `${offsetX}% ${offsetY}%`; //moving the image based on the cursor 
     image.style.transform = 'scale(2)'; //  scale factor
   });
 
   imageContainer.addEventListener('mouseleave', () => {
-    image.style.transform = 'scale(1)';
+    image.style.transform = 'scale(1)'; //restores the image
   });
 </script>
 
