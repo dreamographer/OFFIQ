@@ -54,7 +54,7 @@ app.use((req, res) => {
     res.status(404).render('client/errorPage');
 });
 app.listen(port, () => {
-    console.log(`Server started on http://localhost:${port}`);
+    console.log(`Server started on http://localhost:${process.env.DB_CONNECT}`);
 });
 
  
