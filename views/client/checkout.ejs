@@ -398,7 +398,9 @@
       console.log(wallet, total);
       if (wallet - total < 0) {
         return showToast("Not enough balance In Wallet")
-      }
+      }else {
+      form.submit()
+    }
     } else {
       form.submit()
     }
