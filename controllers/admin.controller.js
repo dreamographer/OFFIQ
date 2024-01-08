@@ -147,7 +147,7 @@ const adminController = {
   },
 
   //giving data for chart
-  chartData: async (req, res) => {
+  chartData: async (req, res) => { 
     const filter = req.body.filter
     let saleData
     let categoryData
