@@ -295,7 +295,7 @@ const orderController = {
             if (!ObjectId.isValid(oId)) {
                 return res.redirect('/notfound')
             }
-            const order = await Order.findOne({ _id: oId });
+            const order = await Order.findOne({ _id: oId, userId: userId });
             if (!order) {
                 return res.redirect('/notfound')
             }
