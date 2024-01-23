@@ -33,7 +33,7 @@ app.use(session({
 connectDB().then(() => {
     console.log("DatBAse connected"); 
 }).catch((err) => {
-    console.log(`Error in connection :${process.env.DB_CONNECT}`);
+    console.log(`Error in connection :${err}`);
 })
 
 //Disable caching  
@@ -54,7 +54,7 @@ app.use((req, res) => {
     res.status(404).render('client/errorPage');
 });
 app.listen(port, () => {
-    console.log(`Server started on http://localhost:${process.env.DB_CONNECT}`);
+    console.log(`Server started on http://localhost:3000`);
 });
 
  
